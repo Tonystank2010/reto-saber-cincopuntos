@@ -1,0 +1,69 @@
+{
+  "proyecto": "Reto Saber · Cinco Puntos",
+  "tarea": "Tarea 2 — estructura de preguntas",
+  "importante": "Ningún registro de este archivo es una pregunta oficial del ICFES. Son EJEMPLOS DE FORMATO con preguntas GENERADAS POR LA APLICACIÓN (mismo estilo del banco v21 del demo), para dejar fijado el esquema antes de extraer preguntas oficiales de los cuadernillos. Las preguntas oficiales se extraerán con fuentes y URL verificadas.",
+  "ejemplos": [
+    {
+      "id": "saber11-matematicas-ejemplo-001",
+      "examen": "SABER_11",
+      "modulo": "Matematicas",
+      "competencia": "pendiente de verificación",
+      "evidencia": "pendiente de verificación",
+      "nivel_desempeno": "",
+      "tipo_pregunta": "opcion_multiple_unica",
+      "enunciado": "Una academia de música ofrece sesiones de ensayo. Cada sesión dura 3 horas. Un estudiante asistió a varias sesiones en un mes y en total estuvo 57 horas en ensayos. La academia cobra un valor fijo de 25.000 cop por sesión de ensayo, además de una inscripción única de 40.000 cop. ¿Cuánto pagó el estudiante en el mes?",
+      "texto_apoyo": "",
+      "recursos_requeridos": [],
+      "opciones": [
+        { "letra": "A", "texto": "515.000 cop" },
+        { "letra": "B", "texto": "540.000 cop" },
+        { "letra": "C", "texto": "555.000 cop" },
+        { "letra": "D", "texto": "1.400.000 cop" }
+      ],
+      "respuesta_correcta": "A",
+      "explicacion": "Generada por la aplicación: 57 horas en total, cada sesión dura 3 horas, entonces hubo 19 sesiones. El valor de las sesiones es 19 × 25.000 cop = 475.000 cop, y la inscripción suma 40.000 cop, para un total de 515.000 cop.",
+      "explicacion_generada": true,
+      "dificultad_estimada": "media",
+      "anno_aplicacion": "",
+      "cuadernillo": "",
+      "fuente": "Generada por la aplicación",
+      "url_fuente": "",
+      "licencia": "Contenido original de la app · marcado como práctica no oficial",
+      "tags": ["aritmetica", "resolucion-de-problemas"],
+      "tema": "Aritmética",
+      "subtema": "Costos y totales",
+      "idioma": "es"
+    },
+    {
+      "id": "ptyt-ingles-ejemplo-001",
+      "examen": "SABER_TYT",
+      "modulo": "Ingles",
+      "competencia": "pendiente de verificación",
+      "evidencia": "pendiente de verificación",
+      "nivel_desempeno": "",
+      "tipo_pregunta": "opcion_multiple_unica",
+      "enunciado": "My sister ___ to the library every Saturday morning.",
+      "texto_apoyo": "",
+      "recursos_requeridos": [],
+      "opciones": [
+        { "letra": "A", "texto": "goes" },
+        { "letra": "B", "texto": "go" },
+        { "letra": "C", "texto": "going" },
+        { "letra": "D", "texto": "gone" }
+      ],
+      "respuesta_correcta": "A",
+      "explicacion": "Generada por la aplicación: el sujeto 'my sister' es tercera persona singular en presente simple, por eso el verbo 'to go' toma la forma 'goes'. El texto de la pregunta está en inglés y la explicación, en español, según la regla del proyecto para el módulo de Inglés.",
+      "explicacion_generada": true,
+      "dificultad_estimada": "baja",
+      "anno_aplicacion": "",
+      "cuadernillo": "",
+      "fuente": "Generada por la aplicación",
+      "url_fuente": "",
+      "licencia": "Contenido original de la app · marcado como práctica no oficial",
+      "tags": ["ingles", "presente-simple"],
+      "tema": "Gramática",
+      "subtema": "Presente simple · tercera persona",
+      "idioma": "en"
+    }
+  ]
+}

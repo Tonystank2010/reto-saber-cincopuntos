@@ -1,0 +1,31 @@
+{
+  "examen": "SABER_11",
+  "modulo": "Ciencias Naturales",
+  "verificacion": "Competencias y procesos: estructura consolidada del marco oficial; textos exactos: pendiente de verificación contra el PDF (URL registrada en el inventario).",
+  "competencias": [
+    "Uso del conocimiento científico",
+    "Uso del entendimiento de las ciencias",
+    "Indagación"
+  ],
+  "evidencias": [
+    "Aplicar conceptos a situaciones cotidianas; distinguir evidencia y explicación; formular preguntas y diseñar indagaciones (textos exactos: pendiente de verificación)"
+  ],
+  "acciones_mentales": [
+    "Identificar regularidades, contrastar hipótesis, interpretar tablas y gráficos de experimentos (pendiente de verificación)"
+  ],
+  "temas": [
+    "Biología, Física y Química en contextos de vida cotidiana y ambiente (pendiente de verificación)"
+  ],
+  "niveles_desempeno": [
+    {
+      "nombre": "Insuficiente / Mínimo / Satisfactorio / Avanzado",
+      "corte": "puntajes de corte: pendiente de verificación"
+    }
+  ],
+  "tipos_pregunta": [
+    "opcion_multiple_unica"
+  ],
+  "diferencias_entre_examenes": [],
+  "fuente": "ICFES — marcos de referencia (https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/)",
+  "url_fuente": "https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/"
+}

@@ -1,0 +1,21 @@
+{
+  "buildCommand": "true",
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/", "destination": "/demo/Reto-Saber-Demo.html" }
+  ],
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    },
+    {
+      "source": "/demo/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+      ]
+    }
+  ]
+}

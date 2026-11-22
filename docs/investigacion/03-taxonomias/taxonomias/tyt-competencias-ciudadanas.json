@@ -1,0 +1,33 @@
+{
+  "examen": "SABER_TYT",
+  "modulo": "Competencias Ciudadanas",
+  "verificacion": "Competencias y procesos: estructura consolidada del marco oficial; textos exactos: pendiente de verificación contra el PDF (URL registrada en el inventario).",
+  "competencias": [
+    "Pensamiento social",
+    "Ciudadanía y diversidad",
+    "Diálogo y participación",
+    "Uso de la ley y de la información",
+    "Resolución pacífica de conflictos (pendiente de verificación)"
+  ],
+  "evidencias": [
+    "Analizar situaciones de conflicto y alternativas no violentas; evaluar decisiones usando la ley; participar en lo público (textos exactos: pendiente de verificación)"
+  ],
+  "acciones_mentales": [
+    "Adoptar perspectivas, contrastar información, deliberar sobre dilemas cotidianos (pendiente de verificación)"
+  ],
+  "temas": [
+    "Democracia, derechos humanos, acuerdo y conflicto, diversidad y participación (pendiente de verificación)"
+  ],
+  "niveles_desempeno": [
+    {
+      "nombre": "Niveles de desempeño TyT",
+      "corte": "cortes oficiales: pendiente de verificación"
+    }
+  ],
+  "tipos_pregunta": [
+    "opcion_multiple_unica"
+  ],
+  "diferencias_entre_examenes": [],
+  "fuente": "ICFES — marcos de referencia (https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/)",
+  "url_fuente": "https://www.icfes.gov.co/wp-content/uploads/2026/03/24-feb-cuadernillo-competencias-ciudadanas-saber-tyt-2026.pdf"
+}

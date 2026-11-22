@@ -1,0 +1,25 @@
+{
+  "name": "reto-saber-cinco-puntos-desktop",
+  "version": "1.0.0",
+  "description": "App de escritorio de Reto Saber · Cinco Puntos (demo single-file con Electron)",
+  "main": "main.js",
+  "scripts": {
+    "sincronizar": "node sincronizar.js",
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "co.retosaber.cincopuntos",
+    "productName": "Reto Saber Cinco Puntos",
+    "directories": { "output": "dist" },
+    "files": ["main.js", "app/**"],
+    "win": { "target": ["nsis"] },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true },
+    "mac": { "target": ["dmg"] },
+    "linux": { "target": ["AppImage"], "category": "Education" }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "examen": "SABER_TYT",
+  "modulo": "Razonamiento Cuantitativo",
+  "verificacion": "Competencias y procesos: estructura consolidada del marco oficial; textos exactos: pendiente de verificación contra el PDF (URL registrada en el inventario).",
+  "competencias": [
+    "Interpretación y representación de información",
+    "Comprensión y ejecución de procedimientos",
+    "Formulación y resolución de problemas",
+    "Razonamiento matemático"
+  ],
+  "evidencias": [
+    "Extraer y transformar datos; aplicar procedimientos en contexto; plantear y resolver problemas; justificar razonamientos (textos exactos: pendiente de verificación)"
+  ],
+  "acciones_mentales": [
+    "Cuantificar, modelar, estimar, vincular representaciones (pendiente de verificación)"
+  ],
+  "temas": [
+    "Números y medida; geometría y espacial; variacional y algebraico; aleatorio/probabilístico — en situaciones cotidianas y laborales (pendiente de verificación)"
+  ],
+  "niveles_desempeno": [
+    {
+      "nombre": "Niveles de desempeño TyT",
+      "corte": "cortes oficiales: pendiente de verificación"
+    }
+  ],
+  "tipos_pregunta": [
+    "opcion_multiple_unica"
+  ],
+  "diferencias_entre_examenes": [
+    "El mismo marco sirve para el módulo genérico de Saber Pro (común a ambos exámenes según las guías de orientación 2024-2)."
+  ],
+  "fuente": "ICFES — marcos de referencia (https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/)",
+  "url_fuente": "https://www.icfes.gov.co/wp-content/uploads/2024/11/Marco-de-referencia-Modulo-Razonamiento-Cuantitativo-Saber-TyT.pdf"
+}

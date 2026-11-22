@@ -1,0 +1,35 @@
+{
+  "examen": "SABER_11",
+  "modulo": "Ingles",
+  "verificacion": "Competencias y procesos: estructura consolidada del marco oficial; textos exactos: pendiente de verificación contra el PDF (URL registrada en el inventario).",
+  "competencias": [
+    "Niveles MCER evaluados: A2, B1 y B1+ (distribución exacta: pendiente de verificación)"
+  ],
+  "evidencias": [
+    "Leer textos descriptivos y narrativos cortos; completar conversaciones; responder textos informativos y argumentativos simples (textos exactos: pendiente de verificación)"
+  ],
+  "acciones_mentales": [
+    "Comprensión lectora con vocabulario funcional; gramática y léxico evaluados integrados en lectura (pendiente de verificación)"
+  ],
+  "temas": [
+    "Partes 1 a 7 del examen: conversaciones, textos completados, lectura (pendiente de verificación)"
+  ],
+  "niveles_desempeno": [
+    {
+      "nombre": "A1 / A2 / B1 / B1+",
+      "corte": "tabla oficial MCER: pendiente de verificación"
+    }
+  ],
+  "tipos_pregunta": [
+    "ingles_parte_1",
+    "ingles_parte_2",
+    "ingles_parte_3",
+    "ingles_parte_4",
+    "ingles_parte_5",
+    "ingles_parte_6",
+    "ingles_parte_7"
+  ],
+  "diferencias_entre_examenes": [],
+  "fuente": "ICFES — marcos de referencia (https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/)",
+  "url_fuente": "https://www.icfes.gov.co/wp-content/uploads/2025/03/Marcos-de-referencia-ingle%CC%81s-saber-11-tyt-pro-1.pdf"
+}

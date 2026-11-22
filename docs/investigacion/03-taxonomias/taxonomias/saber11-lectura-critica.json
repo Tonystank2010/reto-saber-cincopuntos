@@ -1,0 +1,34 @@
+{
+  "examen": "SABER_11",
+  "modulo": "Lectura Critica",
+  "verificacion": "Competencias y procesos: estructura consolidada del marco oficial; textos exactos: pendiente de verificación contra el PDF (URL registrada en el inventario).",
+  "competencias": [
+    "Comunicación (comprensión de textos)",
+    "Interpretación y análisis de textos",
+    "Pensamiento crítico"
+  ],
+  "evidencias": [
+    "Construir significados a nivel global y local; reconocer la intención del autor; evaluar argumentos y las formas como se construyen (textos exactos: pendiente de verificación)"
+  ],
+  "acciones_mentales": [
+    "Inferir, sintetizar, jerarquizar, establecer relaciones intra e intertextuales, evaluar usos del lenguaje y estrategias persuasivas (pendiente de verificación)"
+  ],
+  "temas": [
+    "Textos continuos y discontinuos: informativos, argumentativos, narrativos, expositivos, mixtos y gráficos (pendiente de verificación)"
+  ],
+  "niveles_desempeno": [
+    {
+      "nombre": "Insuficiente / Mínimo / Satisfactorio / Avanzado",
+      "corte": "puntajes de corte oficiales: pendiente de verificación"
+    }
+  ],
+  "tipos_pregunta": [
+    "opcion_multiple_unica"
+  ],
+  "diferencias_entre_examenes": [
+    "Saber TyT hace énfasis en textos discontinuos e informativos (ver guía TyT 2025-1).",
+    "Saber Pro mantiene el mismo marco genérico con textos más complejos."
+  ],
+  "fuente": "ICFES — marcos de referencia (https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/)",
+  "url_fuente": "https://www.icfes.gov.co/wp-content/uploads/2025/03/MR-Lectura-Cri%CC%81tica-Saber-11.%C2%B0-Saber-TyT-y-Saber-Pro.pdf"
+}

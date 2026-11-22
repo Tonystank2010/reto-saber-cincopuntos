@@ -1,0 +1,32 @@
+{
+  "examen": "SABER_11",
+  "modulo": "Sociales y Ciudadanas",
+  "verificacion": "Competencias y procesos: estructura consolidada del marco oficial; textos exactos: pendiente de verificación contra el PDF (URL registrada en el inventario).",
+  "competencias": [
+    "Lectura de documentos y análisis en contextos histórico-sociales",
+    "Pensamiento social y espacial",
+    "Comprensión de la pluralidad y del conflicto",
+    "Ejercicio de la ciudadanía"
+  ],
+  "evidencias": [
+    "Interpretar fuentes primarias y secundarias; leer datos y mapas; analizar conflictos y decisiones; evaluar acciones ciudadanas (textos exactos: pendiente de verificación)"
+  ],
+  "acciones_mentales": [
+    "Contextualizar, contrastar perspectivas, juzgar implicaciones éticas y políticas (pendiente de verificación)"
+  ],
+  "temas": [
+    "Historia de Colombia, geografía, democracia y derecho, cultura y diversidad (pendiente de verificación)"
+  ],
+  "niveles_desempeno": [
+    {
+      "nombre": "Insuficiente / Mínimo / Satisfactorio / Avanzado",
+      "corte": "puntajes de corte: pendiente de verificación"
+    }
+  ],
+  "tipos_pregunta": [
+    "opcion_multiple_unica"
+  ],
+  "diferencias_entre_examenes": [],
+  "fuente": "ICFES — marcos de referencia (https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/)",
+  "url_fuente": "https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/"
+}

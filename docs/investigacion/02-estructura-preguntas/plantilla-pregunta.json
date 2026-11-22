@@ -1,0 +1,31 @@
+{
+  "id": "",
+  "examen": "SABER_11",
+  "modulo": "Lectura Critica",
+  "competencia": "",
+  "evidencia": "",
+  "nivel_desempeno": "",
+  "tipo_pregunta": "opcion_multiple_unica",
+  "enunciado": "",
+  "texto_apoyo": "",
+  "recursos_requeridos": [],
+  "opciones": [
+    { "letra": "A", "texto": "" },
+    { "letra": "B", "texto": "" },
+    { "letra": "C", "texto": "" },
+    { "letra": "D", "texto": "" }
+  ],
+  "respuesta_correcta": "",
+  "explicacion": "",
+  "explicacion_generada": false,
+  "dificultad_estimada": "media",
+  "anno_aplicacion": "",
+  "cuadernillo": "",
+  "fuente": "ICFES",
+  "url_fuente": "",
+  "licencia": "Revisar aviso legal ICFES",
+  "tags": [],
+  "tema": "",
+  "subtema": "",
+  "idioma": "es"
+}
