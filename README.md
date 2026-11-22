@@ -116,3 +116,8 @@ progreso es demasiado grande para un código, la app sugiere usar el archivo.
 - Al crear tu cuenta o entrar, tu contraseña queda **guardada solo en este dispositivo**: en la pantalla «Entrar» verás el botón **«Entrar como …»** para no volver a escribirla, y «Olvidar contraseña guardada» para borrarla.
 - La contraseña **nunca viaja**: ni en el código de traspaso (v22), ni en la copia por archivo, ni por el puente.
 - Para usar la **misma contraseña en otro dispositivo**: allí aplica primero tu código de traspaso (Perfil → «Generar mi código»); la cuenta llega con su hash y ese correo + esa contraseña entran normalmente.
+
+## Tecla Enter (v24)
+
+- En la pantalla de entrar/crear cuenta, la tecla **Enter** envía el formulario (con anti-doble-envío de 0,8 s; Shift/Ctrl+Enter no envían).
+- En el textarea del código de traspaso, **Ctrl/Cmd + Enter** aplica el código.

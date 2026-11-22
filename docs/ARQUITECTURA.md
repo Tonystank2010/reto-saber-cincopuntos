@@ -124,3 +124,9 @@ Método práctico de portabilidad además del respaldo por archivo:
 - Pantalla «Entrar»: tarjeta «Entrar como <nombre>» (un clic, `A.rcl`) y «Olividar contraseña guardada» (`A.rol`).
 - Traspaso v22: la cuenta viaja con `salt`+`ph` (hash SHA-256), así el mismo correo+contraseña entran en el otro dispositivo.
 - Aviso del login actualizado. Cachés PWA: `rscp-v6` / `reto-saber-v4`.
+
+## Módulo v24 — tecla Enter
+
+- Único listener global `keydown` (el demo no tenía ninguno): Enter en `#nm`/`#em`/`#pw` con `S.view==='auth'` hace clic en `A.in`/`A.new` (según `S.at`); anti-doble-envío 800 ms; Shift/Alt/Ctrl+Enter no envían.
+- Ctrl/Cmd+Enter en `#t22v`/`#v23t` aplica el código de traspaso (`A.t22a` / `A.rap`).
+- Cachés PWA: `rscp-v7` / `reto-saber-v5`.
