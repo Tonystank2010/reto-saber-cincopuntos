@@ -1,0 +1,31 @@
+{
+  "examen": "SABER_11",
+  "modulo": "Matematicas",
+  "verificacion": "Competencias y procesos: estructura consolidada del marco oficial; textos exactos: pendiente de verificación contra el PDF (URL registrada en el inventario).",
+  "competencias": [
+    "Interpretación y representación (IR)",
+    "Formulación y ejecución (FE)",
+    "Argumentación (AR)"
+  ],
+  "evidencias": [
+    "Comprender y transformar información en distintas representaciones; resolver problemas en contextos; validar procedimientos y afirmaciones (textos exactos: pendiente de verificación)"
+  ],
+  "acciones_mentales": [
+    "Establecer relaciones espacio-geométricas, usar proporcionalidad, razonar probabilísticamente, modelar procesos de cambio (pendiente de verificación)"
+  ],
+  "temas": [
+    "Pensamiento aleatorio/estadístico, numérico-variacional, métrico-espacial, geométrico, conectados a escenarios cotidianos (pendiente de verificación)"
+  ],
+  "niveles_desempeno": [
+    {
+      "nombre": "Insuficiente / Mínimo / Satisfactorio / Avanzado",
+      "corte": "puntajes de corte: pendiente de verificación"
+    }
+  ],
+  "tipos_pregunta": [
+    "opcion_multiple_unica"
+  ],
+  "diferencias_entre_examenes": [],
+  "fuente": "ICFES — marcos de referencia (https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/)",
+  "url_fuente": "https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/"
+}

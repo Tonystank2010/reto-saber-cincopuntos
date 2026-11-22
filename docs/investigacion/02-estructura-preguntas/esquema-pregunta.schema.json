@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "reto-saber/esquema-pregunta",
+  "title": "Pregunta Saber (Tarea 2 — estructura normalizada)",
+  "description": "Esquema exacto solicitado en el prompt de investigación ICFES. Contenido oficial ICFES con atribución; contenido generado por la app claramente separado.",
+  "type": "object",
+  "required": ["id", "examen", "modulo", "tipo_pregunta", "enunciado", "opciones", "respuesta_correcta", "fuente", "url_fuente", "licencia", "idioma"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "Identificador único; convención: {examen}-{modulo_abrev}-{consecutivo}, p. ej. saber11-lectura-001" },
+    "examen": { "type": "string", "enum": ["SABER_11", "SABER_TYT", "SABER_PRO"] },
+    "modulo": { "type": "string", "enum": ["Lectura Critica", "Matematicas", "Sociales y Ciudadanas", "Ciencias Naturales", "Comunicacion Escrita", "Razonamiento Cuantitativo", "Competencias Ciudadanas", "Ingles", "Modulo especifico (Saber Pro)"] },
+    "competencia": { "type": "string", "description": "De la taxonomía del marco de referencia (ver taxonomias/). Vacío si no está en el documento oficial." },
+    "evidencia": { "type": "string", "description": "Evidencia de aprendizaje según el marco; vacío si no está en el documento oficial." },
+    "nivel_desempeno": { "type": "string", "description": "Nivel de desempeño asignado oficialmente; vacío si no aparece en el documento." },
+    "tipo_pregunta": { "type": "string", "enum": ["opcion_multiple_unica", "opcion_multiple_multiple", "respuesta_abierta", "ingles_parte_1", "ingles_parte_2", "ingles_parte_3", "ingles_parte_4", "ingles_parte_5", "ingles_parte_6", "ingles_parte_7"], "default": "opcion_multiple_unica" },
+    "enunciado": { "type": "string", "minLength": 1, "description": "REGLA: no alterar el enunciado oficial." },
+    "texto_apoyo": { "type": "string", "description": "Texto continuo o discontinuo del contexto; vacío si no aplica." },
+    "recursos_requeridos": {
+      "type": "array",
+      "description": "Identificadores de imágenes/gráficos/tablas que la pregunta necesita (cuando no se pueden transcribir).",
+      "items": { "type": "string" },
+      "default": []
+    },
+    "opciones": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "object",
+        "required": ["letra", "texto"],
+        "properties": {
+          "letra": { "type": "string", "enum": ["A", "B", "C", "D"] },
+          "texto": { "type": "string" }
+        }
+      }
+    },
+    "respuesta_correcta": { "type": "string", "pattern": "^[ABCD]$" },
+    "explicacion": { "type": "string", "description": "REGLA: si no hay explicación oficial, dejar vacío o usar explicacion_generada=true. Las preguntas oficiales traen 'afirmaciones' ( clues ) en su sección final." },
+    "explicacion_generada": { "type": "boolean", "default": false, "description": "true si la explicación fue creada por la aplicación (debe estar marcada como 'generada por la aplicación' en la UI)." },
+    "dificultad_estimada": { "type": "string", "enum": ["baja", "media", "alta"] },
+    "anno_aplicacion": { "type": "string" },
+    "cuadernillo": { "type": "string" },
+    "fuente": { "type": "string", "enum": ["ICFES", "Generada por la aplicación"] },
+    "url_fuente": { "type": "string", "format": "uri" },
+    "licencia": { "type": "string", "default": "Revisar aviso legal ICFES" },
+    "tags": { "type": "array", "items": { "type": "string" }, "default": [] },
+    "tema": { "type": "string", "default": "" },
+    "subtema": { "type": "string", "default": "" },
+    "idioma": { "type": "string", "default": "es", "description": "Preguntas de Inglés: conservar enunciado y opciones en inglés ('en'), con explicación en español en el campo explicacion." }
+  }
+}

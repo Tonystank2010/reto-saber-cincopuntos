@@ -8,8 +8,8 @@ basada **exclusivamente en material oficial, gratuito y verificable del ICFES**.
 | # | Tarea | Estado |
 |---|-------|--------|
 | 1 | Inventario de recursos oficiales (CSV + JSON) | ✅ Base creada (`01-inventario-*`), ampliable |
-| 2 | Estructura de preguntas (esquema JSON normalizado) | ⏳ Pendiente |
-| 3 | Taxonomías desde marcos de referencia | ⏳ Pendiente |
+| 2 | Estructura de preguntas (esquema JSON normalizado) | ✅ Base creada (`02-estructura-preguntas/`) |
+| 3 | Taxonomías desde marcos de referencia | ✅ Base creada (`03-taxonomias/`, 8 módulos) |
 | 4 | Funcionalidades de la aplicación | ✅ ya implementadas en el demo (v18–v21); falta mapa en docs |
 | 5 | Experiencia de usuario | ⏳ Pendiente |
 | 6 | Arquitectura técnica | ✅ parcial (docs/ARQUITECTURA.md); falta modelo de datos completo |

@@ -1,0 +1,32 @@
+{
+  "examen": "SABER_TYT",
+  "modulo": "Comunicacion Escrita",
+  "verificacion": "Competencias y procesos: estructura consolidada del marco oficial; textos exactos: pendiente de verificación contra el PDF (URL registrada en el inventario).",
+  "competencias": [
+    "Composición de textos escritos",
+    "Uso de la lengua en contextos dados",
+    "Coherencia y cohesión textuales (pendiente de verificación)"
+  ],
+  "evidencias": [
+    "Planear, redactar y revisar textos; elegir la versión más clara y cohesiva de un párrafo; corregir errores (textos exactos: pendiente de verificación)"
+  ],
+  "acciones_mentales": [
+    "Organizar ideas, conectar enunciados, ajustar registro y propósito (pendiente de verificación)"
+  ],
+  "temas": [
+    "Tipos de textos: informativos, argumentativos, literarios; textos mixtos con imágenes (pendiente de verificación)"
+  ],
+  "niveles_desempeno": [
+    {
+      "nombre": "Niveles de desempeño TyT",
+      "corte": "cortes oficiales: pendiente de verificación"
+    }
+  ],
+  "tipos_pregunta": [
+    "opcion_multiple_unica",
+    "respuesta_abierta"
+  ],
+  "diferencias_entre_examenes": [],
+  "fuente": "ICFES — marcos de referencia (https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/)",
+  "url_fuente": "https://www.icfes.gov.co/publicaciones-icfes/documentos-tecnicos-y-metodologicos/marcos-de-referencia/"
+}
