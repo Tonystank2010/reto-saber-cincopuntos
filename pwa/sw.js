@@ -1,5 +1,5 @@
 // Service worker de Reto Saber: guarda el juego para abrirlo sin conexión. Solo funciona con HTTPS.
-const V='reto-saber-v8',ARCH=['./Reto-Saber-Demo.html','./manifest.webmanifest','./icon.svg'];
+const V='reto-saber-v9',ARCH=['./Reto-Saber-Demo.html','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(V).then(c=>c.addAll(ARCH))));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V).map(x=>caches.delete(x))))));
 self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))});

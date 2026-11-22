@@ -85,6 +85,20 @@ function entrarEnLaNube(modo,em,pw){
   }).catch(function(){});
 }
 
+/* Login local fallo y la nube tiene la cuenta: firmar sesión, bajar progreso,
+   fusionar y recargar (v27.2 — otro dispositivo). */
+function recuperarDeLaNube(em,pw){
+  if(!sb||!em||!pw)return;
+  sb.auth.signInWithPassword({email:em,password:pw}).then(function(r){
+    if(!r||!r.data||!r.data.session)return;
+    uid=r.data.session.user.id;
+    sb.from('progreso').select('datos').eq('user_id',uid).single().then(function(x){
+      var rem=x&&x.data&&x.data.datos;
+      if(rem){fusionar(rem);location.reload()}
+    }).catch(function(){});
+  }).catch(function(){});
+}
+
 function envolverAccion(nombre,modo){
   try{
     if(typeof A==='undefined'||!A[nombre])return;
@@ -93,19 +107,26 @@ function envolverAccion(nombre,modo){
       var emEl=document.getElementById('em'),pwEl=document.getElementById('pw');
       var em=emEl?emEl.value.trim():'',pw=pwEl?pwEl.value:'';
       var r=await orig.apply(this,arguments);
-      try{entrarEnLaNube(modo,em,pw)}catch(e){}
+      try{
+        if(typeof S!=='undefined'&&S.view==='app')entrarEnLaNube(modo,em,pw);
+        else if(modo==='in')recuperarDeLaNube(em,pw);
+      }catch(e){}
       return r;
     };
   }catch(e){}
 }
 
 /* API minima para pruebas y depuracion */
-window.RS27={fusionar:fusionar,estado:function(){return{uid:uid,arrancado:arrancado,configurado:!!(cfg.url&&cfg.clave)}}};
+window.RS27={fusionar:fusionar,estado:function(){return{uid:uid,arrancado:arrancado,configurado:!!(cfg.url&&cfg.clave)}},forzar:arrancar};
 
+/* API minima para pruebas y depuracion */
+var ya=false;
 function arrancar(){
+  if(ya||!window.supabase)return;
+  ya=true;
   try{sb=window.supabase.createClient(cfg.url,cfg.clave)}catch(e){return}
   envolverAccion('new','up');
-  envolverAccion('ini','in');
+  envolverAccion('in','in');   /* Entrar de sesion (S.at==='in'); A.ini es "Empezar" de la leccion, no login */
   restaurar();
 }
 
