@@ -86,3 +86,19 @@ El demo guarda cuentas y contraseñas (con hash) en el navegador. No debe usarse
 - **Eliminación.** Borrar la cuenta elimina el progreso, las estadísticas ligadas a ella y los consentimientos.
 - **Panel de acompañamiento real.** Permisos por relación (acudiente con estudiante, docente con grupo) y consentimiento registrado. El panel del demo es solo local.
 - **Revisión legal** (Ley 1581 y normas de protección de menores) antes de abrir a usuarios reales.
+
+## Módulo v21 — banco rotativo de 10.000 preguntas
+
+Los flujos de práctica (lección, repetición, simulacro, diagnóstico, repaso,
+duelo, cuadernillo) pasan por una única puerta: la función `draw(área, nivel, k)`.
+El módulo v21 envuelve esa puerta y entrega preguntas desde ciclos por usuario y
+área (`u.b10k[area]={s,p}`), con mezcla determinista (PRNG mulberry32) del espacio
+del área: sin repeticiones hasta agotar el ciclo; al agotar se vuelve a sembrar.
+Las preguntas fijas del banco original se intercalan en el ciclo (≈20 % del ciclo).
+
+- Cuotas: Matemáticas 2200 · Razonamiento Cuantitativo 2200 · Ciencias 2164 ·
+  Sociales 1000 · Lectura Crítica 900 · Inglés 936 · Comunicación Escrita 600
+  (total 10.000).
+- Áreas fuera de la cuota (p. ej. Competencias Ciudadanas) caen al `draw` original.
+- Verificación automática en CI: `tests/v21-unicidad.cjs` (unicidad por espacio,
+  integridad ABCD y rotación completa sin repetición).

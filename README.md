@@ -65,4 +65,33 @@ El módulo «v20» corrige un defecto de la v18: la tarjeta **★ Preguntas marc
 (estaba definida pero no se montaba en el Perfil) ahora aparece con sus notas y
 «Practicar marcadas» funcionando.
 
+## Banco rotativo de 10.000 preguntas (v21)
+
+El módulo «v21» aumenta la práctica a un banco de **10.000 preguntas** que rotan
+**sin repetirse** cada vez que se entra a una lección, se repite, se hace un
+simulacro, diagnóstico, repaso o duelo. Distribución por área:
+
+| Área | Cuota |
+|---|---|
+| Matemáticas | 2200 |
+| Razonamiento Cuantitativo | 2200 |
+| Ciencias Naturales | 2164 |
+| Sociales y Ciudadanas | 1000 |
+| Lectura Crítica | 900 |
+| Inglés | 936 |
+| Comunicación Escrita | 600 |
+| **Total** | **10.000** |
+
+- Cada usuario/área lleva un ciclo sembrado (`u.b10k[area]={s,p}`) con PRNG
+  determinista (mulberry32): preguntas nuevas hasta agotar el ciclo; al agotarlo,
+  se vuelve a sembrar (mezcla nueva).
+- Las áreas textuales (Sociales, Lectura Crítica, Inglés, Comunicación Escrita)
+  están dimensionadas exactamente a su espacio único; las numéricas usan
+  familias paramétricas verificadas sin colisiones (test de 10.000 enunciados
+  únicos, 0 repetidos).
+- Las preguntas fijas del banco original (`saber11`/`saberPro`) se intercalan en
+  el ciclo (≈20 %) y también rotan sin repetirse dentro de él.
+- Toda pregunta generada lleva el marcado
+  «Generada por la aplicación como práctica · no oficial».
+
 Más detalles en `docs/ARQUITECTURA.md` y en `docs/planeacion/`.

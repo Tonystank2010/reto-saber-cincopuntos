@@ -42,3 +42,8 @@ jobs:
           print('preguntas en la base:',n,'| originales del repositorio:',o)
           if n<1000 or o<50: sys.exit('banco insuficiente')
           PY
+      - name: Verificar módulo v21 (10.000 únicas, sin repetición)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: node tests/v21-unicidad.cjs
