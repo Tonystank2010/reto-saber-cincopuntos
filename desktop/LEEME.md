@@ -38,3 +38,20 @@ dispositivos. La contraseña guardada en el dispositivo (v23) funciona igual aqu
   repositorio) no descarga Electron.
 - Seguridad: `contextIsolation` activado y `nodeIntegration` desactivado; la
   ventana solo carga archivos locales.
+
+## Instaladores automáticos (GitHub Actions)
+
+`.github/workflows/electron-build.yml` compila los tres instaladores sin que
+tengas que instalar nada:
+
+- **Manual:** pestaña **Actions → «Escritorio · instaladores» → Run workflow**
+  (elige la rama). Al terminar, los instaladores quedan en la sección
+  **Artifacts** del run (`reto-saber-windows`, `reto-saber-macos`, `reto-saber-linux`).
+- **Releases:** al crear una etiqueta y subirla (`git tag v1.0.0 && git push origin v1.0.0`)
+  se compila y publica todo automáticamente en **Releases** con notas incluidas.
+- Tiempo estimado: 4–8 minutos (los tres SO compilan en paralelo).
+
+Nota: los instaladores van **sin firma digital**; Windows muestra aviso
+SmartScreen y macOS Gatekeeper (botón derecho → Abrir la primera vez). Firmar
+oficialmente requiere certificados de código que valen la pena solo si se va a
+distribuir a gran escala.
