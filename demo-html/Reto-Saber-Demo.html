@@ -1009,7 +1009,10 @@ function codigo() {
   const u=U();if(!u)return null;
   const c={};KP.forEach(k=>{if(u[k]!==undefined&&k!=='name')c[k]=u[k]});
   c.name=u.name;
-  const t=JSON.stringify({reto_saber:'cuenta',version:1,cuenta:c});
+  /* v22.1: los literales del compresor van de U+0000 a U+00FF; todo carácter mayor
+     (p. ej. el «−» U+2212 de las explicaciones de Matemáticas) se escapa como \uXXXX
+     antes de comprimir, para que el JSON descomprimido sea idéntico en ambos lados. */
+  const t=JSON.stringify({reto_saber:'cuenta',version:1,cuenta:c}).replace(/[\u0100-\uFFFF]/g,ch=>'\\u'+ch.charCodeAt(0).toString(16).padStart(4,'0'));
   const body=(()=>{let b=lzwP(lzwC(t));try{b=window.btoa?btoa(b):Buffer.from(b,'binary').toString('base64')}catch(e){return null}return b})().replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
   if(body===null||body.length>200000)return'GRANDE';
   return P+'.'+body+'.'+chk(t);
@@ -1023,7 +1026,7 @@ function decodifica(crudo){
  if(bytes.length%2)return{err:'El código está dañado (longitud inválida). Vuelve a generarlo.'};
  const cs=[];for(let i=0;i<bytes.length;i+=2)cs.push((bytes.charCodeAt(i)<<8)|bytes.charCodeAt(i+1));
  const t=lzwD(cs);if(t===null)return{err:'El código está dañado (no se pudo descomprimir). Vuelve a generarlo.'};
- if(chk(t)!==p[2])return{err:'El código no pasa la verificación de integridad: probablemente se cortó al copiarlo. Cópialo de nuevo, completo.'};
+ if(chk(t)!==p[2])return{err:'El código alteró su contenido o está incompleto. No lo reescribas a mano: pulsa «Generar mi código» otra vez y usa el botón «Copiar código» o el enlace.'};
  let o=null;try{o=JSON.parse(t)}catch(e){}
  if(!o||o.reto_saber!=='cuenta'||!o.cuenta)return{err:'El código no contiene una cuenta de Reto Saber válida.'};
  return{cuenta:o.cuenta};

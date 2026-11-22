@@ -105,6 +105,8 @@ Las preguntas fijas del banco original se intercalan en el ciclo (≈20 % del ci
 
 ## Módulo v22 — traspaso de progreso con código
 
+> **v22.1 (corrección):** el compresor LZW solo tiene literales de la tabla U+0000–U+00FF; los caracteres mayores («−» U+2212 de Matemáticas, comillas tipográficas, emojis) ahora se escapan como `\uXXXX` antes de comprimir. Con esto el código generado nunca queda alterado y el checksum  coincide siempre. Cachés PWA subidas a `rscp-v5` / `reto-saber-v3`.
+
 Método práctico de portabilidad además del respaldo por archivo:
 
 - **Generación** (`RS22.generar()`): serializa la cuenta con la misma lista `KP` del respaldo (cbx), la comprime con **LZW** (diccionarios codificador/decodificador separados, límite 65000 entradas) y la empaqueta en base64 URL-safe. Formato `RS1.<payload>.<4 caracteres de checksum>` (checksum aritmético mod 1679616 del JSON original).
