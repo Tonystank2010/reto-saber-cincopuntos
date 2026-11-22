@@ -116,3 +116,11 @@ Método práctico de portabilidad además del respaldo por archivo:
 - **Errores amables**: código cortado, prefijo ajeno, base64 inválido, descompresión fallida o checksum incorrecto producen mensajes accionables sin tocar datos.
 - **Caché PWA**: `rscp-v4` (public/sw.js) y `reto-saber-v2` (pwa/sw.js).
 - **API de pruebas**: `window.RS22 = { generar, decodificar, aplicar, enlace, tarjeta, lzwC, lzwD }`.
+
+
+## Módulo v23 — recordar contraseña en el dispositivo
+
+- Guarda `DB.rec={em,pw}` en localStorage del dispositivo al crear cuenta o entrar (nunca se exporta: no está en `KP`, ni en el puente, ni en la copia por archivo).
+- Pantalla «Entrar»: tarjeta «Entrar como <nombre>» (un clic, `A.rcl`) y «Olividar contraseña guardada» (`A.rol`).
+- Traspaso v22: la cuenta viaja con `salt`+`ph` (hash SHA-256), así el mismo correo+contraseña entran en el otro dispositivo.
+- Aviso del login actualizado. Cachés PWA: `rscp-v6` / `reto-saber-v4`.

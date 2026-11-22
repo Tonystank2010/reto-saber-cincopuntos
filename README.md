@@ -110,3 +110,9 @@ Nota de privacidad: el código contiene el correo y el progreso — se recomiend
 mandarlo solo a uno mismo. Se comporta como la copia por archivo, con las mismas
 validaciones (estructura, campos numéricos, sanitización del repaso). Si el
 progreso es demasiado grande para un código, la app sugiere usar el archivo.
+
+## Recordar contraseña y sesión en otro dispositivo (v23)
+
+- Al crear tu cuenta o entrar, tu contraseña queda **guardada solo en este dispositivo**: en la pantalla «Entrar» verás el botón **«Entrar como …»** para no volver a escribirla, y «Olvidar contraseña guardada» para borrarla.
+- La contraseña **nunca viaja**: ni en el código de traspaso (v22), ni en la copia por archivo, ni por el puente.
+- Para usar la **misma contraseña en otro dispositivo**: allí aplica primero tu código de traspaso (Perfil → «Generar mi código»); la cuenta llega con su hash y ese correo + esa contraseña entran normalmente.
