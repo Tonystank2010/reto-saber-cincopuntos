@@ -10,11 +10,11 @@ basada **exclusivamente en material oficial, gratuito y verificable del ICFES**.
 | 1 | Inventario de recursos oficiales (CSV + JSON) | ✅ Base creada (`01-inventario-*`), ampliable |
 | 2 | Estructura de preguntas (esquema JSON normalizado) | ✅ Base creada (`02-estructura-preguntas/`) |
 | 3 | Taxonomías desde marcos de referencia | ✅ Base creada (`03-taxonomias/`, 8 módulos) |
-| 4 | Funcionalidades de la aplicación | ✅ ya implementadas en el demo (v18–v21); falta mapa en docs |
-| 5 | Experiencia de usuario | ⏳ Pendiente |
-| 6 | Arquitectura técnica | ✅ parcial (docs/ARQUITECTURA.md); falta modelo de datos completo |
-| 7 | Licencias y uso legal | ✅ parcial (aviso en el demo); falta documento completo |
-| 8 | Entregables (plan por fases, riesgos, textos legales) | ⏳ Pendiente |
+| 4 | Funcionalidades de la aplicación | ✅ Implementadas en el demo + mapa en `04-funcionalidades-y-ux/` |
+| 5 | Experiencia de usuario | ✅ Pantallas descritas en `04-funcionalidades-y-ux/` |
+| 6 | Arquitectura técnica | ✅ `06-arquitectura/` (diagrama + modelo de datos SQL de 14 entidades) |
+| 7 | Licencias y uso legal | ✅ `07-legal/licencias-uso.md` (política + textos legales listos) |
+| 8 | Entregables (plan por fases, riesgos) | ✅ `08-entregables/` (plan 4 fases + matriz de riesgos) |
 
 ## Nota metodológica importante
 
