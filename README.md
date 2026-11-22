@@ -37,24 +37,57 @@ demo de un solo archivo a una arquitectura moderna lista para desplegar:
 |---|---|---|
 | Entrar | Sin cuenta, directo a jugar | Correo + contraseña (Supabase Auth) |
 | Progreso | `localStorage` de este navegador | Tabla `progreso` + respaldo local |
-| Instalación | Cero pasos | `supabase/progreso.sql` + variables de entorno |
+| Instalación | Cero pasos | `supabase/progreso.sql` + `demo-html/actualizar_nube.py` |
 
 ## Desarrollo
 
+La app publicada es **el demo de archivo único, sin React** (v27). Para verla en local no hace falta instalar nada:
+
 ```bash
-npm install
-npm run dev        # http://localhost:3000
-npm run build      # salida en dist/
+# opción 1: abrir directo
+doble clic en public/demo/Reto-Saber-Demo.html
+
+# opción 2: servidor local
+python3 -m http.server 8000 --directory public
+# → http://localhost:8000/demo/Reto-Saber-Demo.html
 ```
 
-Para el modo nube, copia `.env.example` a `.env` y define la URL y la clave anon de Supabase.
+Los `src/` y `package.json` conservan la **variante React** (opcional, ver más abajo); el despliegue por defecto NO la usa.
 
-## Despliegue en Vercel
+## Nube sin React (v27): Supabase dentro del demo
 
-1. Importa este repositorio en [vercel.com/new](https://vercel.com/new) (detecta Vite).
-2. Si quieres modo nube, añade `VITE_SUPABASE_URL` y `VITE_SUPABASE_ANON_KEY` en
-   *Settings → Environment Variables*.
-3. Despliega. El `vercel.json` ya trae las rutas SPA y las cabeceras de caché.
+Opcional. Sin configurar, el juego es 100% local (como siempre). Para activar el **modo nube**:
+
+1. Crea el proyecto en [supabase.com](https://supabase.com) y ejecuta `supabase/progreso.sql` en el SQL Editor (tablas `perfiles` y `progreso` con RLS).
+2. En **Authentication → Providers → Email**: habilitado. Y desactiva «Confirm email» para que el alta desde el juego no exija verificar el correo.
+3. Copia **Project URL** y la clave **anon** (Settings → API).
+4. Escribe esas credenciales dentro del demo:
+   ```bash
+   python3 demo-html/actualizar_nube.py --url https://xxxx.supabase.co --clave eyJ...
+   ```
+   (edita las 3 copias del demo; `--limpiar` vuelve al modo local).
+5. Ya en el juego: al crear la cuenta o entrar, v27 registra/valida en Supabase Auth y sincroniza el progreso (`progreso.datos`) cada 30 s, al ocultar la pestaña y al cerrar.
+6. **Otro dispositivo**: con la misma URL/clave, entra con ese correo y contraseña → recupera su progreso. Lo mismo vale para el código de traspaso (v22) y la clave guardada (v23): mismo correo + contraseña.
+
+La conexión usa la clave anon (pública por diseño); la protección real son las políticas RLS del SQL del punto 1. Sin red, el script de Supabase no carga y el juego queda local, sin errores.
+
+## Despliegue en Vercel (estático, sin React)
+
+1. Fusiona el PR a `main` y entra a [vercel.com/new](https://vercel.com/new).
+2. `Sign in with GitHub` → **Import** el repo `Tonystank2010/reto-saber-cincopuntos`.
+3. La configuración sales de `vercel.json`: sin build real, sirve la carpeta **`public/`** y la ruta `/` abre el demo. Variables de entorno: **ninguna necesaria** (las credenciales del modo nube van dentro del HTML con `actualizar_nube.py`, paso 4 del modo nube).
+4. `Deploy`. La app queda en `https://<proyecto>.vercel.app` y el demo directo en `/demo/Reto-Saber-Demo.html`.
+5. Cada `git push` a `main` redespliega solo. Las URLs de vista previa aparecen en cada PR.
+
+### Variante React (opcional)
+
+`src/` mantiene la envoltura React con Supabase (puente v19). Para desplegar esa variante cambia `vercel.json`:
+```json
+{ "buildCommand": "npm run build", "outputDirectory": "dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "headers": [ ... los mismos de arriba ... ] }
+```
+y define `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` en *Environment Variables* (mismo `progreso.sql`; no hace falta `actualizar_nube.py`).
 
 ## El juego (demo de archivo único)
 
