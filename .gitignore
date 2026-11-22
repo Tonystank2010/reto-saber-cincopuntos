@@ -3,3 +3,5 @@ dist/
 .env
 .env.local
 *.db
+desktop/node_modules/
+desktop/dist/

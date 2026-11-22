@@ -130,3 +130,10 @@ Método práctico de portabilidad además del respaldo por archivo:
 - Único listener global `keydown` (el demo no tenía ninguno): Enter en `#nm`/`#em`/`#pw` con `S.view==='auth'` hace clic en `A.in`/`A.new` (según `S.at`); anti-doble-envío 800 ms; Shift/Alt/Ctrl+Enter no envían.
 - Ctrl/Cmd+Enter en `#t22v`/`#v23t` aplica el código de traspaso (`A.t22a` / `A.rap`).
 - Cachés PWA: `rscp-v7` / `reto-saber-v5`.
+
+## Módulo v25 — descargar el juego + ejecución sin navegador
+
+- El demo es autocontenido (manifest data-URI, sin dependencias externas): funciona desde `file://` (verificado con jsdom: login y módulos v22–v25 activos).
+- Tarjeta v25 en Perfil (tras la v22): `A.t25d` descarga el HTML completo — **fetch de `location.href`** si hay red; **copia viva** (`documentElement.outerHTML`) si fetch falla o se está en `file://`. Mensajes de resultado en `S.t25m/t25e`.
+- Carpeta `desktop/`: envoltorio Electron (`main.js` con `contextIsolation` y sin `nodeIntegration`) + `sincronizar.js` (copia el demo canónico) + `electron-builder` (NSIS/DMG/AppImage). Progreso persistente en userData.
+- Cachés PWA: `rscp-v8` / `reto-saber-v6`.

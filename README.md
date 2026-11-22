@@ -121,3 +121,20 @@ progreso es demasiado grande para un código, la app sugiere usar el archivo.
 
 - En la pantalla de entrar/crear cuenta, la tecla **Enter** envía el formulario (con anti-doble-envío de 0,8 s; Shift/Ctrl+Enter no envían).
 - En el textarea del código de traspaso, **Ctrl/Cmd + Enter** aplica el código.
+
+## Descargar el juego y ejecutarlo sin navegador (v25 + desktop)
+
+**Opción 1 · archivo único (recomendado):**
+- En el juego: **Perfil → «💾 Descargar el juego» → «Descargar el juego (un solo archivo)»**.
+- Descarga `Reto-Saber-Demo.html` (~0,9 MB). Se abre con **doble clic**, sin internet; el progreso se guarda en el navegador del archivo (en Chromium/Edge, cada archivo local comparte almacenamiento; en Firefox, por ruta).
+- Alternativa sin abrir el juego: descargar el archivo directamente desde el [demo en línea](https://tonystank2010.github.io/reto-saber-cincopuntos/public/demo/Reto-Saber-Demo.html) (Ctrl/Cmd+S o botón derecho → Guardar como).
+
+**Opción 2 · app de escritorio (Electron):**
+```bash
+cd desktop
+npm install
+npm run sincronizar   # copia el demo de public/demo a desktop/app
+npm start             # ventana propia del juego
+npm run dist          # instaladores: Windows (.exe NSIS), macOS (.dmg), Linux (.AppImage)
+```
+El progreso persiste en la app entre sesiones y funciona el traspaso con código (v22) y la contraseña guardada (v23). Detalles en `desktop/LEEME.md`.
