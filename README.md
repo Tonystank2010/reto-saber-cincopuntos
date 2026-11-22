@@ -18,12 +18,17 @@ demo de un solo archivo a una arquitectura moderna lista para desplegar:
 │   ├── demo/Reto-Saber-Demo.html   # el juego completo (archivo único, con puente v19)
 │   ├── icon.svg · manifest.webmanifest · sw.js
 ├── demo-html/                  # historial del demo (versión anterior incluida) + LEEME
+│   └── historial/              # 7 prototipos congelados (repos históricos)
 ├── base-de-datos/              # generador y herramientas SQLite del banco de preguntas
+│   └── contenido/              # preguntas originales del equipo + plantilla de autoría
 ├── supabase/                   # SQL: progreso.sql (usar) y esquema-inicial.sql (propuesta)
 ├── pwa/                        # copia de apoyo del service worker e icono
 ├── piloto/                     # material del piloto con docentes
-├── docs/ARQUITECTURA.md
-└── .github/workflows/banco.yml # CI: valida el banco de preguntas
+├── docs/
+│   ├── ARQUITECTURA.md
+│   └── planeacion/             # IDEAS, TAREAS, DECISIONES, PROYECTO, REVISION-MATERIALES
+├── marketing/                  # textos para redes sociales
+└── .github/workflows/banco.yml # CI: valida el banco y genera con el contenido original
 ```
 
 ## Modo local vs. modo nube
@@ -56,5 +61,8 @@ Para el modo nube, copia `.env.example` a `.env` y define la URL y la clave anon
 `public/demo/Reto-Saber-Demo.html` funciona también **solo y sin servidor** (ábrelo directo
 en el navegador). El «puente v19» al final del archivo solo se activa dentro de un iframe
 de la app: sincroniza el progreso con Supabase y nunca altera el juego como tal.
+El módulo «v20» corrige un defecto de la v18: la tarjeta **★ Preguntas marcadas**
+(estaba definida pero no se montaba en el Perfil) ahora aparece con sus notas y
+«Practicar marcadas» funcionando.
 
-Más detalles en `docs/ARQUITECTURA.md`.
+Más detalles en `docs/ARQUITECTURA.md` y en `docs/planeacion/`.

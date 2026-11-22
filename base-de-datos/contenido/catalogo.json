@@ -1,0 +1,19 @@
+{
+  "examenes": [
+    { "id": "Saber 11", "nota": "Contenido de ejemplo disponible", "disponible": true },
+    { "id": "Saber Pro", "nota": "Contenido de práctica aún no incluido", "disponible": false },
+    { "id": "Saber TyT", "nota": "Contenido de práctica aún no incluido", "disponible": false }
+  ],
+  "niveles": [
+    { "id": "base", "nombre": "Base", "dificultad": "Básico", "descripcion": "Consolida conceptos esenciales." },
+    { "id": "intermedio", "nombre": "Intermedio", "dificultad": "Intermedio", "descripcion": "Conecta ideas y resuelve varios pasos." },
+    { "id": "avanzado", "nombre": "Avanzado", "dificultad": "Avanzado", "descripcion": "Aplica estrategias a situaciones nuevas." }
+  ],
+  "areas": [
+    { "examen": "Saber 11", "id": "Matemáticas", "marca": "01", "tono": "mint", "descripcion": "Patrones, datos y resolución de problemas" },
+    { "examen": "Saber 11", "id": "Lectura Crítica", "marca": "02", "tono": "lilac", "descripcion": "Ideas, argumentos y comprensión de textos" },
+    { "examen": "Saber 11", "id": "Ciencias Naturales", "marca": "03", "tono": "peach", "descripcion": "Fenómenos, evidencia y experimentación" },
+    { "examen": "Saber 11", "id": "Sociales y Ciudadanas", "marca": "04", "tono": "sky", "descripcion": "Perspectivas, convivencia y sociedad" },
+    { "examen": "Saber 11", "id": "Inglés", "marca": "05", "tono": "lemon", "descripcion": "Comprensión y uso del inglés" }
+  ]
+}

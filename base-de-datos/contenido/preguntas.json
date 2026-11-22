@@ -1,0 +1,742 @@
+[
+  {
+    "id": "mat-01",
+    "examen": "Saber 11",
+    "area": "Matemáticas",
+    "competencia": "Interpretación y representación",
+    "nivel": "Básico",
+    "enunciado": "Una huerta rectangular mide 6 metros de largo y 4 metros de ancho. ¿Cuántos metros de cerca se necesitan para rodearla por completo?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "10 metros"
+      },
+      {
+        "id": "B",
+        "texto": "20 metros"
+      },
+      {
+        "id": "C",
+        "texto": "24 metros"
+      },
+      {
+        "id": "D",
+        "texto": "48 metros"
+      }
+    ],
+    "respuesta": "B",
+    "explicacion": "El perímetro suma los cuatro lados: 6 + 4 + 6 + 4 = 20 metros.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "mat-02",
+    "examen": "Saber 11",
+    "area": "Matemáticas",
+    "competencia": "Formulación y ejecución",
+    "nivel": "Básico",
+    "enunciado": "Una papelería vende cuadernos a $8.000 cada uno. Durante una jornada vende 7 cuadernos. ¿Cuál fue el ingreso por esas ventas?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "$15.000"
+      },
+      {
+        "id": "B",
+        "texto": "$48.000"
+      },
+      {
+        "id": "C",
+        "texto": "$56.000"
+      },
+      {
+        "id": "D",
+        "texto": "$64.000"
+      }
+    ],
+    "respuesta": "C",
+    "explicacion": "Multiplicar el precio unitario por la cantidad da 8.000 × 7 = 56.000 pesos.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "mat-03",
+    "examen": "Saber 11",
+    "area": "Matemáticas",
+    "competencia": "Interpretación y representación",
+    "nivel": "Básico",
+    "enunciado": "En una caminata, Lina recorrió 3,2 km por la mañana y 1,8 km por la tarde. ¿Qué distancia recorrió en total?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "4 km"
+      },
+      {
+        "id": "B",
+        "texto": "4,8 km"
+      },
+      {
+        "id": "C",
+        "texto": "5 km"
+      },
+      {
+        "id": "D",
+        "texto": "5,2 km"
+      }
+    ],
+    "respuesta": "C",
+    "explicacion": "Al sumar las distancias, 3,2 + 1,8 = 5,0 kilómetros.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "mat-04",
+    "examen": "Saber 11",
+    "area": "Matemáticas",
+    "competencia": "Argumentación",
+    "nivel": "Intermedio",
+    "enunciado": "Un grupo registró cuántos libros leyó cada integrante en un mes: 2, 3, 3, 4 y 8. ¿Cuál es la mediana?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "2"
+      },
+      {
+        "id": "B",
+        "texto": "3"
+      },
+      {
+        "id": "C",
+        "texto": "4"
+      },
+      {
+        "id": "D",
+        "texto": "8"
+      }
+    ],
+    "respuesta": "B",
+    "explicacion": "Los datos ya están ordenados y el valor central de los cinco es 3.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "lec-01",
+    "examen": "Saber 11",
+    "area": "Lectura Crítica",
+    "competencia": "Comprensión local",
+    "nivel": "Básico",
+    "enunciado": "Lee: «El club escolar abrió los miércoles para que quienes no pueden asistir los viernes también tengan un espacio de lectura». Según el texto, ¿por qué abrió el miércoles?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "Para reemplazar todos los clubes escolares."
+      },
+      {
+        "id": "B",
+        "texto": "Para ofrecer otra oportunidad a quienes no pueden ir el viernes."
+      },
+      {
+        "id": "C",
+        "texto": "Para preparar una competencia de lectura."
+      },
+      {
+        "id": "D",
+        "texto": "Para reducir la cantidad de libros disponibles."
+      }
+    ],
+    "respuesta": "B",
+    "explicacion": "El texto indica que el nuevo horario busca incluir a quienes no pueden asistir el viernes.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "lec-02",
+    "examen": "Saber 11",
+    "area": "Lectura Crítica",
+    "competencia": "Comprensión global",
+    "nivel": "Básico",
+    "enunciado": "Un aviso dice: «Trae tu propia botella; el punto de agua del parque estará habilitado durante toda la jornada». ¿Cuál es el propósito principal del aviso?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "Invitar a las personas a usar el punto de agua llevando una botella."
+      },
+      {
+        "id": "B",
+        "texto": "Informar que el parque estará cerrado."
+      },
+      {
+        "id": "C",
+        "texto": "Pedir que se vendan botellas en el parque."
+      },
+      {
+        "id": "D",
+        "texto": "Anunciar una competencia deportiva."
+      }
+    ],
+    "respuesta": "A",
+    "explicacion": "El aviso comunica que habrá agua disponible e invita a llevar una botella reutilizable.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "lec-03",
+    "examen": "Saber 11",
+    "area": "Lectura Crítica",
+    "competencia": "Reflexión y evaluación",
+    "nivel": "Intermedio",
+    "enunciado": "Una columna afirma que los jardines del barrio reducen el calor y luego describe cómo tres calles con árboles tienen más sombra al mediodía. ¿Qué función cumple el ejemplo de las calles?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "Presentar un caso que apoya la afirmación."
+      },
+      {
+        "id": "B",
+        "texto": "Cambiar el tema hacia el transporte."
+      },
+      {
+        "id": "C",
+        "texto": "Negar que los árboles produzcan sombra."
+      },
+      {
+        "id": "D",
+        "texto": "Dar una instrucción para plantar árboles."
+      }
+    ],
+    "respuesta": "A",
+    "explicacion": "El caso de las calles ilustra la relación entre árboles y sombra que sostiene la columna.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "lec-04",
+    "examen": "Saber 11",
+    "area": "Lectura Crítica",
+    "competencia": "Comprensión local",
+    "nivel": "Básico",
+    "enunciado": "Lee: «Aunque el cielo estaba nublado, el equipo decidió iniciar la observación de aves y llevó impermeables por precaución». ¿Qué hizo el equipo?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "Canceló la observación por completo."
+      },
+      {
+        "id": "B",
+        "texto": "Comenzó la actividad y se preparó para la lluvia."
+      },
+      {
+        "id": "C",
+        "texto": "Esperó a que el cielo estuviera despejado."
+      },
+      {
+        "id": "D",
+        "texto": "Dejó los impermeables en casa."
+      }
+    ],
+    "respuesta": "B",
+    "explicacion": "El equipo inició la observación y llevó impermeables como medida preventiva.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "cie-01",
+    "examen": "Saber 11",
+    "area": "Ciencias Naturales",
+    "competencia": "Indagación",
+    "nivel": "Básico",
+    "enunciado": "Un grupo quiere comparar cuánto tarda en derretirse un cubo de hielo sobre metal y sobre madera. ¿Qué condición debe mantener igual para que la comparación sea más justa?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "El tamaño inicial de los cubos y el lugar de observación."
+      },
+      {
+        "id": "B",
+        "texto": "El material de las dos superficies."
+      },
+      {
+        "id": "C",
+        "texto": "El tiempo que tarda cada cubo en derretirse."
+      },
+      {
+        "id": "D",
+        "texto": "El resultado que espera obtener el grupo."
+      }
+    ],
+    "respuesta": "A",
+    "explicacion": "Al mantener iguales el tamaño y el entorno, el material de la superficie es la diferencia principal.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "cie-02",
+    "examen": "Saber 11",
+    "area": "Ciencias Naturales",
+    "competencia": "Uso comprensivo del conocimiento científico",
+    "nivel": "Básico",
+    "enunciado": "En un terrario cerrado, las plantas reciben luz y agua. ¿Qué proceso permite que produzcan azúcares usando energía luminosa?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "La evaporación"
+      },
+      {
+        "id": "B",
+        "texto": "La fotosíntesis"
+      },
+      {
+        "id": "C",
+        "texto": "La condensación"
+      },
+      {
+        "id": "D",
+        "texto": "La erosión"
+      }
+    ],
+    "respuesta": "B",
+    "explicacion": "En la fotosíntesis las plantas usan energía de la luz para producir azúcares a partir de agua y dióxido de carbono.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "cie-03",
+    "examen": "Saber 11",
+    "area": "Ciencias Naturales",
+    "competencia": "Explicación de fenómenos",
+    "nivel": "Básico",
+    "enunciado": "Al poner una cuchara fría dentro de una bebida tibia, la cuchara se calienta y la bebida se enfría un poco. ¿Cómo se transfiere principalmente la energía entre ambos?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "Del objeto más frío al más caliente de forma espontánea."
+      },
+      {
+        "id": "B",
+        "texto": "De la bebida más caliente hacia la cuchara más fría."
+      },
+      {
+        "id": "C",
+        "texto": "Solo por la producción de luz."
+      },
+      {
+        "id": "D",
+        "texto": "No hay transferencia de energía."
+      }
+    ],
+    "respuesta": "B",
+    "explicacion": "La energía térmica fluye del cuerpo con mayor temperatura al de menor temperatura.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "cie-04",
+    "examen": "Saber 11",
+    "area": "Ciencias Naturales",
+    "competencia": "Indagación",
+    "nivel": "Intermedio",
+    "enunciado": "Para investigar si la cantidad de luz afecta el crecimiento de una planta, ¿qué dato sería más útil registrar cada semana?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "La altura de cada planta y las horas de luz recibidas."
+      },
+      {
+        "id": "B",
+        "texto": "El color favorito de quien cuida la planta."
+      },
+      {
+        "id": "C",
+        "texto": "La marca del cuaderno donde se anotan los datos."
+      },
+      {
+        "id": "D",
+        "texto": "La cantidad de macetas en otras casas."
+      }
+    ],
+    "respuesta": "A",
+    "explicacion": "La altura mide crecimiento y las horas de luz permiten comparar la condición que se estudia.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "soc-01",
+    "examen": "Saber 11",
+    "area": "Sociales y Ciudadanas",
+    "competencia": "Pensamiento social",
+    "nivel": "Básico",
+    "enunciado": "En una comunidad, varias personas proponen usar el salón comunal para actividades distintas. ¿Qué mecanismo permite escuchar propuestas y acordar un uso compartido?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "Una reunión abierta con turnos de palabra y votación."
+      },
+      {
+        "id": "B",
+        "texto": "Cerrar el salón sin explicar el motivo."
+      },
+      {
+        "id": "C",
+        "texto": "Permitir que decida quien llegue primero."
+      },
+      {
+        "id": "D",
+        "texto": "Cancelar todas las actividades futuras."
+      }
+    ],
+    "respuesta": "A",
+    "explicacion": "La participación con deliberación y una regla acordada ayuda a tomar una decisión colectiva.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "soc-02",
+    "examen": "Saber 11",
+    "area": "Sociales y Ciudadanas",
+    "competencia": "Interpretación y análisis de perspectivas",
+    "nivel": "Básico",
+    "enunciado": "Un mercado local cambia su horario. Las personas que venden piden abrir más temprano y parte del vecindario pide reducir el ruido de madrugada. ¿Qué acción reconoce ambas perspectivas?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "Ignorar a quienes viven cerca."
+      },
+      {
+        "id": "B",
+        "texto": "Probar un horario acordado y revisar sus efectos con ambos grupos."
+      },
+      {
+        "id": "C",
+        "texto": "Prohibir permanentemente el mercado."
+      },
+      {
+        "id": "D",
+        "texto": "Suponer que todos tienen la misma necesidad."
+      }
+    ],
+    "respuesta": "B",
+    "explicacion": "Un acuerdo revisable permite considerar tanto la actividad económica como el bienestar vecinal.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "soc-03",
+    "examen": "Saber 11",
+    "area": "Sociales y Ciudadanas",
+    "competencia": "Pensamiento reflexivo y sistémico",
+    "nivel": "Intermedio",
+    "enunciado": "Una ciudad amplía una cicloruta para conectar dos barrios con una biblioteca. ¿Cuál podría ser un efecto que conviene evaluar además del tiempo de viaje?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "Si más personas pueden llegar a servicios y espacios públicos."
+      },
+      {
+        "id": "B",
+        "texto": "El nombre de la pintura usada en los mapas."
+      },
+      {
+        "id": "C",
+        "texto": "La cantidad de letras en el nombre de los barrios."
+      },
+      {
+        "id": "D",
+        "texto": "El color de las bicicletas privadas."
+      }
+    ],
+    "respuesta": "A",
+    "explicacion": "Una conexión puede influir en el acceso a servicios, además de modificar el tiempo de desplazamiento.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "soc-04",
+    "examen": "Saber 11",
+    "area": "Sociales y Ciudadanas",
+    "competencia": "Pensamiento social",
+    "nivel": "Básico",
+    "enunciado": "Un grupo vecinal quiere solicitar que se repare una luminaria pública. ¿Qué información hace más clara su solicitud a la entidad responsable?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "La ubicación aproximada, el problema observado y la fecha."
+      },
+      {
+        "id": "B",
+        "texto": "Una lista de rumores del barrio."
+      },
+      {
+        "id": "C",
+        "texto": "Los datos personales de todas las familias."
+      },
+      {
+        "id": "D",
+        "texto": "Una petición sin describir el asunto."
+      }
+    ],
+    "respuesta": "A",
+    "explicacion": "Ubicación, descripción y fecha ayudan a identificar el problema sin divulgar datos privados innecesarios.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "ing-01",
+    "examen": "Saber 11",
+    "area": "Inglés",
+    "competencia": "Comprensión de textos cortos",
+    "nivel": "Básico",
+    "enunciado": "Read the note: “The science room is closed today. Please meet your group in the library at 2 p.m.” Where should the group meet?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "In the science room"
+      },
+      {
+        "id": "B",
+        "texto": "In the library"
+      },
+      {
+        "id": "C",
+        "texto": "At the bus station"
+      },
+      {
+        "id": "D",
+        "texto": "At 3 p.m. outside"
+      }
+    ],
+    "respuesta": "B",
+    "explicacion": "The note says the group should meet in the library at 2 p.m.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "ing-02",
+    "examen": "Saber 11",
+    "area": "Inglés",
+    "competencia": "Uso del lenguaje",
+    "nivel": "Básico",
+    "enunciado": "Choose the best word to complete the sentence: “Marta ___ her lunch before leaving home every morning.”",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "pack"
+      },
+      {
+        "id": "B",
+        "texto": "packs"
+      },
+      {
+        "id": "C",
+        "texto": "packing"
+      },
+      {
+        "id": "D",
+        "texto": "packed"
+      }
+    ],
+    "respuesta": "B",
+    "explicacion": "For a habitual action with “Marta” (she), the present simple verb takes -s: “packs.”",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "ing-03",
+    "examen": "Saber 11",
+    "area": "Inglés",
+    "competencia": "Comprensión de textos cortos",
+    "nivel": "Básico",
+    "enunciado": "A sign at a community garden says: “Please water the young plants, not the flowers in the blue pots.” What should visitors water?",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "The young plants"
+      },
+      {
+        "id": "B",
+        "texto": "Only the blue pots"
+      },
+      {
+        "id": "C",
+        "texto": "All the flowers"
+      },
+      {
+        "id": "D",
+        "texto": "The garden path"
+      }
+    ],
+    "respuesta": "A",
+    "explicacion": "The sign asks visitors to water the young plants and excludes flowers in blue pots.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  },
+  {
+    "id": "ing-04",
+    "examen": "Saber 11",
+    "area": "Inglés",
+    "competencia": "Uso del lenguaje",
+    "nivel": "Intermedio",
+    "enunciado": "Complete the exchange: “Would you like some water?” “Yes, ___.”",
+    "opciones": [
+      {
+        "id": "A",
+        "texto": "please"
+      },
+      {
+        "id": "B",
+        "texto": "yesterday"
+      },
+      {
+        "id": "C",
+        "texto": "there are"
+      },
+      {
+        "id": "D",
+        "texto": "never mind"
+      }
+    ],
+    "respuesta": "A",
+    "explicacion": "“Yes, please” is a polite and natural way to accept an offer.",
+    "autor": "Equipo demo ficticio",
+    "revisores": [
+      "Pendiente de revisión (1)",
+      "Pendiente de revisión (2)"
+    ],
+    "estado": "ejemplo-demo",
+    "original": true,
+    "fuente": "Contenido original",
+    "marcaContenido": "Pregunta de práctica, no oficial"
+  }
+]

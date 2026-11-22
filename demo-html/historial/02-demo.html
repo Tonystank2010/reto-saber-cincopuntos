@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reto Saber</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+<style>
+/* Layout: phone-width app column with a bottom tab bar on a confetti ground. Brand "5." with a five-point star mascot; each Saber area has its own color and illustration. */
+:root{
+  --ground:#eef1ff; --app:#fbfbff; --card:#ffffff; --ink:#1b1340; --muted:#615a85; --line:#e3e0f5;
+  --coral:#ff5a5f; --sun:#ffc93c; --mint:#18b8a6; --sky:#3a86ff; --grape:#8338ec; --pink:#ff4fa3; --orange:#ff8a3d;
+  --on-color:#ffffff; --sun-ink:#3d2a00;
+  --good:#16a34a; --bad:#e5484d;
+  --display:"Fredoka","Arial Rounded MT Bold","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --ground:#0f0b24; --app:#171233; --card:#221b47; --ink:#f3f0ff; --muted:#b4acd9; --line:#352c66;
+  --coral:#ff6b70; --sun:#ffd257; --mint:#2fd4c1; --sky:#5b9bff; --grape:#a066ff; --pink:#ff6bb4; --orange:#ff9c57;
+  --good:#3fd27a; --bad:#ff6b6e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --ground:#0f0b24; --app:#171233; --card:#221b47; --ink:#f3f0ff; --muted:#b4acd9; --line:#352c66;
+  --coral:#ff6b70; --sun:#ffd257; --mint:#2fd4c1; --sky:#5b9bff; --grape:#a066ff; --pink:#ff6bb4; --orange:#ff9c57;
+  --good:#3fd27a; --bad:#ff6b6e; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);font-size:15px}
+*{box-sizing:border-box}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.stage{position:relative;z-index:1;min-height:100%;display:flex;justify-content:center;align-items:flex-start;gap:44px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px}
+.side{max-width:320px;padding-top:36px;display:none}
+.side h1{font-family:var(--display);font-size:34px;line-height:1.05;margin:12px 0;text-wrap:balance}
+.side h1 em{font-style:normal;color:var(--coral)}
+.side p{color:var(--muted);line-height:1.55;margin:0 0 12px}
+.side ul{margin:0 0 14px;padding-left:18px;color:var(--muted);line-height:1.7}
+@media (min-width:880px){.side{display:block}}
+.phone{width:100%;max-width:420px;background:var(--app);border:1px solid var(--line);border-radius:30px;overflow:hidden;
+  display:flex;flex-direction:column;min-height:min(840px,calc(100vh - 48px));box-shadow:0 24px 60px -30px rgba(40,20,120,.45)}
+.top{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 8px;gap:8px}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:700;font-size:17px}
+.five{font-family:var(--display);font-weight:700;font-size:26px;line-height:1;color:var(--coral);letter-spacing:-.02em}
+.five i{font-style:normal;color:var(--sun)}
+.logo small{display:block;font-family:var(--body);font-size:10.5px;font-weight:700;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.stats{display:flex;gap:6px}
+.chip{font-weight:800;font-size:12.5px;background:var(--card);border:1px solid var(--line);padding:5px 9px;border-radius:999px;display:flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
+.chip svg{width:14px;height:14px}
+.screen{flex:1;overflow-y:auto;padding:6px 18px 22px;display:flex;flex-direction:column;gap:16px}
+.demo{font-size:11.5px;color:var(--muted);text-align:center}
+h2{font-family:var(--display);font-size:24px;font-weight:700;margin:0;line-height:1.15;text-wrap:balance}
+h3{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0;font-weight:800}
+p{margin:0;line-height:1.5}
+.btn{border:0;border-radius:16px;padding:14px 18px;font-weight:800;font-size:15.5px;background:var(--coral);color:var(--on-color);
+  box-shadow:0 4px 0 0 color-mix(in srgb,var(--coral) 60%,#000);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 0 color-mix(in srgb,var(--coral) 60%,#000)}
+.btn.sun{background:var(--sun);color:var(--sun-ink);box-shadow:0 4px 0 0 color-mix(in srgb,var(--sun) 55%,#000)}
+.btn.ghost{background:var(--card);color:var(--ink);border:1.5px solid var(--line);box-shadow:none}
+.btn.wide{width:100%}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.row{display:flex;gap:10px}.row > *{flex:1;min-width:0}
+/* hero */
+.hero{border-radius:24px;padding:18px;color:var(--on-color);position:relative;overflow:hidden;display:flex;gap:12px;align-items:center;
+  background:linear-gradient(135deg,var(--coral),var(--orange) 55%,var(--sun))}
+.hero > div{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0;position:relative}
+.hero small{font-weight:800;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;opacity:.92}
+.hero strong{font-family:var(--display);font-size:21px;line-height:1.15}
+.hero .btn{align-self:flex-start;background:#fff;color:#1b1340;box-shadow:0 4px 0 0 rgba(0,0,0,.18);padding:11px 16px}
+.hero svg.mascot{width:96px;height:96px;flex:none;position:relative}
+.mission{display:flex;gap:10px;align-items:center;background:var(--card);border:1.5px dashed var(--grape);border-radius:18px;padding:12px 14px}
+.mission svg{width:34px;height:34px;flex:none}
+.mission b{display:block}
+.mission small{color:var(--muted)}
+.meter{height:8px;border-radius:8px;background:var(--line);overflow:hidden;margin-top:6px}
+.meter span{display:block;height:100%;border-radius:8px}
+/* areas */
+.areas{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.area{border:0;border-radius:22px;padding:12px;text-align:left;display:flex;flex-direction:column;gap:6px;min-width:0;color:var(--on-color);position:relative;overflow:hidden;
+  box-shadow:0 4px 0 0 color-mix(in srgb,var(--c) 60%,#000);background:var(--c)}
+.area:active{transform:translateY(3px);box-shadow:0 1px 0 0 color-mix(in srgb,var(--c) 60%,#000)}
+.area svg.art{width:64px;height:64px}
+.area b{font-family:var(--display);font-size:16px;line-height:1.1;font-weight:600}
+.area small{font-weight:700;font-size:12px;opacity:.95}
+.area .meter{background:rgba(255,255,255,.35);margin-top:2px}
+.area .meter span{background:#fff}
+.area.full{grid-column:1/-1;flex-direction:row;align-items:center;gap:12px}
+.area.full > div{flex:1;display:flex;flex-direction:column;gap:5px;min-width:0}
+.badge{font-size:10.5px;font-weight:800;background:var(--sun);color:var(--sun-ink);padding:3px 7px;border-radius:6px;align-self:flex-start;letter-spacing:.04em}
+/* ranking */
+.rank{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}
+.rrow{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--line)}
+.rrow:first-child{border-top:0}
+.rrow .pos{font-family:var(--display);font-weight:700;width:24px;text-align:center;font-size:16px}
+.rrow .pos.p1{color:var(--sun)}.rrow .pos.p2{color:var(--muted)}.rrow .pos.p3{color:var(--orange)}
+.rrow svg.av{width:38px;height:38px;flex:none}
+.rrow .nm{flex:1;font-weight:700;min-width:0}
+.rrow .nm small{display:block;color:var(--muted);font-weight:600;font-size:12px}
+.rrow .xp{font-weight:800;font-variant-numeric:tabular-nums}
+.rrow.me{background:color-mix(in srgb,var(--sun) 22%,transparent)}
+/* tabs */
+.tabs{display:flex;border-top:1px solid var(--line);background:var(--card);padding-bottom:env(safe-area-inset-bottom,0px)}
+.tabs button{flex:1;border:0;background:none;padding:9px 2px 11px;font-size:11.5px;font-weight:800;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px}
+.tabs button svg{width:24px;height:24px}
+.tabs button[aria-current="page"]{color:var(--coral)}
+/* forms */
+.steps{display:flex;gap:6px}
+.steps span{flex:1;height:8px;border-radius:8px;background:var(--line)}
+.steps span.on{background:var(--coral)}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-weight:800;font-size:13px}
+.field input,.field select{border:1.5px solid var(--line);background:var(--card);border-radius:12px;padding:11px 12px;width:100%;min-width:0}
+.field input:focus{border-color:var(--grape);outline:none;box-shadow:0 0 0 3px color-mix(in srgb,var(--grape) 25%,transparent)}
+.field .err{color:var(--bad);font-size:12.5px;font-weight:700}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.avpick{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.avpick button{border:2.5px solid transparent;background:none;border-radius:50%;padding:2px;aspect-ratio:1;max-width:100%}
+.avpick button svg{width:100%;height:100%;display:block}
+.avpick button[aria-pressed="true"]{border-color:var(--coral)}
+.legal{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;font-size:13px;line-height:1.55;max-height:230px;overflow-y:auto;color:var(--muted)}
+.legal b{color:var(--ink)}
+.legal p+p{margin-top:8px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;line-height:1.4;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:12px}
+.check input{width:20px;height:20px;flex:none;accent-color:var(--coral);margin-top:1px}
+.note{color:var(--muted);font-size:13px;line-height:1.5}
+.info{display:flex;gap:10px;background:color-mix(in srgb,var(--sky) 12%,transparent);border-radius:14px;padding:12px;font-size:13px;line-height:1.5}
+/* quiz */
+.qhead{display:flex;align-items:center;gap:10px}
+.qhead .x{background:var(--card);border:1px solid var(--line);width:38px;height:38px;border-radius:12px;font-size:20px;line-height:1}
+.prog{flex:1;display:flex;gap:4px}
+.prog span{flex:1;height:10px;border-radius:10px;background:var(--line)}
+.prog span.ok{background:var(--good)} .prog span.no{background:var(--bad)} .prog span.cur{background:var(--sun)}
+.qtag{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.pill{display:inline-flex;align-items:center;gap:6px;color:var(--on-color);background:var(--c);font-weight:800;font-size:12px;padding:5px 10px;border-radius:999px}
+.clock{font-weight:800;font-variant-numeric:tabular-nums;font-size:14px}
+.timer{height:8px;border-radius:8px;background:var(--line);overflow:hidden}
+.timer span{display:block;height:100%;background:var(--mint);transition:width 1s linear}
+.timer.low span{background:var(--bad)}
+.ctx{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:14px;padding:12px 14px;line-height:1.55;font-size:14px}
+.qtext{font-size:17.5px;font-weight:800;line-height:1.4}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:12px 14px;line-height:1.35;font-weight:600}
+.opt .bub{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:15px;color:var(--on-color)}
+.opt:nth-child(1) .bub{background:var(--coral)}.opt:nth-child(2) .bub{background:var(--sky)}.opt:nth-child(3) .bub{background:var(--mint)}.opt:nth-child(4) .bub{background:var(--grape)}
+.opt:hover:not([disabled]){border-color:var(--grape);transform:translateY(-1px)}
+.opt.pick{border-color:var(--sun)}
+.opt.right{border-color:var(--good);background:color-mix(in srgb,var(--good) 14%,var(--card))}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 10%,var(--card))}
+.opt[disabled]{cursor:default}
+.fb{border-radius:16px;padding:12px 14px;line-height:1.5;font-size:14px;display:flex;gap:10px;align-items:flex-start}
+.fb svg{width:44px;height:44px;flex:none}
+.fb.ok{background:color-mix(in srgb,var(--good) 15%,transparent)}
+.fb.no{background:color-mix(in srgb,var(--bad) 12%,transparent)}
+.fb b{display:block;margin-bottom:2px;font-size:15px}
+.combo{font-family:var(--display);font-weight:700;font-size:20px;color:var(--grape);text-align:center;animation:pop .45s}
+@keyframes pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.mascot{animation:bob 3s ease-in-out infinite}
+/* results + progress */
+.score{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:18px;text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+.score svg.mascot{width:90px;height:90px}
+.score .big{font-family:var(--display);font-size:52px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.score .big small{font-size:20px;color:var(--muted)}
+.sheet{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.sheet span{width:20px;height:20px;border-radius:50%}
+.sheet span.ok{background:var(--good)} .sheet span.no{background:var(--bad)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 6px;text-align:center}
+.kpi b{display:block;font-family:var(--display);font-size:20px;font-variant-numeric:tabular-nums}
+.kpi small{color:var(--muted);font-size:11.5px;font-weight:700}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.abar{display:grid;grid-template-columns:90px 1fr auto;gap:8px;align-items:center;font-size:13px;font-weight:700}
+.abar .t{height:14px;border-radius:14px;background:var(--line);overflow:hidden}
+.abar .t span{display:block;height:100%;border-radius:14px}
+.abar .v{text-align:right;font-variant-numeric:tabular-nums}
+.lvl{font-size:11px;font-weight:800;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.lvl.low{background:color-mix(in srgb,var(--bad) 16%,transparent);color:var(--bad)}
+.lvl.mid{background:color-mix(in srgb,var(--sun) 30%,transparent);color:var(--sun-ink)}
+.lvl.high{background:color-mix(in srgb,var(--good) 16%,transparent);color:var(--good)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .lvl.mid{color:var(--sun)}}
+:root[data-theme="dark"] .lvl.mid{color:var(--sun)}
+.tips{margin:0;padding-left:18px;line-height:1.6;font-size:14px}
+.week{width:100%;height:auto;display:block}
+/* email */
+.mail{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;font-size:13.5px}
+.mail .mh{padding:12px 14px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:3px;color:var(--muted)}
+.mail .mh b{color:var(--ink)}
+.mail .mb{padding:14px;display:flex;flex-direction:column;gap:10px;line-height:1.55}
+.mail .banner{border-radius:12px;padding:12px;color:#fff;background:linear-gradient(135deg,var(--grape),var(--sky));display:flex;align-items:center;gap:10px}
+.mail .banner .five{color:#fff}.mail .banner .five i{color:var(--sun)}
+.mail table{width:100%;border-collapse:collapse;font-size:13px}
+.mail td,.mail th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left}
+.mail th{color:var(--muted);font-weight:700}
+.mail td:last-child,.mail th:last-child{text-align:right}
+/* plans */
+.plan{background:var(--card);border:2px solid var(--line);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.plan.hot{border-color:var(--coral);background:color-mix(in srgb,var(--coral) 6%,var(--card))}
+.plan .ph{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.plan .ph b{font-family:var(--display);font-size:18px;font-weight:600}
+.plan .pr{font-family:var(--display);font-weight:700;font-size:22px;white-space:nowrap}
+.plan .pr small{font-family:var(--body);font-size:12px;color:var(--muted);font-weight:700}
+.plan ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.6;font-size:14px}
+.prof{display:flex;align-items:center;gap:14px}
+.prof svg{width:68px;height:68px;flex:none}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13.5px}
+.kv span:nth-child(odd){color:var(--muted);font-weight:700}
+.kv span:nth-child(even){min-width:0;overflow-wrap:anywhere}
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--app);padding:11px 16px;border-radius:14px;font-weight:700;font-size:14px;z-index:30;max-width:min(90vw,380px);text-align:center}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.tag{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 12px;font-weight:700;font-size:13.5px}
+.tag[aria-pressed="true"]{background:var(--grape);border-color:var(--grape);color:#fff}
+.tag.day{width:40px;height:40px;padding:0;display:grid;place-items:center}
+.info svg.mascot{width:44px;height:44px;flex:none}
+.moti{display:flex;gap:12px;align-items:center;border-radius:20px;padding:12px 14px;background:color-mix(in srgb,var(--mint) 16%,var(--card));border:1.5px solid color-mix(in srgb,var(--mint) 45%,transparent)}
+.moti svg{width:48px;height:48px;flex:none}
+.moti small{display:block;font-weight:800;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.moti b{font-size:15px;line-height:1.35}
+.alertbar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px;font-size:14px}
+.alertbar svg{width:22px;height:22px;color:var(--coral);flex:none}
+.alertbar span{flex:1}
+.alertbar button{border:0;background:none;color:var(--grape);font-weight:800}
+.freeze{display:flex;gap:12px;align-items:center;background:color-mix(in srgb,var(--sky) 12%,var(--card));border-radius:16px;padding:10px 14px}
+.freeze .ice{width:38px;height:38px;border-radius:12px;background:var(--sky);color:#fff;display:grid;place-items:center;font-size:20px;flex:none}
+.freeze small{color:var(--muted)}
+.lock{border-radius:24px;padding:14px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(160deg,var(--grape),var(--sky) 60%,var(--mint))}
+.notif{display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.92);color:#1b1340;border-radius:16px;padding:10px 12px}
+.notif svg{width:34px;height:34px;flex:none}
+.notif small{display:block;color:#615a85;font-size:11.5px;font-weight:700}
+.notif b{display:block;font-size:14px;line-height:1.3}
+.notif span{font-size:13px;color:#3b3466}
+.followbox{display:flex;flex-direction:column;gap:10px;border-radius:20px;padding:14px;background:color-mix(in srgb,var(--pink) 12%,var(--card));border:1.5px dashed var(--pink)}
+.followbox > small{color:var(--muted);margin-top:-6px}
+.followbox .tag[aria-pressed="true"]{background:var(--pink);border-color:var(--pink)}
+.old{text-decoration:line-through;color:var(--muted);font-size:14px;font-family:var(--body);font-weight:700;margin-right:4px}
+.req{display:flex;align-items:center;gap:10px}
+.req svg.av{width:40px;height:40px;flex:none}
+.req .nm{flex:1;min-width:0}.req .nm small{display:block;color:var(--muted)}
+.empty{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;background:var(--card);border:1.5px dashed var(--line);border-radius:20px;padding:16px;color:var(--muted);font-weight:700}
+.empty svg.mascot{width:60px;height:60px}
+.link{border:0;background:none;color:var(--grape);font-weight:800;text-decoration:underline}
+.code{font-family:var(--display);font-size:20px;letter-spacing:.06em;color:var(--grape)}
+.pf{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:10px 12px}
+.pf svg.av{width:44px;height:44px;flex:none}
+.pf span{flex:1;min-width:0}.pf small{display:block;color:var(--muted);font-weight:700}
+.pf .go{flex:none;font-size:26px;color:var(--coral);font-weight:800}
+.pick-plan{text-align:left;width:100%;cursor:pointer}
+.pick-plan[aria-pressed="true"]{border-color:var(--grape);box-shadow:0 0 0 3px color-mix(in srgb,var(--grape) 30%,transparent)}
+.chosen{background:color-mix(in srgb,var(--grape) 10%,var(--card));border-radius:14px;padding:10px 12px;font-size:14px}
+.hearts{font-size:15px;color:var(--coral);letter-spacing:1px;white-space:nowrap}
+.hearts i{font-style:normal;color:var(--muted)}
+.paywall{border:1.5px solid var(--sun);background:color-mix(in srgb,var(--sun) 12%,var(--card))}
+.paywall svg.mascot{width:56px;height:56px}
+.cartcard{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;border-radius:20px;padding:12px 14px;background:linear-gradient(135deg,var(--grape),var(--sky));color:#fff}
+.cartcard .ic{width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:20px;flex:none}
+.cartcard span{flex:1;min-width:0}.cartcard small{display:block;opacity:.9}.cartcard .go{flex:none;font-size:26px;font-weight:800}
+.mod{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:18px;overflow:hidden}
+.mod summary{display:flex;align-items:center;gap:12px;padding:10px 12px;cursor:pointer;list-style:none}
+.mod summary::-webkit-details-marker{display:none}
+.mod summary svg.art{width:44px;height:44px;flex:none;background:var(--c);border-radius:12px;padding:4px}
+.mod summary small{display:block;color:var(--muted);font-weight:700}
+.modbody{padding:0 14px 14px;display:flex;flex-direction:column;gap:10px}
+.cart{border:1px solid var(--line);border-radius:14px;padding:10px 12px;font-size:14px;display:flex;flex-direction:column;gap:6px}
+.cart.locked{opacity:.7}
+.cart .tip{color:var(--muted);font-size:13px}
+.ctys{display:flex;flex-direction:column;gap:8px}
+.cty{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:16px;padding:10px 12px}
+.cty.on{border-color:var(--grape);box-shadow:0 0 0 3px color-mix(in srgb,var(--grape) 25%,transparent)}
+.cty .fl{font-size:28px;flex:none}.cty span{flex:1;min-width:0}.cty small{display:block;color:var(--muted);font-weight:700}
+.cty .go{flex:none;font-size:24px;color:var(--coral);font-weight:800}
+.ctychip{align-self:center;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-weight:700;font-size:14px}
+.selfrow{display:flex;flex-direction:column;gap:8px;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--c);border-radius:16px;padding:10px 12px}
+.selfrow .tag[aria-pressed="true"]{background:var(--c);border-color:var(--c)}
+.lvlbadge{display:inline-block;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px;color:#fff;white-space:nowrap}
+.lvlbadge.l1{background:var(--mint)}.lvlbadge.l2{background:var(--sky)}.lvlbadge.l3{background:var(--grape)}
+.lvlbar{display:flex;gap:10px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px 12px;font-size:13.5px}
+.lvmsg{background:color-mix(in srgb,var(--sky) 14%,transparent);border-radius:12px;padding:8px 10px;font-weight:700;font-size:14px}
+.step{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 14px}
+.step .n{width:34px;height:34px;border-radius:50%;background:var(--coral);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:700;flex:none}
+.step span{flex:1;min-width:0}.step small{display:block;color:var(--muted);font-weight:600}
+.step .go{flex:none;font-size:22px;font-weight:800;color:var(--coral)}
+.step.ok{border-color:var(--good)}.step.ok .n{background:var(--good)}
+.step.off{opacity:.6}.step.off .n{background:var(--muted)}
+.flip{perspective:1200px;min-height:340px;cursor:pointer}
+.flip .inner{position:relative;width:100%;min-height:340px;transition:transform .6s;transform-style:preserve-3d}
+.flip.on .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--card);border:2px solid var(--c);border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.face.back{transform:rotateY(180deg);background:color-mix(in srgb,var(--c) 10%,var(--card))}
+.face .ck{font-weight:800;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.face h2{font-size:22px}
+.face .tip{color:var(--muted);font-size:13.5px}
+.face .opts .opt{padding:9px 12px}
+.opt.gone{opacity:.25}
+@media (prefers-reduced-motion:reduce){.flip .inner{transition:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (max-width:460px){.stage{padding-block:0;padding-left:0;padding-right:0}.phone{border-radius:0;border:0;min-height:100%;max-width:none}
+  .screen,.top{padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}}
+</style>
+<style>[hidden]{display:none!important}body{margin:0}</style>
+</head>
+<body>
+
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+<div class="stage">
+  <aside class="side">
+    <div class="five" style="font-size:54px">5<i>.</i></div>
+    <h1>El Saber 11 se entrena <em>jugando</em></h1>
+    <p>Prototipo de la app de la empresa 5. para estudiantes de 9.°, 10.° y 11.°</p>
+    <ul>
+      <li>Registro con país, «Cuéntanos de ti» y autorización del acudiente</li>
+      <li>Cuenta familiar: correo del estudiante y del acudiente</li>
+      <li>Cartillas por módulo y retos con 5 vidas</li>
+      <li>Diagnóstico inicial por áreas</li>
+      <li>Retos de 5 preguntas con puntos y combos</li>
+      <li>Mensajes que motivan según tus deportes y talentos</li>
+      <li>Alertas de estudio, progreso y reporte al acudiente</li>
+    </ul>
+    <p style="font-size:13px">El ranking es privado: solo entre amigos que se aceptan, y cada estudiante puede ocultar su progreso. Los datos se guardan solo en este navegador; los amigos son de ejemplo.</p>
+  </aside>
+
+  <main class="phone">
+    <header class="top">
+      <div class="logo"><span class="five">5<i>.</i></span><div>Reto Saber<small>una app de 5.</small></div></div>
+      <div class="stats" id="stats">
+        <span class="chip" title="Racha de días"><svg viewBox="0 0 24 24"><path d="M12 2c1 4 6 6 6 12a6 6 0 0 1-12 0c0-3 2-5 3-6 0 2 1 3 2 3 0-4-1-6 1-9z" fill="var(--orange)"/></svg><span id="streak">0</span></span>
+        <span class="chip" title="Puntos de experiencia"><svg viewBox="0 0 24 24"><path d="M12 2l3 6.5 7 1-5 5 1.2 7L12 18l-6.2 3.5L7 14.5l-5-5 7-1z" fill="var(--sun)"/></svg><span id="xp">0</span></span>
+      </div>
+    </header>
+    <section class="screen" id="screen" aria-live="polite"></section>
+    <nav class="tabs" id="tabs" aria-label="Secciones">
+      <button data-tab="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Inicio</button>
+      <button data-tab="progress"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progreso</button>
+      <button data-tab="rank"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0zM7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg>Ranking</button>
+      <button data-tab="plans"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 6.5 7 1-5 5 1.2 7L12 18l-6.2 3.5L7 14.5l-5-5 7-1z"/></svg>Premium</button>
+      <button data-tab="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Perfil</button>
+    </nav>
+  </main>
+</div>
+
+<script>
+(function(){
+/* ---------- illustrations (inline SVG) ---------- */
+function star(mood){ // mascot "Puntico": a five-point star
+  const mouth = mood==="sad" ? '<path d="M41 66 Q50 58 59 66" stroke="#3d2a00" stroke-width="3.5" fill="none" stroke-linecap="round"/>'
+    : mood==="wow" ? '<ellipse cx="50" cy="64" rx="6" ry="7" fill="#3d2a00"/>'
+    : '<path d="M39 60 Q50 72 61 60" stroke="#3d2a00" stroke-width="3.5" fill="none" stroke-linecap="round"/>';
+  return `<svg class="mascot" viewBox="0 0 100 100" aria-hidden="true"><path d="M50 4 L62 36 L96 37 L69 58 L79 92 L50 72 L21 92 L31 58 L4 37 L38 36 Z" fill="#ffc93c" stroke="#ff8a3d" stroke-width="3" stroke-linejoin="round"/>
+   <circle cx="40" cy="48" r="5" fill="#3d2a00"/><circle cx="60" cy="48" r="5" fill="#3d2a00"/><circle cx="42" cy="46" r="1.6" fill="#fff"/><circle cx="62" cy="46" r="1.6" fill="#fff"/>
+   <circle cx="32" cy="58" r="4" fill="#ff5a5f" opacity=".55"/><circle cx="68" cy="58" r="4" fill="#ff5a5f" opacity=".55"/>${mouth}</svg>`; }
+const ART = {
+ lc:`<svg class="art" viewBox="0 0 64 64" aria-hidden="true"><path d="M8 16c8-4 16-4 24 2v34c-8-6-16-6-24-2z" fill="#fff"/><path d="M56 16c-8-4-16-4-24 2v34c8-6 16-6 24-2z" fill="#fff" opacity=".85"/><path d="M13 24h13M13 30h13M13 36h10M38 24h13M38 30h13M38 36h9" stroke="#8338ec" stroke-width="2.4" stroke-linecap="round"/><circle cx="50" cy="12" r="6" fill="#ffc93c"/></svg>`,
+ ma:`<svg class="art" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="8" width="30" height="44" rx="7" fill="#fff"/><rect x="15" y="13" width="20" height="9" rx="2" fill="#3a86ff" opacity=".35"/><g fill="#3a86ff"><circle cx="18" cy="30" r="3"/><circle cx="25" cy="30" r="3"/><circle cx="32" cy="30" r="3"/><circle cx="18" cy="38" r="3"/><circle cx="25" cy="38" r="3"/><circle cx="32" cy="38" r="3"/><circle cx="18" cy="46" r="3"/><rect x="22" y="43" width="13" height="6" rx="3"/></g><path d="M44 30l12 0M50 24v12" stroke="#ffc93c" stroke-width="4" stroke-linecap="round"/><path d="M45 46l10 6M55 46l-10 6" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>`,
+ so:`<svg class="art" viewBox="0 0 64 64" aria-hidden="true"><circle cx="30" cy="32" r="22" fill="#fff"/><path d="M18 22c6 0 8 4 6 8s4 6 2 10-6 4-8 0M36 14c0 5 4 6 8 6s4 8 0 10-2 8 4 10" stroke="#ff8a3d" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M48 6v22" stroke="#1b1340" stroke-width="2.5"/><path d="M48 7h12l-3 4 3 4H48z" fill="#ffc93c"/></svg>`,
+ cn:`<svg class="art" viewBox="0 0 64 64" aria-hidden="true"><path d="M24 6h14M27 6v16L14 48a6 6 0 0 0 5 9h24a6 6 0 0 0 5-9L35 22V6" fill="#fff" stroke="#fff" stroke-width="2" stroke-linejoin="round"/><path d="M17 44h28l3 5a4 4 0 0 1-3.5 6h-24a4 4 0 0 1-3.5-6z" fill="#18b8a6" opacity=".5"/><circle cx="26" cy="38" r="3" fill="#18b8a6"/><circle cx="34" cy="32" r="2" fill="#18b8a6"/><path d="M50 30c8-2 10 6 4 10-4-1-6-5-4-10z" fill="#ffc93c"/></svg>`,
+ in:`<svg class="art" viewBox="0 0 64 64" aria-hidden="true"><path d="M6 14a6 6 0 0 1 6-6h24a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H18l-8 6v-6a6 6 0 0 1-4-6z" fill="#fff"/><text x="24" y="25" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="13" fill="#ff4fa3">Hi!</text><path d="M58 32a6 6 0 0 0-6-6H32a6 6 0 0 0-6 6v10a6 6 0 0 0 6 6h14l8 6v-6a6 6 0 0 0 4-6z" fill="#ffc93c"/><text x="42" y="42" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="11" fill="#3d2a00">Hola</text></svg>`,
+ sim:`<svg class="art" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="36" r="22" fill="#fff"/><path d="M32 36V22M32 36l9 6" stroke="#1b1340" stroke-width="4" stroke-linecap="round"/><rect x="26" y="6" width="12" height="7" rx="3" fill="#ffc93c"/><circle cx="32" cy="36" r="3" fill="#ff5a5f"/></svg>`
+};
+const AVC=[["#ff5a5f","#ffd6c2","#3d2a00"],["#3a86ff","#f2c7a5","#1b1340"],["#18b8a6","#8d5a3b","#1b1340"],["#8338ec","#ffe0c7","#ff8a3d"],["#ff4fa3","#c98b62","#3d2a00"],["#ffc93c","#6b4128","#1b1340"]];
+function avatar(i){ const [bg,skin,hair]=AVC[i%6]; const hairs=[
+  `<path d="M28 40c0-14 8-22 22-22s22 8 22 22c-6-8-14-10-22-10s-16 2-22 10z" fill="${hair}"/>`,
+  `<path d="M26 44c-2-18 10-26 24-26s26 8 24 26c-4-4-6-10-6-14-6 4-24 4-36 0 0 4-2 10-6 14z" fill="${hair}"/>`,
+  `<circle cx="50" cy="26" r="16" fill="${hair}"/><path d="M30 40c4-10 12-14 20-14s16 4 20 14" fill="${hair}"/>`,
+  `<path d="M28 42c0-14 8-24 22-24s22 10 22 24v20c-4 0-6-6-6-14 0-6-6-12-16-12s-16 6-16 12c0 8-2 14-6 14z" fill="${hair}"/>`,
+  `<path d="M30 36c2-12 10-18 20-18s18 6 20 18z" fill="${hair}"/><rect x="26" y="32" width="48" height="7" rx="3.5" fill="#fff" opacity=".9"/>`,
+  `<path d="M30 38c0-12 8-20 20-20s20 8 20 20l-6-6-6 5-8-6-8 6-6-5z" fill="${hair}"/>`][i%6];
+  return `<svg class="av" viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="50" fill="${bg}"/><path d="M22 100c2-16 14-24 28-24s26 8 28 24z" fill="#fff" opacity=".9"/><circle cx="50" cy="48" r="20" fill="${skin}"/>${hairs}<circle cx="43" cy="49" r="2.6" fill="#1b1340"/><circle cx="57" cy="49" r="2.6" fill="#1b1340"/><path d="M43 57q7 6 14 0" stroke="#1b1340" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>`; }
+
+/* ---------- content ---------- */
+const AREAS={
+  lc:{name:"Lectura Crítica",c:"var(--grape)"}, ma:{name:"Matemáticas",c:"var(--sky)"},
+  so:{name:"Sociales y Ciudadanas",c:"var(--orange)"}, cn:{name:"Ciencias Naturales",c:"var(--mint)"}, in:{name:"Inglés",c:"var(--pink)"}
+};
+const LC_TXT="Muchos jóvenes creen que estudiar con el celular es perder el tiempo. Sin embargo, una prueba hecha en tres colegios mostró que quienes practicaban 10 minutos diarios con preguntas cortas mejoraron más que quienes estudiaban una hora seguida el fin de semana.";
+const Q={
+ lc:[
+  {d:1,q:"En la oración «Juan llegó tarde porque perdió el bus», ¿qué expresa la palabra «porque»?",o:["Una causa","Una consecuencia","Una comparación","Un ejemplo"],a:0,e:"«Porque» introduce la causa: perdió el bus y por eso llegó tarde."},
+  {d:1,q:"¿Cuál es el propósito principal de una receta de cocina?",o:["Narrar una historia","Dar instrucciones","Opinar sobre la comida","Describir un paisaje"],a:1,e:"Una receta es un texto instructivo: dice paso a paso cómo preparar algo."},
+  {d:3,ctx:LC_TXT,q:"¿Qué supuesto, no dicho en el texto, necesita el autor para que su conclusión sea válida?",o:["Que los dos grupos de estudiantes eran parecidos al empezar","Que todos tenían celulares nuevos","Que estudiar el fin de semana es aburrido","Que los colegios eran privados"],a:0,e:"Para comparar resultados, los grupos debían partir de condiciones parecidas; si no, la diferencia podría tener otra causa."},
+  {d:2,ctx:LC_TXT,q:"¿Cuál es la idea principal del texto?",o:["La práctica corta y frecuente puede funcionar mejor que estudiar mucho de una sola vez.","El celular siempre distrae a los jóvenes.","Los colegios deberían prohibir el celular.","Estudiar el fin de semana es obligatorio."],a:0,e:"El texto contrasta una creencia con un resultado: practicar poco pero seguido dio mejores resultados."},
+  {d:1,ctx:LC_TXT,q:"En el texto, la expresión «Sin embargo» sirve para:",o:["Dar un ejemplo.","Introducir una idea que se opone a la anterior.","Cerrar el texto con una conclusión.","Enumerar razones."],a:1,e:"«Sin embargo» es un conector de contraste."},
+  {d:3,ctx:LC_TXT,q:"¿Qué dato haría MÁS sólido el argumento del texto?",o:["La marca de celular que usaron.","El nombre de los tres colegios.","Cuántos estudiantes participaron y cómo se midió la mejora.","La opinión de un cantante famoso."],a:2,e:"Un argumento basado en un estudio se fortalece con datos sobre cómo se hizo."},
+  {d:2,q:"Un texto argumentativo se caracteriza principalmente por:",o:["Contar una historia con personajes.","Defender una postura con razones.","Describir un lugar con detalle.","Dar instrucciones paso a paso."],a:1,e:"Argumentar es sostener una tesis y apoyarla con razones o evidencias."},
+  {d:1,q:"«El examen fue un paseo». Esta frase quiere decir que el examen fue:",o:["Muy fácil.","Al aire libre.","Muy largo.","Cancelado."],a:0,e:"Es una expresión figurada: «un paseo» es algo que no costó esfuerzo."}
+ ],
+ ma:[
+  {d:1,q:"¿Cuánto es el 50% de 120?",o:["60","50","12","240"],a:0,e:"El 50% es la mitad: 120 ÷ 2 = 60."},
+  {d:1,q:"Si un cuaderno cuesta $4.000, ¿cuánto cuestan 3 cuadernos?",o:["$7.000","$12.000","$10.000","$16.000"],a:1,e:"3 × 4.000 = 12.000."},
+  {d:3,q:"Para un concurso se eligen 2 estudiantes de 10.° (entre 6) y 2 de 11.° (entre 5). ¿Cuántos equipos distintos se pueden formar?",o:["25","30","75","150"],a:3,e:"De 10.°: combinaciones de 6 en 2 = 15. De 11.°: 5 en 2 = 10. Como se eligen las dos cosas, se multiplica: 15 × 10 = 150."},
+  {d:2,q:"Un celular cuesta $800.000 y tiene 15% de descuento. ¿Cuánto se paga?",o:["$785.000","$680.000","$120.000","$650.000"],a:1,e:"15% de 800.000 es 120.000; 800.000 − 120.000 = 680.000."},
+  {d:2,q:"En un curso de 40 estudiantes, 3 de cada 8 prefieren fútbol. ¿Cuántos prefieren fútbol?",o:["12","8","15","24"],a:2,e:"40 ÷ 8 = 5 grupos; 5 × 3 = 15."},
+  {d:1,q:"Si 2x + 6 = 20, ¿cuál es el valor de x?",o:["7","13","10","4"],a:0,e:"2x = 14, entonces x = 7."},
+  {d:3,q:"Un rectángulo tiene 30 cm de perímetro y 10 cm de largo. ¿Cuál es su área?",o:["300 cm²","40 cm²","25 cm²","50 cm²"],a:3,e:"Ancho = (30 − 20) ÷ 2 = 5 cm. Área = 10 × 5 = 50 cm²."},
+  {d:2,q:"Las notas de Ana son 3,0 · 4,0 · 4,5 · 3,5. ¿Cuál es su promedio?",o:["3,5","3,75","4,0","3,8"],a:1,e:"Suma = 15,0; 15,0 ÷ 4 = 3,75."}
+ ],
+ so:[
+  {d:1,q:"¿Qué documento contiene los derechos y deberes de los colombianos y organiza el Estado?",o:["La Constitución Política","El Código de Tránsito","El manual de convivencia","El plan de desarrollo"],a:0,e:"La Constitución de 1991 es la norma más importante del país."},
+  {d:1,q:"En el colegio, ¿quién es elegido para promover y defender los derechos de los estudiantes?",o:["El rector","El personero estudiantil","El coordinador","El tesorero"],a:1,e:"El personero es elegido por los estudiantes para promover y defender sus derechos."},
+  {d:3,q:"Un país sube los impuestos a los productos importados para proteger su industria. ¿Qué efecto podría tener en los consumidores?",o:["Pagar precios más altos","Tener más variedad de productos","Pagar menos impuestos","Recibir subsidios"],a:0,e:"Si los importados se encarecen, los consumidores pagan más: la medida ayuda a un grupo y afecta a otro."},
+  {d:2,q:"Según la Constitución de 1991, el mecanismo para proteger rápidamente un derecho fundamental vulnerado es:",o:["La acción de tutela.","El referendo.","El cabildo abierto.","La revocatoria del mandato."],a:0,e:"La tutela (artículo 86) protege de forma rápida los derechos fundamentales."},
+  {d:2,q:"El consejo estudiantil quiere cambiar la hora del descanso. ¿Cuál es la forma más democrática?",o:["Que el personero decida solo.","Cambiarla sin avisar.","Consultar a los estudiantes y llevar la propuesta a las directivas.","Hacer un sorteo."],a:2,e:"Participar es consultar a los afectados y usar los canales del gobierno escolar."},
+  {d:1,q:"En Colombia, el poder público se divide en las ramas:",o:["Militar, civil y religiosa.","Ejecutiva, legislativa y judicial.","Nacional, departamental y municipal.","Presidente, gobernador y alcalde."],a:1,e:"Es la separación de poderes: quien ejecuta, quien hace las leyes y quien juzga."},
+  {d:2,q:"Un municipio planea una carretera que atraviesa un páramo. ¿Qué intereses entran en conflicto?",o:["Deporte y cultura.","Religión y educación.","Desarrollo económico y protección ambiental.","Moda y turismo."],a:2,e:"La carretera trae beneficios económicos, pero el páramo es clave para el agua."}
+ ],
+ cn:[
+  {d:1,q:"¿En qué estado está el agua cuando es hielo?",o:["Líquido","Gaseoso","Sólido","Plasma"],a:2,e:"El hielo es agua en estado sólido."},
+  {d:1,q:"¿Qué órgano bombea la sangre en el cuerpo humano?",o:["El pulmón","El corazón","El hígado","El estómago"],a:1,e:"El corazón bombea la sangre a todo el cuerpo."},
+  {d:3,q:"Una sal se disuelve más rápido en agua caliente. Un estudiante concluye que «el calor aumenta la solubilidad de todas las sustancias». ¿Es válida la conclusión?",o:["No: solo probó una sustancia","Sí: lo observó en el experimento","Sí: el agua caliente siempre disuelve más","No: la sal no se disuelve"],a:0,e:"Con una sola sustancia no se puede generalizar a todas; habría que probar con más sustancias."},
+  {d:1,q:"Las plantas producen su propio alimento mediante:",o:["La fotosíntesis.","La fermentación.","La digestión.","La respiración celular."],a:0,e:"Con luz, agua y CO₂ producen glucosa y liberan oxígeno."},
+  {d:2,q:"A un vaso con agua y hielo le salen gotas por fuera. ¿Por qué?",o:["El agua atraviesa el vidrio.","El vapor de agua del aire se condensa al enfriarse.","El hielo se evapora.","El vidrio se derrite."],a:1,e:"El vapor del aire toca el vidrio frío y pasa a líquido: condensación."},
+  {d:1,q:"Un carro recorre 120 km en 2 horas. ¿Cuál es su rapidez promedio?",o:["240 km/h","30 km/h","60 km/h","122 km/h"],a:2,e:"Rapidez = distancia ÷ tiempo = 120 ÷ 2 = 60 km/h."},
+  {d:2,q:"La fórmula del agua es H₂O. Cada molécula tiene:",o:["Un átomo de hidrógeno y dos de oxígeno.","Dos átomos de hidrógeno y uno de oxígeno.","Solo átomos de oxígeno.","Dos moléculas de hidrógeno y una de ozono."],a:1,e:"El subíndice 2 va con el hidrógeno; el oxígeno aparece una vez."}
+ ],
+ in:[
+  {d:1,q:"Which word means «perro»?",o:["cat","dog","bird","fish"],a:1,e:"Dog = perro."},
+  {d:1,q:"Complete: «I ___ a student.»",o:["am","is","are","be"],a:0,e:"Con «I» se usa «am»."},
+  {d:3,q:"Complete: «By the time we arrived, the movie ___.»",o:["had already started","already starts","has already start","is starting already"],a:0,e:"Past perfect (had + participio) para una acción que terminó antes de otra en el pasado."},
+  {d:1,q:"Complete: «She ___ to school every day.»",o:["go","going","goes","gone"],a:2,e:"Present simple, third person (she): goes."},
+  {d:1,q:"A sign says «NO PARKING». What does it mean?",o:["You can't leave your car here.","Parking is free.","Parking is open 24 hours.","Only bikes can pass."],a:0,e:"«No parking» = prohibido estacionar."},
+  {d:2,q:"Complete: «I have lived in Medellín ___ 2020.»",o:["for","since","during","ago"],a:1,e:"«Since» va con un punto de inicio (2020); «for» con un periodo."},
+  {d:2,q:"Which word means «biblioteca»?",o:["bookstore","librarian","liberty","library"],a:3,e:"Library = biblioteca. Bookstore = librería."},
+  {d:2,q:"Complete: «If it rains tomorrow, we ___ the match.»",o:["will cancel","cancelled","would cancelled","canceling"],a:0,e:"First conditional: if + present, will + verb."}
+ ]
+};
+const TIPS={
+ lc:"Leer 1 columna de opinión al día y escribir en una frase cuál es la idea principal.",
+ ma:"Practicar porcentajes, fracciones y ecuaciones de primer grado: 3 retos de Matemáticas por semana.",
+ so:"Repasar la Constitución de 1991 (derechos, tutela, ramas del poder) con los retos de Sociales.",
+ cn:"Relacionar la teoría con la vida diaria: cambios de estado, velocidad y fórmulas químicas básicas.",
+ in:"10 minutos diarios de vocabulario y una canción en inglés con la letra; repasar present simple y perfect."
+};
+const SPORTS=["Fútbol","Baloncesto","Voleibol","Natación","Ciclismo","Patinaje","Atletismo","Tenis","Artes marciales","Gimnasio","Ninguno por ahora"];
+const MODULOS={
+ lc:{comp:["Identificar y entender lo que dice el texto (contenidos locales)","Comprender cómo se articulan las partes del texto para darle un sentido global","Reflexionar a partir del texto y evaluar su contenido"],
+  temas:[{t:"1. Idea principal y propósito",x:"La idea principal es lo que el autor quiere que te lleves; casi siempre se puede decir en una frase. Pregúntate: ¿de qué habla? ¿qué dice sobre eso? ¿para qué lo escribió (informar, convencer, narrar)?",tip:"Lee primero la pregunta y después el texto: así sabes qué buscar."},
+         {t:"2. Conectores y estructura",x:"Los conectores muestran cómo se unen las ideas: sin embargo y aunque (contraste), por lo tanto y en consecuencia (conclusión), por ejemplo (ilustración), además (adición).",tip:"Si cambias el conector, ¿cambia el sentido? Así descubres la relación entre ideas."},
+         {t:"3. Textos discontinuos y argumentos",x:"Infografías, tablas y avisos también son textos. En los argumentos, distingue la tesis, las razones que la apoyan y los supuestos que no se dicen.",tip:"Una opción puede ser verdadera pero no responder lo que te preguntan."}]},
+ ma:{comp:["Interpretación y representación: leer y transformar información en tablas, gráficas y esquemas","Formulación y ejecución: plantear y aplicar estrategias para resolver problemas","Argumentación: validar o refutar procedimientos y conclusiones"],
+  temas:[{t:"1. Porcentajes y proporciones",x:"El 15% de 800.000 es 0,15 × 800.000 = 120.000. Para un descuento, resta; para un aumento, suma. En proporciones directas, si una cantidad se duplica, la otra también.",tip:"Estima antes de calcular: si la respuesta no tiene sentido, revisa."},
+         {t:"2. Álgebra y funciones",x:"Despejar es hacer la misma operación a ambos lados. En una función lineal y = mx + b, m es la pendiente (cuánto sube y por cada unidad de x) y b el punto de corte.",tip:"Puedes reemplazar las opciones en la ecuación para ver cuál cumple."},
+         {t:"3. Conteo, estadística y probabilidad",x:"Promedio = suma ÷ cantidad de datos. Para contar grupos donde no importa el orden se usan combinaciones; si son grupos independientes, se multiplican las posibilidades.",tip:"Pregúntate si el orden importa: eso define cómo contar."}]},
+ so:{comp:["Pensamiento social: usar conceptos de las ciencias sociales y de la Constitución","Interpretación y análisis de perspectivas: evaluar fuentes, opiniones y argumentos","Pensamiento reflexivo y sistémico: ver las dimensiones y consecuencias de un problema"],
+  temas:[{t:"1. Constitución de 1991 y derechos",x:"La tutela protege derechos fundamentales de forma rápida. El poder se divide en ramas ejecutiva, legislativa y judicial, y hay órganos de control como la Procuraduría y la Contraloría.",tip:"Ubica qué derecho está en juego en la situación."},
+         {t:"2. Perspectivas y argumentos",x:"Dos personas pueden estar de acuerdo por razones distintas. Identifica quién habla, qué defiende y por qué; una fuente sirve para unas cosas y no para otras.",tip:"Ojo con las preguntas que dicen «NO es correcta»."},
+         {t:"3. Problemas con varias dimensiones",x:"Un problema social tiene dimensiones económica, política, ambiental y cultural. Una medida puede resolver una parte y afectar otra (ej.: aranceles que protegen la industria nacional y encarecen productos).",tip:"Piensa en las consecuencias para cada grupo involucrado."}]},
+ cn:{comp:["Uso comprensivo del conocimiento científico: asociar fenómenos con conceptos","Explicación de fenómenos: explicar y modelar cómo ocurren","Indagación: evaluar predicciones y sacar conclusiones de datos"],
+  temas:[{t:"1. Materia y química",x:"En un gas las partículas están más separadas que en un líquido. En una reacción, los reactivos se escriben a la izquierda (2H₂ + O₂ → 2H₂O). La solubilidad depende de la temperatura y de la cantidad de solvente.",tip:"Revisa unidades y proporciones en las tablas antes de responder."},
+         {t:"2. Física: cargas y energía",x:"En los metales se mueven los electrones, no los protones. Al tocarse dos esferas idénticas, la carga se reparte. La densidad es masa ÷ volumen.",tip:"Haz un dibujo rápido de la situación."},
+         {t:"3. Biología y ecosistemas",x:"La energía fluye por los niveles tróficos y se pierde en cada paso. En genética, un rasgo recesivo aparece solo si se heredan dos copias.",tip:"En indagación, pregúntate qué variable cambió y cuál se midió."}]},
+ in:{comp:["Comunicación en inglés por niveles: Pre A1, A1, A2, B1 y B+","Vocabulario y avisos de la vida diaria","Gramática en contexto y comprensión de lectura"],
+  temas:[{t:"1. Partes 1 y 2: palabras y avisos",x:"Parte 1: unir definiciones con palabras (sobran opciones). Parte 2: decir dónde verías un aviso (en un colegio, una tienda, un parque…).",tip:"Descarta primero las palabras que seguro no van."},
+         {t:"2. Parte 3: conversaciones",x:"Las tres opciones son gramaticalmente correctas; solo una responde de verdad. Ej.: How much is it? → 50 dollars.",tip:"Imagina la conversación real: ¿qué respondería una persona?"},
+         {t:"3. Lectura y textos para completar",x:"En los textos para completar, mira la palabra de antes y la de después. En lectura, identifica la idea general antes de los detalles.",tip:"Las preguntas suben de nivel: no te frenes en una difícil."}]}
+};
+const PLAN_NAME={free:"Gratis",anual:"Plan Anual (USD 12)",once:"Plan Saber 11 (USD 10)"};
+const COUNTRIES={
+ CO:{f:"🇨🇴",n:"Colombia",ex:"Saber 11",ent:"ICFES",ok:true,ar:"Lectura Crítica, Matemáticas, Sociales y Ciudadanas, Ciencias Naturales e Inglés",cu:"Calendario A: mitad de año · Calendario B: inicio de año",url:"https://www.icfes.gov.co"},
+ MX:{f:"🇲🇽",n:"México",ex:"EXANI-II",ent:"Ceneval (lo pide cada universidad)",ar:"Comprensión lectora, Redacción indirecta, Pensamiento matemático e Inglés",cu:"Según la convocatoria de cada universidad",url:"https://ceneval.edu.mx"},
+ PE:{f:"🇵🇪",n:"Perú",ex:"Examen de admisión de cada universidad",ent:"San Marcos, UNI y otras",ar:"Aptitud académica, Matemática, Física y Química, Humanidades",cu:"San Marcos: marzo · UNI: febrero",url:"https://admision.unmsm.edu.pe"},
+ CL:{f:"🇨🇱",n:"Chile",ex:"PAES",ent:"DEMRE",ar:"Competencia Lectora, Matemática M1 y M2, y electivas",cu:"Regular a fin de año e invierno a mitad de año",url:"https://demre.cl"},
+ EC:{f:"🇪🇨",n:"Ecuador",ex:"Examen de Acceso a la Educación Superior (EAES)",ent:"Senescyt",ar:"Verificar el temario oficial",cu:"Según la convocatoria de Senescyt",url:"https://www.educacionsuperior.gob.ec"},
+ SV:{f:"🇸🇻",n:"El Salvador",ex:"AVANZO",ent:"MINED",ar:"Precálculo, Ciudadanía y Valores, Ciencia y Tecnología, Lengua y Literatura, Inglés",cu:"2.° año de bachillerato",url:"https://www.mined.gob.sv"},
+ DO:{f:"🇩🇴",n:"República Dominicana",ex:"Pruebas Nacionales",ent:"MINERD",ar:"Verificar las áreas oficiales",cu:"Mitad de año (dos convocatorias)",url:"https://www.minerd.gob.do"},
+ HN:{f:"🇭🇳",n:"Honduras",ex:"Prueba de Aptitud Académica (PAA)",ent:"UNAH",ar:"Matemáticas y español",cu:"Varias fechas al año",url:"https://www.unah.edu.hn"},
+ CR:{f:"🇨🇷",n:"Costa Rica",ex:"Pruebas nacionales",ent:"MEP",ar:"El MEP está actualizando el formato",cu:"Último año de secundaria",url:"https://www.mep.go.cr"}};
+const cty=()=>COUNTRIES[S.user?.country||"CO"]||COUNTRIES.CO;
+const NETS=["Instagram","TikTok","YouTube","Facebook"];
+const discNet=n=>Math.min(10,2.5*n);
+const discRef=n=>n>=11?10:n>=6?8:n>=3?5:n>=1?3:0;
+const discF=()=>discNet(((S.user?.follows)||[]).length), discR=()=>discRef(S.user?.refs||0);
+const disc=()=>Math.min(20,discF()+discR());
+const isPaid=()=>!!S.paid;
+const SKILLS=["Música","Dibujo y arte","Videojuegos","Programación","Bailar","Hablar en público","Liderazgo","Cocinar","Fotografía y video","Escribir"];
+const MOTIVA={
+ "Fútbol":"Los goles salen de entrenar todos los días, no solo el día del partido. Hoy es día de entreno.",
+ "Baloncesto":"Ningún triple entra sin cientos de lanzamientos antes. Cada pregunta es un tiro más.",
+ "Voleibol":"En la cancha nadie gana solo: reta a tu equipo y suban juntos en el ranking.",
+ "Natación":"Cada brazada cuenta. 10 minutos hoy son metros que ya no tienes que nadar mañana.",
+ "Ciclismo":"La montaña no se sube en un día: pedalazo a pedalazo llegas a la cima.",
+ "Patinaje":"El equilibrio se gana practicando. Si te caes en una pregunta, te levantas con la explicación.",
+ "Atletismo":"Una carrera larga se gana con ritmo constante. Tu racha es tu ritmo.",
+ "Tenis":"Punto a punto se gana el set. No importa el error anterior, importa el siguiente saque.",
+ "Artes marciales":"Disciplina y constancia: así se gana cada cinturón, y así se gana el Saber.",
+ "Gimnasio":"El músculo crece con repeticiones. El cerebro también.",
+ "Música":"Ensayar 10 minutos al día afina igual que una guitarra.",
+ "Dibujo y arte":"Toda obra empieza con un trazo. Hoy suma uno más.",
+ "Videojuegos":"Esto es como subir de nivel en tu juego favorito, pero el XP te sirve en la vida real.",
+ "Programación":"Cada error es un bug que ya sabes arreglar. Debuggea tu examen.",
+ "Bailar":"Los pasos difíciles salen después de repetirlos. Las preguntas difíciles también.",
+ "Hablar en público":"Quien sabe explicar, aprende el doble. Explícale una pregunta a un amigo.",
+ "Liderazgo":"Los líderes dan ejemplo: invita a tu grupo a la liga de esta semana.",
+ "Cocinar":"Una buena receta se perfecciona probando. Prueba otro reto hoy.",
+ "Fotografía y video":"Enfoca: 10 minutos sin distracciones y el resultado sale nítido.",
+ "Escribir":"Cada texto que lees en Lectura Crítica te da ideas para escribir mejor."
+};
+function motKey(){ const u=S.user||{}; const pool=[...(u.sports||[]),...(u.skills||[])].filter(x=>MOTIVA[x]); return pool.length?pool[new Date().getDate()%pool.length]:""; }
+function motivation(){ const k=motKey(); const base=["Cada día que practicas, llegas más listo. ¡Vamos!","No es ser perfecto, es ser constante.","Equivocarse aquí es gratis: es la mejor forma de aprender."];
+  return k?MOTIVA[k]:base[new Date().getDate()%base.length]; }
+function motTag(){ return motKey(); }
+const DEMO_FRIENDS=()=>[{n:"Valentina R.",c:"10B",xp:1840,av:4,st:"ok",priv:false},{n:"Samu",c:"Hermano",xp:1520,av:1,st:"ok",priv:false},{n:"Juan José M.",c:"10A",xp:1210,av:2,st:"ok",priv:true},{n:"Mariana P.",c:"10C",xp:860,av:3,st:"in",priv:false},{n:"Tomás G.",c:"10B",xp:540,av:5}];
+const L=["A","B","C","D"];
+
+/* ---------- state ---------- */
+const fresh=()=>({user:null,guardian:null,consent:null,xp:0,streak:0,freezes:2,best:{},diag:null,history:[],week:[0,0,0,0,0,0,0],alerts:{time:"19:00",days:[1,2,3,4,5],push:true,wa:false,mail:true},friends:[],privacy:{share:false,areas:false},code:"",plan:null,self:null,level:null,rep:{}});
+const MODE="normal"; const KEY=MODE==="clean"?"reto5clean":MODE==="two"?"reto5two":"reto5db";
+let DB={active:null,list:{}};
+try{if(MODE==="clean"||MODE==="two")localStorage.removeItem(KEY);const d=JSON.parse(localStorage.getItem(KEY)||"null");
+  if(d&&d.list) DB=d;
+  else if(MODE!=="clean"){const o=JSON.parse(localStorage.getItem("reto5")||"null"); if(o&&o.user){DB.list.p1=o;DB.active="p1";}}}catch(e){}
+let S=Object.assign(fresh(),(DB.active&&DB.list[DB.active])||{});
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){}};
+const save=()=>{if(!DB.active)DB.active="p"+Date.now();DB.list[DB.active]=S;persist();};
+function useProfile(id){DB.active=id;S=Object.assign(fresh(),DB.list[id]);persist();}
+function newProfile(){DB.active="p"+Date.now();S=fresh();}
+const $=s=>document.querySelector(s), scr=$("#screen");
+let SEEDED=false; let PICK="CO"; let PREP="lc"; let RP=null; let view="welcome", quiz=null, tick=null, actx=null, draft={avatar:0};
+const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const first=()=>esc((S.user?.name||"").split(" ")[0]);
+const today=()=>new Date().toLocaleDateString("es-CO",{day:"numeric",month:"long",year:"numeric"});
+
+function demoValentina(){
+  DB.active="demo-valentina"; S=fresh();
+  S.user={name:"Valentina Ríos",grade:"11",school:"Colegio de ejemplo",email:"valentina@ejemplo.com",avatar:4,sports:["Voleibol"],skills:["Bailar","Música"],dream:"Medicina",follows:["Instagram"],handle:"@vale",refs:1,country:"CO"};
+  S.guardian={name:"Marta Ríos",rel:"Madre",doc:"CC",num:"(dato de ejemplo)",email:"acudiente2@ejemplo.com",phone:"300 000 0001"};
+  S.consent={data:true,terms:true,reports:true,share:true,date:today()};
+  S.self={lc:2,ma:1,so:2,cn:1,in:2}; S.level={lc:2,ma:1,so:1,cn:1,in:2}; S.diag={lc:1,ma:0,so:0,cn:0,in:1,date:today()};
+  S.best={lc:58,ma:36,so:40,cn:38,in:57}; S.xp=620; S.streak=2; S.week=[40,0,60,90,0,70,30];
+  S.history=[{k:"ma",n:2,t:5},{k:"in",n:3,t:5}];
+  S.friends=[{n:"Sergio O.",c:"10A",xp:1340,av:2,st:"ok",priv:false},{n:"Mariana P.",c:"11C",xp:860,av:3,st:"ok",priv:false},{n:"Camilo T.",c:"11A",xp:300,av:5,st:"in",priv:false}];
+  S.privacy={share:true,areas:false}; S.code="VAL-8Q2"; S.plan="once"; S.paid=true; save(); }
+function demoData(){
+  DB.active="demo-sergio"; S=fresh();
+  S.user={name:"Sergio Ospina",grade:"10",school:"Colegio de ejemplo",email:"sergio@ejemplo.com",avatar:2,sports:["Fútbol","Gimnasio"],skills:["Videojuegos","Programación"],dream:"Ingeniería de sistemas",follows:["Instagram","TikTok"],handle:"@checho",refs:4,country:"CO"};
+  S.guardian={name:"Beatriz Taborda",rel:"Madre",doc:"CC",num:"(dato de ejemplo)",email:"acudiente@ejemplo.com",phone:"300 000 0000"};
+  S.consent={data:true,terms:true,reports:true,share:true,date:today()};
+  S.friends=DEMO_FRIENDS().map(f=>f.n==="Tomás G."?{...f,st:"out"}:f); S.privacy={share:true,areas:false}; S.code="SER-5K7"; S.plan="anual"; S.paid=true;
+  S.diag={lc:2,ma:1,so:0,cn:1,in:2,date:today()}; S.self={lc:3,ma:2,so:2,cn:2,in:3}; S.level={lc:3,ma:2,so:1,cn:2,in:3};
+  S.best={lc:72,ma:55,so:41,cn:60,in:78}; S.xp=1340; S.streak=4; S.week=[120,80,0,150,200,90,160];
+  S.history=[{k:"in",n:5,t:5},{k:"ma",n:3,t:5},{k:"lc",n:4,t:5},{k:"so",n:2,t:4}];
+  save(); if(!(MODE==="two"&&!SEEDED)) go("home");
+}
+
+/* ---------- helpers ---------- */
+function toast(t){document.querySelectorAll(".toast").forEach(x=>x.remove());const d=document.createElement("div");d.className="toast";d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600);}
+function beep(ok){try{actx=actx||new (window.AudioContext||window.webkitAudioContext)();const notes=ok?[660,880,1320]:[300,200];
+  notes.forEach((f,i)=>{const o=actx.createOscillator(),g=actx.createGain();o.type=ok?"triangle":"square";o.frequency.value=f;o.connect(g);g.connect(actx.destination);
+  const t=actx.currentTime+i*.09;g.gain.setValueAtTime(.06,t);g.gain.exponentialRampToValueAtTime(.0001,t+.18);o.start(t);o.stop(t+.2);});}catch(e){}}
+function copy(t,msg){try{navigator.clipboard.writeText(t).then(()=>toast(msg||"Copiado"),()=>toast("No se pudo copiar"));}catch(e){toast("No se pudo copiar");}}
+const steps=n=>`<div class="steps">${[1,2,3,4].map(i=>`<span class="${i<=n?"on":""}"></span>`).join("")}</div>`;
+function level(){return Math.floor(S.xp/500)+1;}
+const LV=["","Básico","Intermedio","Avanzado"];
+const lvl=k=>(S.level&&S.level[k])||2;
+const ADJ={1:{secs:35,hints:2,txt:"35 s por pregunta · 2 pistas por reto · preguntas sencillas"},2:{secs:25,hints:1,txt:"25 s por pregunta · 1 pista por reto · preguntas de nivel medio"},3:{secs:20,hints:0,txt:"20 s por pregunta · sin pistas · preguntas retadoras"}};
+function globalLvl(){if(!S.level)return 2;const v=Object.values(S.level);return Math.round(v.reduce((a,b)=>a+b,0)/v.length);}
+function pct(k){return S.best[k]!=null?S.best[k]:S.diag?[38,58,76][S.diag[k]]:0;}
+function lvlTag(v){return v<50?'<span class="lvl low">Por reforzar</span>':v<70?'<span class="lvl mid">En camino</span>':'<span class="lvl high">Fuerte</span>';}
+function est(){const w={lc:3,ma:3,so:3,cn:3,in:1};let s=0;for(const k in w)s+=pct(k)*w[k];return Math.round(s/13*5);}
+function hora(t){const [h,m]=(t||"19:00").split(":").map(Number);return `${((h+11)%12)+1}:${String(m).padStart(2,"0")} ${h<12?"a. m.":"p. m."}`;}
+const USD=3170; const cop=u=>"$"+(Math.round(u*USD/1000)*1000).toLocaleString("es-CO");
+function weakest(){return Object.keys(AREAS).sort((a,b)=>pct(a)-pct(b))[0];}
+function strongest(){return Object.keys(AREAS).sort((a,b)=>pct(b)-pct(a))[0];}
+function header(){ $("#xp").textContent=S.xp.toLocaleString("es-CO"); $("#streak").textContent=S.streak; $("#stats").hidden=!S.user; }
+
+/* ---------- confetti background ---------- */
+(function(){const cv=$("#confetti"),cx=cv.getContext("2d");const cols=["#ff5a5f","#ffc93c","#18b8a6","#3a86ff","#8338ec","#ff4fa3"];
+ function draw(){const w=cv.width=innerWidth,h=cv.height=innerHeight;let seed=7;const r=()=>(seed=(seed*9301+49297)%233280)/233280;
+  for(let i=0;i<Math.round(w*h/9000);i++){cx.save();cx.globalAlpha=.22;cx.fillStyle=cols[i%6];cx.translate(r()*w,r()*h);cx.rotate(r()*6.28);
+   if(i%3===0){cx.beginPath();cx.arc(0,0,3+r()*3,0,6.28);cx.fill();}else if(i%3===1){cx.fillRect(-6,-2,12,4);}else{cx.beginPath();cx.moveTo(0,-5);cx.lineTo(5,4);cx.lineTo(-5,4);cx.fill();}cx.restore();}}
+ draw();addEventListener("resize",draw);})();
+
+/* ---------- navigation ---------- */
+function go(v){ view=v; clearInterval(tick); if(v!=="quiz") quiz=null;
+  const tabbed=["home","progress","rank","plans","me","mail","alerts","cartillas"].includes(v); $("#tabs").hidden=!tabbed;
+  const tabOf=v==="mail"?"progress":v==="alerts"?"me":v==="cartillas"?"home":v;
+  document.querySelectorAll("#tabs button").forEach(b=>{if(b.dataset.tab===tabOf)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current");});
+  header(); (SCREENS[v])(); scr.scrollTop=0; }
+document.querySelectorAll("#tabs button").forEach(b=>b.addEventListener("click",()=>go(b.dataset.tab)));
+scr.addEventListener("click",e=>{const b=e.target.closest("[data-area],[data-go]"); if(!b||b.closest(".opts")) return;
+  if(b.dataset.area){PREP=b.dataset.area;go("prep");} else go(b.dataset.go);});
+
+/* ---------- screens ---------- */
+const SCREENS={
+ welcome(){
+  const profs=Object.entries(DB.list).filter(([,p])=>p&&p.user&&p.consent), hasDemo=!!DB.list["demo-sergio"];
+  scr.innerHTML=`<div class="hero" style="flex-direction:column;align-items:flex-start;padding:22px">
+     ${star()}<div><small>Prepárate para el Saber 11</small><strong>Entrena 5 minutos al día, reta a tus amigos y sube tu puntaje.</strong></div></div>
+   <div class="areas">${Object.keys(AREAS).map(k=>`<div class="area${k==="in"?" full":""}" style="--c:${AREAS[k].c}">${ART[k]}<b>${AREAS[k].name}</b></div>`).join("")}</div>
+   ${profs.length?`<div class="panel"><h3>Continuar con un perfil</h3>${profs.map(([id,p])=>`<button class="pf" data-pf="${id}">${avatar(p.user.avatar||0)}<span><b>${esc(p.user.name)}</b><small>Grado ${esc(p.user.grade)} · ${(p.xp||0).toLocaleString("es-CO")} XP${id==="demo-sergio"?" · demo":""}</small></span><span class="go">›</span></button>`).join("")}</div>`:""}
+   <button class="ctychip" data-go="paises">${(COUNTRIES[PICK]||COUNTRIES.CO).f} País: <b>${(COUNTRIES[PICK]||COUNTRIES.CO).n}</b> · cambiar</button>
+   <button class="btn ghost wide" data-go="login">Ya tengo cuenta: entrar con mi correo</button>
+   <button class="btn wide" id="new">${MODE==="clean"?"Empezar":"Crear cuenta nueva (empezar desde el inicio)"}</button>
+   ${hasDemo||MODE!=="normal"?"":'<button class="btn ghost wide" id="demo">Ver la demo de Sergio con datos de ejemplo</button>'}
+   <p class="demo">Prototipo de 5. · cada perfil se guarda aparte en este navegador; crear uno nuevo no borra los demás</p>`;
+  $("#new").onclick=()=>{newProfile();go("planPick");};
+  $("#demo")&&($("#demo").onclick=demoData);
+  scr.querySelectorAll("[data-pf]").forEach(b=>b.onclick=()=>{useProfile(b.dataset.pf);go(S.consent?(S.diag?"home":"diagIntro"):"reg1");});
+ },
+ paises(){
+  scr.innerHTML=`<div class="qhead"><button class="x" id="pz-back" aria-label="Volver">‹</button><div><h3>Elige tu país</h3><h2 style="font-size:20px">¿Dónde vas a presentar tu prueba?</h2></div></div>
+   <div class="info"><span>Arrancamos con todo en <b>Colombia</b>. En los demás países te mostramos la prueba que aplica y te llevamos a su página oficial.</span></div>
+   <div class="ctys">${Object.entries(COUNTRIES).map(([k,c])=>`<button class="cty${(S.user?.country||PICK)===k?" on":""}" data-cty="${k}"><span class="fl">${c.f}</span><span><b>${c.n}</b><small>${c.ex}${c.ok?" · disponible":" · próximamente"}</small></span><span class="go">›</span></button>`).join("")}</div>`;
+  $("#pz-back").onclick=()=>go(S.user&&S.consent?"me":"welcome");
+  scr.querySelectorAll("[data-cty]").forEach(b=>b.onclick=()=>{const k=b.dataset.cty; if(S.user){S.user.country=k;save();} else PICK=k; go(COUNTRIES[k].ok?(S.user&&S.consent?"home":"welcome"):"country");});
+ },
+ country(){
+  const c=COUNTRIES[S.user?.country||PICK]||COUNTRIES.CO;
+  scr.innerHTML=`<div class="qhead"><button class="x" data-go="paises" aria-label="Volver">‹</button><div><h3>${c.f} ${c.n}</h3><h2 style="font-size:20px">${c.ex}</h2></div></div>
+   <div class="panel"><div class="kv"><span>Entidad</span><span>${c.ent}</span><span>Qué evalúa</span><span>${c.ar}</span><span>Cuándo</span><span>${c.cu}</span></div>
+    <a class="btn wide" href="${c.url}" target="_blank" rel="noopener" style="text-align:center;text-decoration:none">Ir a la página oficial de la prueba ↗</a></div>
+   <div class="panel"><h3>En Reto Saber</h3><p>Los retos para ${c.n} están en preparación. Puedes practicar en modo general (lectura, matemáticas, ciencias e inglés) y te avisamos cuando estén listos.</p>
+    <div class="row"><button class="btn sun" id="cty-notify">Avísame</button><button class="btn ghost" id="cty-go">Practicar en modo general</button></div></div>
+   <button class="btn ghost wide" data-go="paises">Cambiar de país</button>`;
+  $("#cty-notify").onclick=()=>toast("Listo: te avisaremos cuando "+c.n+" esté disponible");
+  $("#cty-go").onclick=()=>go(S.user&&S.consent?"home":"welcome");
+ },
+ login(){
+  scr.innerHTML=`<div class="qhead"><button class="x" data-go="welcome" aria-label="Volver">‹</button><div><h3>Cuenta familiar</h3><h2 style="font-size:20px">Entra con tu correo</h2></div></div>
+   <div class="info"><span>Cada cuenta queda ligada a <b>dos correos</b>: el del estudiante y el del acudiente. El estudiante entra a estudiar; el acudiente entra a ver el avance.</span></div>
+   <div class="field"><label for="lg-mail">Correo del estudiante o del acudiente</label><input id="lg-mail" type="email" placeholder="correo@ejemplo.com"></div>
+   <button class="btn wide" id="lg-go">Entrar</button>
+   <p class="note">Prueba con <b>sergio@ejemplo.com</b> o <b>acudiente@ejemplo.com</b>${MODE==="two"?" · <b>valentina@ejemplo.com</b> o <b>acudiente2@ejemplo.com</b>":""}. En la app real llega un código al correo para entrar.</p>`;
+  $("#lg-go").onclick=()=>{const m=$("#lg-mail").value.trim().toLowerCase();if((m==="sergio@ejemplo.com"||m==="acudiente@ejemplo.com")&&!DB.list["demo-sergio"]){demoData();}
+    const hit=Object.entries(DB.list).find(([,p])=>p&&p.user&&(p.user.email.toLowerCase()===m||(p.guardian&&p.guardian.email.toLowerCase()===m)));
+    if(!hit){toast("No encontramos una cuenta con ese correo");return;}
+    useProfile(hit[0]); if(S.user.email.toLowerCase()===m){go(S.diag?"home":"diagIntro");} else go("guardian");};
+ },
+ guardian(){
+  const u=S.user,g=S.guardian,c=S.consent||{},w=weakest(),s=strongest();
+  scr.innerHTML=`<div class="qhead"><button class="x" data-go="welcome" aria-label="Salir">‹</button><div><h3>Panel del acudiente</h3><h2 style="font-size:20px">Hola, ${esc(g.name.split(" ")[0])}</h2></div></div>
+   <div class="prof">${avatar(u.avatar)}<div><h2>${esc(u.name)}</h2><span class="note">Grado ${esc(u.grade)} · ${esc(cty().n)} · ${isPaid()?(S.plan==="anual"?"Plan Anual":"Plan Saber 11"):"Plan Gratis"}</span></div></div>
+   <div class="kpis"><div class="kpi"><b>${est()}</b><small>puntaje global estimado /500</small></div><div class="kpi"><b>${S.streak}</b><small>días de racha</small></div><div class="kpi"><b>${S.history.length}</b><small>retos con registro</small></div></div>
+   <div class="panel"><h3>Avance por área</h3>${Object.keys(AREAS).map(k=>`<div class="abar"><span>${AREAS[k].name.split(" ")[0]}</span><span class="t"><span style="width:${pct(k)}%;background:${AREAS[k].c}"></span></span>${lvlTag(pct(k))}</div>`).join("")}
+    <p class="note">Va fuerte en <b>${AREAS[s].name}</b>; debe reforzar <b>${AREAS[w].name}</b>.</p></div>
+   <div class="panel"><h3>Sugerencias para apoyar en casa</h3><ul class="tips"><li>${TIPS[w]}</li><li>Acordar un horario fijo de estudio (alerta a las ${hora(S.alerts.time)}).</li><li>Celebrar la racha y preguntarle qué aprendió.</li></ul></div>
+   <div class="panel"><h3>Cuenta familiar</h3><div class="kv"><span>Estudiante</span><span>${esc(u.email)}</span><span>Acudiente</span><span>${esc(g.email)}</span><span>Autorización</span><span>${c.data?"Vigente desde "+esc(c.date):"Revocada"}</span><span>Reporte semanal</span><span>${c.reports?"Activo":"Pausado"}</span></div>
+    <div class="row"><button class="btn ghost" id="gd-rep">${c.reports?"Pausar reportes":"Activar reportes"}</button><button class="btn ghost" id="gd-mail">Ver último reporte</button></div></div>
+   ${isPaid()?"":`<div class="panel paywall"><p>Su acudido está en el plan Gratis: su progreso no se guarda.</p><button class="btn sun wide" data-go="plans">Ver planes</button></div>`}`;
+  $("#gd-rep").onclick=()=>{S.consent.reports=!S.consent.reports;save();SCREENS.guardian();toast(S.consent.reports?"Reportes activados":"Reportes pausados");};
+  $("#gd-mail").onclick=()=>go("mail");
+ },
+ cartillas(){
+  const paid=isPaid();
+  scr.innerHTML=`<div class="qhead"><button class="x" data-go="home" aria-label="Volver">‹</button><div><h3>Módulos de estudio</h3><h2 style="font-size:20px">Cartillas para simulacro</h2></div></div>
+   <div class="info"><span>Cada módulo sigue las <b>competencias que evalúa el Saber 11</b>. Lee la cartilla y luego haz el simulacro del módulo. Versión de contenidos: v2026-10.</span></div>
+   ${Object.keys(MODULOS).map((k,mi)=>{const m=MODULOS[k];return `<details class="mod" style="--c:${AREAS[k].c}" ${mi===0?"open":""}><summary>${ART[k]}<span><b>${AREAS[k].name}</b><small>${m.comp.length} competencias · ${m.temas.length} cartillas</small></span></summary>
+     <div class="modbody"><h3>Qué evalúa</h3><ul class="tips">${m.comp.map(c=>`<li>${c}</li>`).join("")}</ul>
+     ${m.temas.map((t,ti)=>`<div class="cart${!paid&&ti>0?" locked":""}"><b>${t.t}</b>${!paid&&ti>0?'<p class="note">🔒 Disponible con un plan</p>':`<p>${t.x}</p><p class="tip">💡 ${t.tip}</p>`}</div>`).join("")}
+     <button class="btn wide" data-area="${k}" style="--c:${AREAS[k].c}">Simulacro del módulo</button></div></details>`;}).join("")}
+   <div class="panel"><h3>Material oficial gratuito</h3><p class="note">El ICFES publica gratis cuadernillos de preguntas y guías de orientación. Úsalos además de la app: <b>www.icfes.gov.co</b></p></div>`;
+ },
+ planPick(){
+  const card=(id,title,price,who,items,hot)=>`<button class="plan pick-plan${hot?" hot":""}" data-plan="${id}" aria-pressed="${S.plan===id}">
+     ${hot?'<span class="badge">EL MÁS ELEGIDO</span>':""}<div class="ph"><b>${title}</b><span class="pr">${price}</span></div><p class="note">${who}</p><ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul></button>`;
+  scr.innerHTML=`<div><h3>Bienvenido a Reto Saber</h3><h2>Elige cómo quieres empezar</h2></div>
+   ${card("free","Gratis","USD 0","Para probar, sin pagar nada",["Retos con 5 vidas","Diagnóstico gratis","Tu progreso no se guarda"])}
+   ${card("anual","Plan Anual","USD 12","Para 9.° y 10.° · pago único",["Preventa: úsalo desde hoy hasta diciembre de 2027","Retos ilimitados y alertas de estudio","Reporte semanal al acudiente"],true)}
+   ${card("once","Plan Saber 11","USD 10","Para 11.° · pago único, hasta tu examen",["Simulacros con tiempo real","Plan semana a semana hasta tu prueba","Reporte semanal al acudiente"])}
+   <div class="followbox"><b>¿Nos sigues en redes? Hasta 20% de descuento</b><small>Lo marcas en el paso «Cuéntanos de ti».</small></div>
+   <button class="btn wide" id="pp-next" ${S.plan?"":"disabled"}>Continuar</button>
+   <button class="btn ghost wide" id="pp-back">Atrás</button>`;
+  scr.querySelectorAll("[data-plan]").forEach(b=>b.onclick=()=>{S.plan=b.dataset.plan;scr.querySelectorAll("[data-plan]").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#pp-next").disabled=false;});
+  $("#pp-next").onclick=()=>go("reg1");
+  $("#pp-back").onclick=()=>{if(!S.consent){delete DB.list[DB.active];DB.active=null;S=fresh();}go("welcome");};
+ },
+ reg1(){
+  const u=S.user||{}; draft.avatar=u.avatar??draft.avatar;
+  scr.innerHTML=`${steps(1)}
+   <div><h3>Paso 1 de 4</h3><h2>Crea tu perfil</h2></div>
+   ${S.plan&&!S.consent?`<div class="chosen">Plan elegido: <b>${PLAN_NAME[S.plan]}</b> <button class="link" id="chg">Cambiar</button></div>`:""}
+   <div class="field"><label>Elige tu avatar</label><div class="avpick" id="avs">${AVC.map((_,i)=>`<button type="button" data-av="${i}" aria-pressed="${i===draft.avatar}" aria-label="Avatar ${i+1}">${avatar(i)}</button>`).join("")}</div></div>
+   <form id="f" novalidate style="display:flex;flex-direction:column;gap:12px">
+    <div class="field"><label for="s-name">Nombre y apellido</label><input id="s-name" required autocomplete="name" value="${esc(u.name)}"></div>
+    <div class="two"><div class="field"><label for="s-grade">Grado actual</label><select id="s-grade">${["9","10","11"].map(g=>`<option ${u.grade===g?"selected":""}>${g}</option>`).join("")}</select></div>
+     <div class="field"><label for="s-country">País</label><select id="s-country">${Object.entries(COUNTRIES).map(([k,c])=>`<option value="${k}" ${(u.country||PICK)===k?"selected":""}>${c.f} ${c.n}${c.ok?"":" (próximamente)"}</option>`).join("")}</select></div>
+     <div class="field"><label for="s-school">Colegio</label><input id="s-school" value="${esc(u.school)}"></div></div>
+    <div class="field"><label for="s-email">Tu correo</label><input id="s-email" type="email" required value="${esc(u.email)}"></div>
+    <p class="err" id="e1" hidden style="color:var(--bad);font-weight:700;font-size:13px">Escribe tu nombre y un correo válido.</p>
+    <button class="btn wide">Siguiente</button></form>
+   <button class="btn ghost wide" id="back0">Atrás</button>`;
+  $("#chg")&&($("#chg").onclick=()=>go("planPick"));
+  $("#back0").onclick=()=>go(S.consent?"me":"planPick");
+  $("#avs").onclick=e=>{const b=e.target.closest("[data-av]");if(!b)return;draft.avatar=+b.dataset.av;$("#avs").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));};
+  $("#f").onsubmit=e=>{e.preventDefault();const n=$("#s-name").value.trim(),m=$("#s-email").value.trim();
+   if(!n||!/^\S+@\S+\.\S+$/.test(m)){$("#e1").hidden=false;return;}
+   S.user=Object.assign(S.user||{},{name:n,country:$("#s-country").value,grade:$("#s-grade").value,school:$("#s-school").value.trim(),email:m,avatar:draft.avatar});
+   if(S.plan==="anual"&&S.user.grade==="11"){S.plan="once";toast("Como estás en 11.°, te pasamos al Plan Saber 11 (USD 10)");}
+   else if(S.plan==="once"&&S.user.grade!=="11"){S.plan="anual";toast("Como estás en "+S.user.grade+".°, te corresponde el Plan Anual (USD 12)");}
+   go("regMe");};
+ },
+ regMe(){
+  const u=S.user||{}; const sp=new Set(u.sports||[]), sk=new Set(u.skills||[]); const al=S.alerts;
+  const chips=(list,set,name)=>`<div class="chips" data-group="${name}">${list.map(x=>`<button type="button" class="tag" aria-pressed="${set.has(x)}">${x}</button>`).join("")}</div>`;
+  scr.innerHTML=`${steps(2)}
+   <div><h3>Paso 2 de 4</h3><h2>Cuéntanos de ti</h2></div>
+   <div class="info">${star()}<span>Con esto Puntico te manda mensajes que te motivan de verdad. Elige todo lo que quieras.</span></div>
+   <div class="field"><label>¿Practicas algún deporte?</label>${chips(SPORTS,sp,"sports")}</div>
+   <div class="field"><label>¿Qué habilidades o talentos tienes?</label>${chips(SKILLS,sk,"skills")}</div>
+   <div class="field"><label for="m-dream">¿Qué te gustaría estudiar o ser?</label><input id="m-dream" placeholder="Ej.: Medicina, diseño, ser futbolista profesional" value="${esc(u.dream)}"></div>
+   <div class="followbox"><b>¿Nos sigues en redes? Gana descuento</b><small>2,5% por cada red donde sigas a 5. (hasta 10%). Con amigos referidos sumas hasta otro 10%.</small>${chips(NETS,new Set(u.follows||[]),"follows")}
+    <div class="field"><label for="m-handle">Tu usuario (para comprobarlo)</label><input id="m-handle" placeholder="@tuusuario" value="${esc(u.handle)}"></div>
+    <p class="note" id="m-disc">Descuento por redes: <b>${discNet((u.follows||[]).length)}%</b></p></div>
+   <div class="field"><label for="m-time">¿A qué hora te recordamos estudiar?</label><input id="m-time" type="time" value="${al.time}"></div>
+   <button class="btn wide" id="nx">Siguiente</button>
+   <button class="btn ghost wide" data-go="reg1">Atrás</button>`;
+  scr.querySelectorAll(".chips").forEach(g=>g.onclick=e=>{const b=e.target.closest(".tag");if(!b)return;const on=b.getAttribute("aria-pressed")!=="true";
+    if(b.textContent==="Ninguno por ahora"&&on)g.querySelectorAll(".tag").forEach(x=>x.setAttribute("aria-pressed","false"));
+    else if(on)g.querySelectorAll(".tag").forEach(x=>{if(x.textContent==="Ninguno por ahora")x.setAttribute("aria-pressed","false");});
+    b.setAttribute("aria-pressed",on);
+    const nf=scr.querySelectorAll("[data-group=follows] .tag[aria-pressed=true]").length; $("#m-disc").innerHTML=`Descuento por redes: <b>${discNet(nf)}%</b>`;});
+  $("#nx").onclick=()=>{const pick=n=>[...scr.querySelectorAll(`[data-group=${n}] .tag[aria-pressed=true]`)].map(b=>b.textContent);
+    S.user.sports=pick("sports");S.user.skills=pick("skills");S.user.dream=$("#m-dream").value.trim();S.user.follows=pick("follows");S.user.handle=$("#m-handle").value.trim();S.alerts.time=$("#m-time").value||"19:00";go("reg2");};
+ },
+ reg2(){
+  const g=S.guardian||{};
+  scr.innerHTML=`${steps(3)}
+   <div><h3>Paso 3 de 4</h3><h2>Datos de tu acudiente</h2></div>
+   <div class="info"><span>Si eres menor de 18 años, tu papá, mamá o acudiente debe autorizar el uso de la app. A su correo llegará el reporte de tu avance.</span></div>
+   <form id="f" novalidate style="display:flex;flex-direction:column;gap:12px">
+    <div class="field"><label for="g-name">Nombre completo del acudiente</label><input id="g-name" required value="${esc(g.name)}"></div>
+    <div class="two"><div class="field"><label for="g-rel">Parentesco</label><select id="g-rel">${["Madre","Padre","Abuelo/a","Tío/a","Otro acudiente"].map(r=>`<option ${g.rel===r?"selected":""}>${r}</option>`).join("")}</select></div>
+     <div class="field"><label for="g-doc">Tipo de documento</label><select id="g-doc">${["CC","CE","Pasaporte"].map(r=>`<option ${g.doc===r?"selected":""}>${r}</option>`).join("")}</select></div></div>
+    <div class="field"><label for="g-num">Número de documento</label><input id="g-num" inputmode="numeric" required value="${esc(g.num)}"></div>
+    <div class="field"><label for="g-email">Correo del acudiente</label><input id="g-email" type="email" required value="${esc(g.email)}"></div>
+    <div class="field"><label for="g-phone">Celular</label><input id="g-phone" type="tel" value="${esc(g.phone)}"></div>
+    <p id="e2" hidden style="color:var(--bad);font-weight:700;font-size:13px">Completa nombre, documento y un correo válido del acudiente.</p>
+    <button class="btn wide">Siguiente</button></form>
+   <button class="btn ghost wide" data-go="regMe">Atrás</button>`;
+  $("#f").onsubmit=e=>{e.preventDefault();const n=$("#g-name").value.trim(),d=$("#g-num").value.trim(),m=$("#g-email").value.trim();
+   if(!n||!d||!/^\S+@\S+\.\S+$/.test(m)){$("#e2").hidden=false;return;}
+   S.guardian={name:n,rel:$("#g-rel").value,doc:$("#g-doc").value,num:d,email:m,phone:$("#g-phone").value.trim()};go("reg3");};
+ },
+ reg3(){
+  const g=S.guardian, u=S.user;
+  scr.innerHTML=`${steps(4)}
+   <div><h3>Paso 4 de 4</h3><h2>Autorización del acudiente</h2></div>
+   <div class="legal" tabindex="0" aria-label="Texto de la autorización">
+    <p><b>Autorización para el tratamiento de datos personales de un menor de edad</b></p>
+    <p>Yo, <b>${esc(g.name)}</b>, identificado(a) con ${esc(g.doc)} <b>${esc(g.num)}</b>, en calidad de ${esc(g.rel.toLowerCase())} y representante legal de <b>${esc(u.name)}</b>, autorizo a <b>5.</b>, responsable de la app Reto Saber, para recolectar, almacenar y usar los datos de mi acudido conforme a la Ley 1581 de 2012 y el Decreto 1377 de 2013 (compilado en el Decreto 1074 de 2015).</p>
+    <p><b>Datos que se tratan:</b> nombre, grado, colegio, correo, avatar, gustos (deportes, habilidades y metas), horario de alertas, respuestas y resultados en la app. No se piden datos sensibles.</p>
+    <p><b>Para qué:</b> crear la cuenta, medir el avance, dar recomendaciones y mensajes de motivación, enviar alertas de estudio al estudiante y reportes al acudiente. Los datos no se venden ni se comparten con terceros para publicidad.</p>
+    <p><b>Privacidad entre estudiantes:</b> el progreso nunca es público. Solo lo ven los amigos que el estudiante invite y acepte, si el acudiente lo permite, y el estudiante puede ocultarlo cuando quiera.</p>
+    <p><b>Derechos:</b> conocer, actualizar, rectificar y pedir la eliminación de los datos, y revocar esta autorización en cualquier momento desde Perfil o escribiendo a 5.</p>
+    <p><b>Interés superior del menor:</b> el tratamiento respeta los derechos fundamentales del niño, niña o adolescente, y su opinión es tenida en cuenta.</p>
+   </div>
+   <label class="check"><input type="checkbox" id="c1"><span>Autorizo el tratamiento de los datos personales de mi acudido. <b>(obligatorio)</b></span></label>
+   <label class="check"><input type="checkbox" id="c2"><span>Acepto los términos de uso de Reto Saber. <b>(obligatorio)</b></span></label>
+   <label class="check"><input type="checkbox" id="c3" checked><span>Quiero recibir el reporte semanal de avance en ${esc(g.email)}.</span></label>
+   <label class="check"><input type="checkbox" id="c4"><span>Permito que ${esc(u.name.split(" ")[0])} muestre sus puntos <b>solo a los amigos que él o ella acepte</b> dentro de la app. (opcional; se puede cambiar en Perfil)</span></label>
+   <button class="btn wide" id="ok" disabled>Autorizar y empezar</button>
+   <button class="btn ghost wide" data-go="reg2">Atrás</button>
+   <p class="demo">Texto modelo para revisión de un abogado antes de usarlo de verdad</p>`;
+  const upd=()=>$("#ok").disabled=!($("#c1").checked&&$("#c2").checked); $("#c1").onchange=upd;$("#c2").onchange=upd;
+  $("#ok").onclick=()=>{const sh=$("#c4").checked;S.consent={data:true,terms:true,reports:$("#c3").checked,share:sh,date:today()};S.privacy={share:sh,areas:false};S.code=S.code||(S.user.name.slice(0,3).toUpperCase().normalize("NFD").replace(/[^A-Z]/g,"X")+"-"+Math.random().toString(36).slice(2,5).toUpperCase());save();go("nivel");};
+ },
+ nivel(){
+  const sf=S.self||{lc:2,ma:2,so:2,cn:2,in:2};
+  scr.innerHTML=`<div><h3>Antes de empezar</h3><h2>¿Cómo te sientes en cada área?</h2></div>
+   <div class="info">${star()}<span>Sé sincero: así el juego empieza a tu medida. Después haces una evaluación corta y ajustamos todo según cómo te vaya.</span></div>
+   ${Object.keys(AREAS).map(k=>`<div class="selfrow" style="--c:${AREAS[k].c}"><b>${AREAS[k].name}</b><div class="chips" data-self="${k}">${[[1,"Me cuesta"],[2,"Más o menos"],[3,"Me va bien"]].map(([v,t])=>`<button type="button" class="tag" data-v="${v}" aria-pressed="${sf[k]===v}">${t}</button>`).join("")}</div></div>`).join("")}
+   <button class="btn wide" id="nv-go">Hacer la evaluación de nivel</button>`;
+  scr.querySelectorAll("[data-self]").forEach(g=>g.onclick=e=>{const b=e.target.closest(".tag");if(!b)return;g.querySelectorAll(".tag").forEach(x=>x.setAttribute("aria-pressed",x===b));});
+  $("#nv-go").onclick=()=>{const o={};scr.querySelectorAll("[data-self]").forEach(g=>{const b=g.querySelector('[aria-pressed="true"]');o[g.dataset.self]=b?+b.dataset.v:2;});S.self=o;save();go("diagIntro");};
+ },
+ prep(){
+  const k=PREP,a=AREAS[k],L1=lvl(k),done=S.rep&&S.rep[k]===today();
+  scr.innerHTML=`<div class="qhead"><button class="x" data-go="home" aria-label="Volver">‹</button><div><h3>${a.name}</h3><h2 style="font-size:20px">Primero repasa, luego evalúate</h2></div></div>
+   <div class="panel" style="border-left:5px solid ${a.c}"><h3>Tu nivel en ${a.name}</h3><p><span class="lvlbadge l${L1}">${LV[L1]}</span></p><p class="note">Tu juego está ajustado: ${ADJ[L1].txt}. Si te va muy bien subes de nivel; si te cuesta, lo hacemos más fácil.</p></div>
+   <button class="step${done?" ok":""}" id="pp-rep"><span class="n">1</span><span><b>Repaso con tarjetas</b><small>Aprende el tema y practica sin perder vidas. Si fallas, la tarjeta se voltea y te explica.</small></span><span class="go">${done?"✓":"›"}</span></button>
+   <button class="step${done?"":" off"}" id="pp-eval" ${done?"":'aria-disabled="true"'}><span class="n">2</span><span><b>Evaluación · 5 vidas</b><small>${done?"¡Listo para la evaluación!":"Se abre cuando termines el repaso de hoy."}</small></span><span class="go">${done?"›":"🔒"}</span></button>`;
+  $("#pp-rep").onclick=()=>startRepaso(k);
+  $("#pp-eval").onclick=()=>{if(!done){toast("Primero haz el repaso con tarjetas");return;} startQuiz("area",k);};
+ },
+ repaso(){ cardView(); },
+ diagIntro(){
+  scr.innerHTML=`<div class="score">${star("wow")}<h2>¡Hola, ${first()}!</h2><p>Ahora la evaluación de nivel: 10 preguntas, 2 por área. Empezamos con el nivel que elegiste y la dificultad se ajusta según tus respuestas.</p><p class="note">${S.user.grade==="9"?"Empezar en 9.° es llegar a 11.° con ventaja.":S.user.grade==="10"?"En 10.° tienes tiempo de sobra para llegar listo.":"Vamos con todo: cada día cuenta."} No hay respuestas malas: esto es solo tu punto de partida.</p></div>
+   <div class="kpis"><div class="kpi"><b>10</b><small>preguntas</small></div><div class="kpi"><b>30 s</b><small>por pregunta</small></div><div class="kpi"><b>5</b><small>áreas</small></div></div>
+   <button class="btn wide" id="st">Empezar diagnóstico</button>`;
+  $("#st").onclick=()=>startQuiz("diag");
+ },
+ home(){
+  const w=weakest(), nxt=500-S.xp%500, todayXp=S.week[6]||0;
+  scr.innerHTML=`<div class="prof"><span>${avatar(S.user.avatar)}</span><div><h3>Hola, ${first()}</h3><h2>Nivel ${level()} · te faltan ${nxt} XP</h2><div class="meter" style="width:190px"><span style="width:${(S.xp%500)/5}%;background:var(--grape)"></span></div></div></div>
+   <div class="hero"><div><small>Reto del día · 5 vidas ❤</small><strong>Hoy toca ${AREAS[w].name}</strong><button class="btn" data-area="${w}">Jugar ahora</button></div>${star()}</div>
+   ${S.level?`<div class="lvlbar"><span class="lvlbadge l${globalLvl()}">Nivel ${LV[globalLvl()]}</span><span>Tu juego está ajustado a tu nivel. Toca un área: primero repaso con tarjetas, luego evaluación.</span></div>`:""}
+   <div class="moti">${star()}<div><small>${motTag()?(SPORTS.includes(motTag())?"Para ti, deportista de "+esc(motTag().toLowerCase()):"Para ti, que te gusta "+esc(motTag().toLowerCase())):"Mensaje del día"}</small><b>${motivation()}</b></div></div>
+   <div class="alertbar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0"/></svg><span>Tu alerta de estudio: <b>hoy a las ${hora(S.alerts.time)}</b></span><button data-go="alerts">Cambiar</button></div>
+   <div class="mission">${ART.sim.replace('class="art"','')}<div style="flex:1;min-width:0"><b>Misión de la semana: 600 XP</b><small>${S.week.reduce((a,b)=>a+b,0)>=600?"¡Misión cumplida! Ganaste un comodín extra":S.week.reduce((a,b)=>a+b,0)+" de 600 XP"}</small><div class="meter"><span style="width:${Math.min(100,S.week.reduce((a,b)=>a+b,0)/6)}%;background:linear-gradient(90deg,var(--coral),var(--sun))"></span></div></div></div>
+   <button class="cartcard" data-go="cartillas"><span class="ic">📚</span><span><b>Cartillas para simulacro</b><small>5 módulos con las competencias del Saber 11</small></span><span class="go">›</span></button>
+   <div class="freeze"><span class="ice">❄</span><span><b>${S.freezes} comodines de racha</b><br><small>Si un día no puedes estudiar, tu racha no se pierde.</small></span></div>
+   ${cty().ok?"":`<div class="info" style="flex-direction:column"><span>${cty().f} <b>${cty().n}:</b> estamos preparando los retos para el ${cty().ex}. Mientras tanto practicas en modo general.</span><button class="btn ghost" data-go="country" style="padding:10px 14px">Ver la prueba de ${cty().n}</button></div>`}
+   <h3>Áreas ${cty().ok?"del Saber 11":"de práctica"}</h3>
+   <div class="areas">${["lc","ma","so","cn"].map(k=>areaCard(k)).join("")}${areaCard("in",true)}
+    <button class="area full" data-go="plans" style="--c:var(--ink)">${ART.sim}<div><b>Simulacro completo</b><small>Las 5 áreas con tiempo real</small></div><span class="badge">PREMIUM</span></button></div>
+   <h3>Tu liga de amigos</h3>${ranking(3)}
+   <p class="demo">Prototipo · amigos de ejemplo</p>`;
+ },
+ progress(){
+  if(!isPaid()){ scr.innerHTML=`<div><h3>Tu avance</h3><h2>Guarda tu progreso</h2></div><div class="panel paywall">${star("wow")}<p>En el plan Gratis tu progreso no se guarda. Con un plan ves tu avance por área, tus sugerencias y el reporte para tu acudiente.</p><button class="btn sun wide" data-go="plans">Ver planes</button></div>${S.diag?`<div class="panel"><h3>Tu diagnóstico (gratis)</h3>${Object.keys(AREAS).map(k=>`<div class="abar"><span>${AREAS[k].name.split(" ")[0]}</span><span class="t"><span style="width:${pct(k)}%;background:${AREAS[k].c}"></span></span>${lvlTag(pct(k))}</div>`).join("")}</div>`:""}`; return; }
+  const days=["L","M","X","J","V","S","D"], mx=Math.max(200,...S.week);
+  const bars=S.week.map((v,i)=>{const h=v/mx*96;return `<rect x="${14+i*44}" y="${112-h}" width="26" height="${Math.max(h,2)}" rx="8" fill="${i===6?"var(--coral)":"var(--grape)"}" opacity="${i===6?1:.75}"/><text x="${27+i*44}" y="130" text-anchor="middle" font-size="12" font-weight="700" fill="var(--muted)">${days[i]}</text>${v?`<text x="${27+i*44}" y="${106-h}" text-anchor="middle" font-size="11" font-weight="800" fill="var(--ink)">${v}</text>`:""}`;}).join("");
+  const s=strongest(), w=weakest();
+  scr.innerHTML=`<div><h3>Tu avance</h3><h2>Así vas, ${first()}</h2></div>
+   <div class="kpis"><div class="kpi"><b>${est()}</b><small>puntaje global estimado /500</small></div><div class="kpi"><b>${S.streak}</b><small>días de racha</small></div><div class="kpi"><b>${S.history.length}</b><small>retos jugados</small></div></div>
+   <div class="panel"><h3>XP esta semana</h3><svg class="week" viewBox="0 0 320 136" role="img" aria-label="Puntos ganados por día esta semana">${bars}</svg></div>
+   <div class="panel"><h3>Diagnóstico por área (0–100)</h3>
+    ${Object.keys(AREAS).map(k=>`<div class="abar"><span>${AREAS[k].name.split(" ")[0]}</span><span class="t"><span style="width:${pct(k)}%;background:${AREAS[k].c}"></span></span><span class="v">${pct(k)}</span></div>`).join("")}
+    <p class="note">Fuerte en <b>${AREAS[s].name}</b> ${lvlTag(pct(s))} · reforzar <b>${AREAS[w].name}</b> ${lvlTag(pct(w))}</p></div>
+   <div class="panel"><h3>Sugerencias para ti</h3><ul class="tips">${Object.keys(AREAS).filter(k=>pct(k)<70).sort((a,b)=>pct(a)-pct(b)).slice(0,3).map(k=>`<li><b>${AREAS[k].name}:</b> ${TIPS[k]}</li>`).join("")||"<li>¡Vas muy bien! Haz un simulacro completo para medirte.</li>"}</ul></div>
+   <button class="btn sun wide" data-go="mail">Ver reporte para mi acudiente</button>
+   <button class="btn ghost wide" id="rediag">Repetir el diagnóstico</button>
+   <p class="note">El puntaje global del Saber 11 va de 0 a 500 (las 4 áreas pesan 3 y Inglés pesa 1). Este es un cálculo aproximado con tus retos, no un resultado oficial.</p>`;
+  $("#rediag").onclick=()=>startQuiz("diag");
+ },
+ mail(){
+  const g=S.guardian,u=S.user,s=strongest(),w=weakest(),tot=S.week.reduce((a,b)=>a+b,0);
+  const rows=Object.keys(AREAS).map(k=>`<tr><td>${AREAS[k].name}</td><td>${lvlTag(pct(k))}</td><td>${pct(k)}</td></tr>`).join("");
+  const tips=Object.keys(AREAS).filter(k=>pct(k)<70).sort((a,b)=>pct(a)-pct(b)).slice(0,2);
+  const plain=`Reporte semanal de ${u.name} - Reto Saber (5.)\n\nHola, ${g.name}:\n\nEsta semana ${u.name.split(" ")[0]} ganó ${tot} XP, lleva ${S.streak} ${S.streak===1?"día":"días"} de racha y su puntaje global estimado es ${est()}/500.\n\n`+Object.keys(AREAS).map(k=>`- ${AREAS[k].name}: ${pct(k)}/100`).join("\n")+`\n\nFortaleza: ${AREAS[s].name}. Por reforzar: ${AREAS[w].name}.\n\nSugerencias:\n`+(tips.map(k=>`- ${TIPS[k]}`).join("\n")||"- Seguir con un simulacro completo.")+`\n\nCómo apoyar en casa: pregúntele qué aprendió hoy y celebre la racha.\n\nEquipo 5.`;
+  scr.innerHTML=`<div class="qhead"><button class="x" data-go="progress" aria-label="Volver">‹</button><div><h3>Vista previa</h3><h2 style="font-size:20px">Correo al acudiente</h2></div></div>
+   <div class="mail">
+    <div class="mh"><span>Para: <b>${esc(g.email)}</b></span><span>Asunto: <b>Así avanzó ${first()} esta semana en Reto Saber</b></span><span>Se envía: cada domingo a las 6:00 p. m.</span></div>
+    <div class="mb">
+     <div class="banner"><span class="five">5<i>.</i></span><div><b>Reporte semanal</b><br><small>${today()}</small></div></div>
+     <p>Hola, <b>${esc(g.name)}</b>:</p>
+     <p>Esta semana ${first()} ganó <b>${tot} XP</b>, lleva <b>${S.streak} ${S.streak===1?"día":"días"} de racha</b> y su puntaje global estimado es <b>${est()}/500</b>.</p>
+     <table><tr><th>Área</th><th>Nivel</th><th>/100</th></tr>${rows}</table>
+     <p><b>Va fuerte en:</b> ${AREAS[s].name}. <b>Debe reforzar:</b> ${AREAS[w].name}.</p>
+     <p><b>Sugerencias de la semana</b></p><ul class="tips">${tips.map(k=>`<li>${TIPS[k]}</li>`).join("")||"<li>Hacer un simulacro completo.</li>"}</ul>
+     <p><b>Cómo apoyar en casa:</b> pregúntele qué aprendió hoy, celebre la racha y acuerden un horario fijo de 10 minutos${S.alerts?" (su alerta está a las "+hora(S.alerts.time)+")":""}.${u.dream?` Recuérdele su meta: <b>${esc(u.dream)}</b>.`:""}</p>
+     <p class="note">Recibe este correo porque autorizó a 5. el ${esc(S.consent?.date||"")}. Puede dejar de recibirlo o revocar la autorización desde la app.</p>
+    </div></div>
+   <div class="row"><button class="btn" id="send">Enviar ahora</button><button class="btn ghost" id="cp">Copiar texto</button></div>
+   <p class="note">En el prototipo el correo no se envía de verdad. En la versión real se envía solo, con un servicio de correo (por ejemplo Resend o EmailJS) conectado a la base de datos.</p>`;
+  $("#send").onclick=()=>toast(S.consent?.reports?"Prototipo: en la versión real este correo sale a "+g.email:"El acudiente no aceptó recibir reportes");
+  $("#cp").onclick=()=>copy(plain,"Texto del reporte copiado");
+ },
+ rank(){
+  const F=S.friends, pin=F.filter(f=>f.st==="in"), pout=F.filter(f=>f.st==="out"), sh=S.privacy.share;
+  scr.innerHTML=`<div class="hero" style="background:linear-gradient(135deg,var(--grape),var(--pink))"><div><small>Liga de amigos</small><strong>Compites solo con los amigos que tú aceptas</strong></div>${star("wow")}</div>
+   ${sh?"":`<div class="info"><span>🔒 <b>Estás en modo privado.</b> Nadie ve tu progreso y tú tampoco ves el de tus amigos. ${S.consent?.share?'Puedes activarlo en Perfil &gt; Privacidad.':'Tu acudiente no autorizó compartirlo.'}</span></div>`}
+   ${pin.length?`<div class="panel"><h3>Te quieren en su liga</h3>${pin.map(f=>`<div class="req">${avatar(f.av)}<span class="nm"><b>${esc(f.n)}</b><small>${esc(f.c)}</small></span><button class="btn" data-acc="${esc(f.n)}" style="padding:8px 12px">Aceptar</button><button class="btn ghost" data-rej="${esc(f.n)}" style="padding:8px 12px">No</button></div>`).join("")}</div>`:""}
+   ${sh?ranking():""}
+   <div class="panel"><h3>Invita a tus amigos</h3>
+    <p>Tu código: <b class="code">${esc(S.code||"—")}</b></p>
+    <div class="row"><button class="btn" id="inv">Copiar invitación</button></div>
+    <div class="field"><label for="addc">¿Te pasaron un código?</label><div class="row"><input id="addc" placeholder="Ej.: VAL-8Q2" style="flex:2"><button class="btn ghost" id="add" style="flex:1">Agregar</button></div></div>
+    ${pout.length?`<p class="note">Esperando respuesta: ${pout.map(f=>esc(f.n)).join(", ")}</p>`:""}</div>
+   <p class="note">Tus amigos solo ven tu nombre, avatar, XP y racha. Tus puntajes por área y tu diagnóstico son solo para ti y tu acudiente${S.privacy.areas?" (los estás compartiendo)":""}.</p>
+   <p class="demo">Amigos de ejemplo</p>`;
+  $("#inv").onclick=()=>copy(`¡Únete a mi liga en Reto Saber de 5.! Usa mi código ${S.code} y competimos preparándonos para el Saber 11. ¿Me ganas?`,"Invitación copiada. Pégala en tu chat");
+  $("#add").onclick=()=>{const c=$("#addc").value.trim().toUpperCase();if(c.length<5){toast("Escribe el código completo");return;}S.friends.push({n:"Amigo "+c,c:"Código "+c,xp:0,av:5,st:"out",priv:false});save();SCREENS.rank();toast("Invitación enviada. Cuando acepte, aparece en tu liga");};
+  scr.querySelectorAll("[data-acc]").forEach(b=>b.onclick=()=>{const f=S.friends.find(x=>x.n===b.dataset.acc);f.st="ok";save();SCREENS.rank();toast(f.n+" ya está en tu liga");});
+  scr.querySelectorAll("[data-rej]").forEach(b=>b.onclick=()=>{S.friends=S.friends.filter(x=>x.n!==b.dataset.rej);save();SCREENS.rank();toast("Solicitud rechazada. Esa persona no verá tu progreso");});
+ },
+ plans(){
+  const g=S.user?.grade||"10", is11=g==="11", d=disc();
+  const price=u=>{const f=Math.round(u*(100-d))/100;return d?`<span class="old">USD ${u}</span> USD ${String(f).replace(".",",")}`:`USD ${u}`;};
+  const net=u=>u*(100-d)/100;
+  const anual=`<div class="plan ${is11?"":"hot"}">${is11?"":'<span class="badge">TU PLAN · '+g+'.°</span>'}<div class="ph"><b>Plan Anual 9.° y 10.°</b><span class="pr">${price(12)} <small>pago único</small></span></div>
+    <p class="note">≈ ${cop(net(12))} pesos. Menos de 1 dólar al mes.</p>
+    <ul><li><b>Preventa:</b> pagas hoy y lo usas desde ya hasta diciembre de 2027</li><li>Así no pierdes los meses que quedan de 2026</li><li>Retos ilimitados, diagnóstico cada mes y alertas de estudio</li><li>Reporte semanal al acudiente</li></ul>
+    ${is11?"":'<button class="btn wide" data-buy="anual">Quiero el Plan Anual</button>'}</div>`;
+  const once=`<div class="plan ${is11?"hot":""}">${is11?'<span class="badge">TU PLAN · 11.°</span>':""}<div class="ph"><b>Plan Saber 11 · hasta tu examen</b><span class="pr">${price(10)} <small>pago único</small></span></div>
+    <p class="note">≈ ${cop(net(10))} pesos. Pagas menos porque tu plan es más corto.</p>
+    <ul><li>4 meses de Premium y, si tu examen es después, te acompañamos gratis hasta ese día</li><li>Simulacros completos con tiempo real</li><li>Plan semana a semana hacia la fecha de tu prueba</li><li>Reporte semanal al acudiente</li></ul>
+    ${is11?'<button class="btn wide" data-buy="once">Quiero el Plan Saber 11</button>':""}</div>`;
+  scr.innerHTML=`<div><h3>Planes</h3><h2>Precios para estudiantes, de estudiantes</h2></div>
+   <div class="followbox"><b>${d?`¡Tienes ${d}% de descuento!`:"Gana hasta 20% de descuento"}</b><small>Redes: ${discF()}% (2,5% por red, hasta 10%) · Referidos que compraron: ${S.user?.refs||0} → ${discR()}% (hasta 10%)</small><button class="btn ghost" data-go="regMe" style="padding:10px 14px">Marcar mis redes</button></div>
+   <div class="plan"><div class="ph"><b>Gratis</b><span class="pr">USD 0</span></div><ul><li>Retos con 5 vidas</li><li>Diagnóstico y liga de amigos</li><li>Tu progreso no se guarda</li></ul></div>
+   ${is11?once+anual:anual+once}
+   <div class="plan"><div class="ph"><b>Refiere a tus amigos</b><span class="pr" style="font-size:16px">hasta 10%</span></div><ul><li>1 a 2 amigos que compren con tu código: 3%</li><li>3 a 5 amigos: 5%</li><li>6 a 10 amigos: 8%</li><li>Más de 10 amigos: 10%</li></ul><p class="note">Se suma al descuento por redes. Máximo total: 20%. No se regalan meses.</p></div>
+   <div class="plan"><div class="ph"><b>Para tu curso o colegio</b><span class="pr" style="font-size:16px">A convenir</span></div><ul><li>Desde 30 estudiantes, precio especial y reporte para el director de grupo</li></ul></div>
+   <p class="demo">Precios sugeridos en dólares; se cobran en pesos al cambio del día (dólar ≈ $3.170, 16 oct 2026). Sin pagos reales en el prototipo.</p>`;
+  scr.querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>{S.plan=b.dataset.buy==="anual"?"anual":"once";S.paid=true;save();toast("Prototipo: Premium activado. En la versión real aquí se paga por Nequi, PSE o tarjeta");SCREENS.plans();});
+ },
+ alerts(){
+  const a=S.alerts, D=["D","L","M","X","J","V","S"], u=S.user, w=weakest();
+  scr.innerHTML=`<div class="qhead"><button class="x" data-go="me" aria-label="Volver">‹</button><div><h3>Perfil</h3><h2 style="font-size:20px">Alertas de estudio</h2></div></div>
+   <div class="panel"><div class="field"><label for="al-time">Hora del recordatorio</label><input id="al-time" type="time" value="${a.time}"></div>
+    <div class="field"><label>Días</label><div class="chips" id="al-days">${D.map((d,i)=>`<button type="button" class="tag day" data-d="${i}" aria-pressed="${a.days.includes(i)}">${d}</button>`).join("")}</div></div>
+    <label class="check"><input type="checkbox" id="al-push" ${a.push?"checked":""}><span>Notificación en el celular</span></label>
+    <label class="check"><input type="checkbox" id="al-wa" ${a.wa?"checked":""}><span>Mensaje por WhatsApp</span></label>
+    <label class="check"><input type="checkbox" id="al-mail" ${a.mail?"checked":""}><span>Correo semanal al acudiente</span></label>
+    <button class="btn wide" id="al-save">Guardar alertas</button></div>
+   <h3>Así te llegan</h3>
+   <div class="lock">
+    <div class="notif">${star()}<div><small>Reto Saber · ${hora(a.time)}</small><b>${first()}, tu reto de hoy te espera</b><span>5 preguntas de ${AREAS[w].name}. ¡Mantén tu racha de ${S.streak} ${S.streak===1?"día":"días"}! 🔥</span></div></div>
+    <div class="notif">${star("wow")}<div><small>Reto Saber · mañana</small><b>${esc(motivation())}</b><span>Entra y suma XP en 5 minutos.</span></div></div>
+    <div class="notif">${star()}<div><small>Reto Saber · domingo</small><b>Tu semana: ${S.week.reduce((x,y)=>x+y,0)} XP</b><span>${S.privacy.share&&S.friends.some(f=>f.st==="ok"&&!f.priv)?"Un amigo de tu liga te pasó. ¿Lo alcanzas?":"Superaste tu récord de la semana pasada."}</span></div></div>
+    <div class="notif">${star("sad")}<div><small>Reto Saber · si faltas un día</small><b>Usamos un comodín: tu racha sigue viva</b><span>Te quedan ${Math.max(0,S.freezes-1)} comodines este mes.</span></div></div>
+   </div>
+   <p class="note">En el prototipo las alertas son una vista previa. En la app real llegan como notificación (app instalada en el celular), por WhatsApp o por correo.</p>`;
+  $("#al-days").onclick=e=>{const b=e.target.closest(".tag");if(b)b.setAttribute("aria-pressed",b.getAttribute("aria-pressed")!=="true");};
+  $("#al-save").onclick=()=>{a.time=$("#al-time").value||"19:00";a.days=[...scr.querySelectorAll(".day[aria-pressed=true]")].map(b=>+b.dataset.d);a.push=$("#al-push").checked;a.wa=$("#al-wa").checked;a.mail=$("#al-mail").checked;save();toast("Alertas guardadas: "+hora(a.time));};
+ },
+ me(){
+  const u=S.user,g=S.guardian,c=S.consent||{};
+  scr.innerHTML=`<div class="prof">${avatar(u.avatar)}<div><h2>${esc(u.name)}</h2><span class="note">Grado ${esc(u.grade)} · ${esc(u.school||"Sin colegio")} · ${esc(cty().n)} · Nivel ${level()}</span></div></div>
+   <div class="panel"><h3>Sobre mí</h3><div class="kv"><span>Deportes</span><span>${esc((u.sports||[]).join(", ")||"—")}</span><span>Talentos</span><span>${esc((u.skills||[]).join(", ")||"—")}</span><span>Mi sueño</span><span>${esc(u.dream||"—")}</span><span>Nos sigue en</span><span>${esc((u.follows||[]).join(", ")||"—")} · ${discF()}%</span><span>Referidos</span><span>${u.refs||0} amigos compraron · ${discR()}%</span><span>Descuento total</span><span>${disc()}%</span></div>
+    <div class="row"><button class="btn ghost" data-go="regMe">Editar gustos</button><button class="btn ghost" data-go="alerts">Alertas: ${hora(S.alerts.time)}</button></div></div>
+   <div class="panel"><h3>Privacidad</h3>
+    <label class="check"><input type="checkbox" id="pv-share" ${S.privacy.share?"checked":""} ${S.consent?.share?"":"disabled"}><span>Mostrar mi XP y mi racha a los amigos que acepté${S.consent?.share?"":" <b>(tu acudiente no lo autorizó)</b>"}</span></label>
+    <label class="check"><input type="checkbox" id="pv-areas" ${S.privacy.areas?"checked":""} ${S.privacy.share?"":"disabled"}><span>Mostrar también mis puntajes por área</span></label>
+    <p class="note">Nunca mostramos tu correo, tu colegio ni tus datos a otros estudiantes. Puedes cambiar esto cuando quieras.</p></div>
+   <div class="panel"><h3>Acudiente</h3><div class="kv"><span>Nombre</span><span>${esc(g.name)}</span><span>Parentesco</span><span>${esc(g.rel)}</span><span>Documento</span><span>${esc(g.doc)} ${esc(g.num)}</span><span>Correo</span><span>${esc(g.email)}</span><span>Celular</span><span>${esc(g.phone||"—")}</span></div></div>
+   <div class="panel"><h3>Autorización de datos</h3><div class="kv"><span>Estado</span><span>${c.data?'<span class="lvl high">Vigente</span>':'<span class="lvl low">Revocada</span>'}</span><span>Fecha</span><span>${esc(c.date||"—")}</span><span>Reportes</span><span>${c.reports?"Sí, cada domingo":"No"}</span><span>Norma</span><span>Ley 1581 de 2012 y Decreto 1377 de 2013</span></div>
+    <div class="row"><button class="btn ghost" id="rep">${c.reports?"Pausar reportes":"Activar reportes"}</button><button class="btn ghost" id="rev">Revocar y borrar</button></div></div>
+   <button class="btn ghost wide" data-go="paises">${cty().f} País: ${esc(cty().n)} · cambiar</button>
+   <div class="row"><button class="btn ghost" data-go="reg1">Editar mis datos</button><button class="btn ghost" data-go="welcome">Cambiar de perfil</button></div>
+   <p class="note" id="revnote" hidden>¿Seguro? Se borran los datos de este perfil (los demás perfiles no se tocan). <button class="btn" id="revok" style="padding:8px 12px;margin-top:6px">Sí, borrar todo</button></p>`;
+  $("#pv-share").onchange=e=>{S.privacy.share=e.target.checked;if(!S.privacy.share)S.privacy.areas=false;save();SCREENS.me();toast(S.privacy.share?"Tus amigos ya ven tu XP y tu racha":"Modo privado activado");};
+  $("#pv-areas").onchange=e=>{S.privacy.areas=e.target.checked;save();};
+  $("#rep").onclick=()=>{S.consent.reports=!S.consent.reports;save();SCREENS.me();toast(S.consent.reports?"Reportes activados":"Reportes pausados");};
+  $("#rev").onclick=()=>{$("#revnote").hidden=false;};
+  $("#revok")&&($("#revok").onclick=()=>{delete DB.list[DB.active];DB.active=null;S=fresh();persist();go("welcome");toast("Autorización revocada y datos de este perfil borrados");});
+ },
+ quiz(){ question(); },
+ result(){ result(); }
+};
+
+function areaCard(k,full){ const a=AREAS[k],p=pct(k);
+  return `<button class="area${full?" full":""}" data-area="${k}" style="--c:${a.c}">${ART[k]}${full?"<div>":""}<b>${a.name}</b>
+   <small>${p}/100 · ${LV[lvl(k)]}</small><span class="meter"><span style="width:${p}%"></span></span>${full?"</div>":""}</button>`; }
+function ranking(limit){
+  const ok=S.friends.filter(f=>f.st==="ok");
+  if(!S.privacy.share) return `<div class="empty">🔒 Modo privado: tu progreso no se comparte. <button class="link" data-go="me">Cambiar</button></div>`;
+  if(!ok.length) return `<div class="empty">${star()}<span>Tu liga está vacía. Invita a tus amigos con tu código y compitan juntos.</span><button class="btn" data-go="rank" style="padding:10px 14px">Invitar</button></div>`;
+  const me={n:(S.user?.name.split(" ")[0]||"Tú")+" (tú)",c:"Racha "+S.streak,xp:S.xp,av:S.user?.avatar||0,me:true};
+  const pub=[...ok.filter(f=>!f.priv),me].sort((x,y)=>y.xp-x.xp), hid=ok.filter(f=>f.priv);
+  const rows=pub.slice(0,limit||99).map((p,i)=>`<div class="rrow${p.me?" me":""}"><span class="pos p${i+1}">${i+1}</span>${avatar(p.av)}<span class="nm">${esc(p.n)}<small>${esc(p.c)}</small></span><span class="xp">${p.xp.toLocaleString("es-CO")}</span></div>`).join("");
+  const priv=limit?"":hid.map(p=>`<div class="rrow"><span class="pos">🔒</span>${avatar(p.av)}<span class="nm">${esc(p.n)}<small>Prefiere no mostrar su progreso</small></span><span class="xp">—</span></div>`).join("");
+  return `<div class="rank">${rows}${priv}</div>`; }
+
+/* ---------- repaso (flashcards) ---------- */
+function startRepaso(k){ const L1=lvl(k);
+  const concepts=MODULOS[k].temas.map(t=>({type:"c",t:t.t,x:t.x,tip:t.tip}));
+  const pool=shuffle(Q[k].filter(q=>q.d<=Math.max(1,L1))).slice(0,3);
+  const more=pool.length<3?shuffle(Q[k].filter(q=>!pool.includes(q))).slice(0,3-pool.length):[];
+  const practice=[...pool,...more].map(q=>({type:"q",q}));
+  RP={k,cards:[...concepts,...practice],i:0,flip:false,ok:0,tried:0,answered:false}; go("repaso"); }
+function cardView(){ const r=RP,k=r.k,a=AREAS[k],c=r.cards[r.i],last=r.i===r.cards.length-1;
+  const dots=r.cards.map((x,j)=>`<span class="${j<r.i?"ok":j===r.i?"cur":""}"></span>`).join("");
+  let front="",back="";
+  if(c.type==="c"){ front=`<small class="ck">Tarjeta de estudio</small><h2>${c.t}</h2><p class="note">Toca la tarjeta para ver la explicación</p>`;
+    back=`<small class="ck">Explicación</small><p>${c.x}</p><p class="tip">💡 ${c.tip}</p>`; }
+  else { const q=c.q; front=`<small class="ck">Practica · sin perder vidas</small>${q.ctx?`<div class="ctx" style="--c:${a.c}">${q.ctx}</div>`:""}<p class="qtext">${q.q}</p>
+     <div class="opts">${q.o.map((o,j)=>`<button class="opt" data-ro="${j}"><span class="bub">${L[j]}</span><span>${o}</span></button>`).join("")}</div><div id="rfb"></div>`;
+    back=`<small class="ck">La respuesta correcta era la ${L[q.a]}</small><p class="qtext">${q.o[q.a]}</p><p><b>¿Por qué?</b> ${q.e}</p><p class="tip">Equivocarte en el repaso no quita vidas: así aprendes antes de la evaluación.</p>`; }
+  scr.innerHTML=`<div class="qhead"><button class="x" data-go="prep" aria-label="Salir">×</button><div class="prog">${dots}</div><span class="pill" style="--c:${a.c}">Repaso</span></div>
+   <div class="flip${r.flip?" on":""}" id="fc" style="--c:${a.c}"><div class="inner"><div class="face front">${front}</div><div class="face back">${back}</div></div></div>
+   <div class="row" id="rnav">${c.type==="c"?`<button class="btn ghost" id="rf">${r.flip?"Ver tarjeta":"Voltear"}</button>`:""}<button class="btn" id="rn" ${c.type==="q"&&!r.answered?"disabled":""}>${last?"Terminar repaso":"Siguiente"}</button></div>`;
+  const fc=$("#fc");
+  if(c.type==="c"){ fc.onclick=()=>{r.flip=!r.flip;cardView();}; $("#rf").onclick=()=>{r.flip=!r.flip;cardView();}; r.answered=true; }
+  else if(!r.answered){ scr.querySelectorAll("[data-ro]").forEach(b=>b.onclick=e=>{e.stopPropagation(); const j=+b.dataset.ro,q=c.q; r.answered=true; r.tried++;
+      scr.querySelectorAll("[data-ro]").forEach((x,n)=>{x.disabled=true;if(n===q.a)x.classList.add("right");else if(n===j)x.classList.add("wrong");});
+      if(j===q.a){r.ok++;beep(true);$("#rfb").innerHTML=`<div class="fb ok">${star()}<div><b>¡Correcto!</b>${q.e}</div></div>`;$("#rn").disabled=false;}
+      else{beep(false);setTimeout(()=>{r.flip=true;cardView();},650);} }); }
+  $("#rn").onclick=()=>{ if(last){ S.rep=S.rep||{}; S.rep[k]=today(); save(); repasoDone(); return; } r.i++; r.flip=false; r.answered=false; cardView(); };
+}
+function repasoDone(){ const r=RP,a=AREAS[r.k];
+  scr.innerHTML=`<div class="score">${star("happy")}<h3 style="color:${a.c}">${a.name}</h3><h2>¡Repaso listo!</h2><p>Practicaste ${r.tried} preguntas y acertaste ${r.ok}. Lo que fallaste ya lo viste explicado.</p></div>
+   <div class="panel"><h3>Ahora sí: evaluación</h3><p class="note">${ADJ[lvl(r.k)].txt} · 5 vidas</p><button class="btn wide" id="go-ev">Empezar evaluación</button></div>
+   <button class="btn ghost wide" id="rp-again">Repasar otra vez</button>`;
+  $("#go-ev").onclick=()=>startQuiz("area",r.k); $("#rp-again").onclick=()=>startRepaso(r.k); celebrate(); }
+
+/* ---------- quiz engine ---------- */
+function shuffle(a){return a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);}
+function pickQ(k,d,used){ const c=Q[k].filter(q=>!used.includes(q)); const ex=c.filter(q=>q.d===d); const pool=ex.length?ex:c.sort((x,y)=>Math.abs(x.d-d)-Math.abs(y.d-d)); return shuffle(pool.slice(0,ex.length||2))[0]; }
+function startQuiz(mode,k){
+  let list, secs=25, hints=0;
+  if(mode==="diag"){ const sf=S.self||{}; list=[]; Object.keys(AREAS).forEach(a=>{const d=sf[a]||2,used=[];const q=pickQ(a,d,used);used.push(q);list.push({...q,k:a,slot:1});list.push({k:a,slot:2,pending:true,d0:d,first:q});}); secs=30; }
+  else { const L1=lvl(k); const pool=shuffle(Q[k]).sort((x,y)=>Math.abs(x.d-L1)-Math.abs(y.d-L1)); list=shuffle(pool.slice(0,5)).map(q=>({...q,k})); secs=ADJ[L1].secs; hints=ADJ[L1].hints; }
+  quiz={mode,k,list,i:0,res:[],pts:0,combo:0,secs,lives:5,hints}; go("quiz"); }
+function resolvePending(z){ const it=z.list[z.i]; if(!it.pending) return; const prevOk=z.res[z.i-1]; const d=prevOk?Math.min(3,it.d0+1):Math.max(1,it.d0-1);
+  const q=pickQ(it.k,d,[it.first])||pickQ(it.k,it.d0,[it.first]); z.list[z.i]={...q,k:it.k,slot:2,d0:it.d0}; }
+function question(){ const z=quiz; resolvePending(z); const it=z.list[z.i],a=AREAS[it.k]; let left=z.secs; z.locked=false;
+  scr.innerHTML=`<div class="qhead"><button class="x" id="quit" aria-label="Salir">×</button><div class="prog">${z.list.map((_,j)=>`<span class="${j<z.i?(z.res[j]?"ok":"no"):j===z.i?"cur":""}"></span>`).join("")}</div>${z.mode==="diag"?"":`<span class="hearts" aria-label="${z.lives} vidas">${"❤".repeat(z.lives)}<i>${"♡".repeat(5-z.lives)}</i></span>`}</div>
+   <div class="qtag"><span class="pill" style="--c:${a.c}">${z.mode==="diag"?"Diagnóstico · ":""}${a.name}</span><span class="clock" id="secs">${left} s</span></div>${z.mode==="diag"?`<p class="note" style="margin:0">Dificultad: ${["","fácil","media","difícil"][it.d]}</p>`:(z.hints?`<button class="link" id="hint">💡 Pista: quitar 2 opciones (te quedan ${z.hints})</button>`:"")}
+   <div class="timer" id="tm"><span style="width:100%"></span></div>
+   ${it.ctx?`<div class="ctx" style="--c:${a.c}">${it.ctx}</div>`:""}
+   <div class="qtext">${z.i+1}. ${it.q}</div>
+   <div class="opts">${it.o.map((o,j)=>`<button class="opt" data-o="${j}"><span class="bub">${L[j]}</span><span>${o}</span></button>`).join("")}</div><div id="after"></div>`;
+  $("#quit").onclick=()=>go(S.diag?(z.mode==="area"?"prep":"home"):"diagIntro");
+  scr.querySelectorAll(".opt").forEach(b=>b.onclick=()=>answer(+b.dataset.o,left));
+  $("#hint")&&($("#hint").onclick=()=>{z.hints--;const wrong=[0,1,2,3].filter(j=>j!==it.a);shuffle(wrong).slice(0,2).forEach(j=>{const b=scr.querySelector(`[data-o="${j}"]`);b.disabled=true;b.classList.add("gone");});$("#hint").remove();});
+  requestAnimationFrame(()=>{const b=$("#tm span");if(b)b.style.width=((left-1)/z.secs*100)+"%";});
+  tick=setInterval(()=>{left--;const s=$("#secs"),b=$("#tm span");if(!s)return clearInterval(tick);s.textContent=left+" s";b.style.width=Math.max(0,(left-1)/z.secs*100)+"%";$("#tm").classList.toggle("low",left<=5);
+   scr.querySelectorAll(".opt").forEach(x=>x.onclick=()=>answer(+x.dataset.o,left)); if(left<=0)answer(-1,0);},1000);
+}
+function answer(j,left){ const z=quiz; if(!z||z.locked)return; z.locked=true; clearInterval(tick);
+  const it=z.list[z.i],ok=j===it.a,opts=scr.querySelectorAll(".opt");
+  opts.forEach((b,n)=>{b.disabled=true;if(n===j)b.classList.add("pick");});
+  setTimeout(()=>opts.forEach((b,n)=>{if(n===it.a)b.classList.add("right");else if(n===j)b.classList.add("wrong");}),200);
+  let gain=0; if(ok){z.combo++;gain=10+left+(z.combo>=3?10:0);z.pts+=gain;}else{z.combo=0;z.pts+=2;if(z.mode!=="diag")z.lives=Math.max(0,z.lives-1);} z.res.push(ok); beep(ok);
+  $("#after").innerHTML=`<div class="fb ${ok?"ok":"no"}">${star(ok?"happy":"sad")}<div><b>${ok?"¡Bien! +"+gain+" XP":j<0?"¡Se acabó el tiempo! +2 XP por aprender":"Era la "+L[it.a]+" · +2 XP por aprender"}</b>${it.e}${ok?"":`<br><small style="opacity:.85">${z.mode==="diag"?"Equivocarse aquí no resta: ahora ya lo sabes.":`Perdiste una vida: te quedan ${z.lives}.`}</small>`}<br><button class="link" id="rep" style="font-size:12.5px">Reportar esta pregunta</button></div></div>
+   ${ok&&z.combo>=3?`<div class="combo">¡Combo x${z.combo}! +10</div>`:""}
+   <button class="btn wide" id="next" style="margin-top:12px">${z.mode!=="diag"&&z.lives===0?"Ver resultado":z.i<z.list.length-1?"Siguiente":"Ver resultado"}</button>`;
+  $("#rep").onclick=()=>toast("Gracias. El equipo de 5. revisará esta pregunta");
+  $("#next").onclick=()=>{z.i++; (z.mode!=="diag"&&z.lives===0)?result(true):z.i<z.list.length?question():result();}; $("#next").focus({preventScroll:true});
+}
+function result(outOfLives){ const z=quiz,n=z.res.filter(Boolean).length,t=z.res.length;
+  if(z.mode!=="diag"&&!isPaid()){ header();
+    scr.innerHTML=`<div class="score">${star(outOfLives?"sad":"wow")}<h3 style="color:${AREAS[z.k].c}">${AREAS[z.k].name}</h3><div class="big">${n}<small>/${t}</small></div><b>${outOfLives?"¡Te quedaste sin vidas!":"¡Reto terminado!"}</b>
+      <div class="sheet">${z.res.map(r=>`<span class="${r?"ok":"no"}"></span>`).join("")}</div></div>
+     <div class="panel paywall"><h3>Plan Gratis</h3><p>En el plan Gratis <b>tu progreso no se guarda</b> y tienes 5 vidas por reto. Con un plan guardas tu registro, ganas XP, subes en la liga y ves tu avance.</p>
+      <p><b>9.° y 10.°:</b> USD 12 todo el año · <b>11.°:</b> USD 10 hasta tu examen${disc()?` · tienes ${disc()}% de descuento`:""}</p>
+      <button class="btn sun wide" data-go="plans">Ver planes</button></div>
+     <div class="row"><button class="btn" id="again">Intentar otra vez</button><button class="btn ghost" id="back">Inicio</button></div>`;
+    $("#again").onclick=()=>startQuiz("area",z.k); $("#back").onclick=()=>go("home"); return; }
+  S.xp+=z.pts; S.week[6]=(S.week[6]||0)+z.pts; if(!S.streak)S.streak=1;
+  if(z.mode==="diag"){ const d={date:today()}, lv={};
+    Object.keys(AREAS).forEach(k=>{const i1=z.list.findIndex(q=>q.k===k&&q.slot===1), i2=z.list.findIndex(q=>q.k===k&&q.slot===2);
+      const c1=z.res[i1], c2=z.res[i2], d1=z.list[i1].d, d2=z.list[i2].d; lv[k]=c2?d2:(c1?d1:1); d[k]=lv[k]-1;});
+    S.level=lv; S.diag=d; S.best={}; save(); header();
+    const s=strongest(),w=weakest();
+    scr.innerHTML=`<div class="score">${star(n>=6?"happy":"wow")}<h3>Diagnóstico listo</h3><div class="big">${n}<small>/${t}</small></div><b>Puntaje global estimado: ${est()}/500</b></div>
+     <div class="panel"><h3>Tu nivel por área</h3>${Object.keys(AREAS).map(k=>`<div class="abar"><span>${AREAS[k].name.split(" ")[0]}</span><span class="t"><span style="width:${pct(k)}%;background:${AREAS[k].c}"></span></span><span class="lvlbadge l${lvl(k)}">${LV[lvl(k)]}</span></div>`).join("")}
+      <p class="note">Tú dijiste: ${Object.keys(AREAS).map(k=>AREAS[k].name.split(" ")[0]+" "+["","me cuesta","más o menos","me va bien"][(S.self||{})[k]||2]).join(" · ")}.</p></div>
+     <div class="panel"><h3>Así ajustamos tu juego</h3><ul class="tips">${Object.keys(AREAS).map(k=>`<li><b>${AREAS[k].name}:</b> ${ADJ[lvl(k)].txt}</li>`).join("")}<li>Antes de cada evaluación haces un repaso con tarjetas. Si te va muy bien subes de nivel; si te cuesta, bajamos la dificultad.</li></ul></div>
+     <div class="panel"><h3>Tu plan de estudio</h3><ul class="tips"><li>Empieza por <b>${AREAS[w].name}</b>: ${TIPS[w]}</li><li>Mantén <b>${AREAS[s].name}</b> con 1 reto cada 2 días.</li><li>Meta: 5 retos esta semana.</li></ul></div>
+     ${planBox()}
+     <button class="btn wide" id="gohome">Ir a mi inicio</button><p class="note">Le enviaremos este diagnóstico a ${esc(S.guardian?.email||"tu acudiente")}.</p>`;
+    $("#gohome").onclick=()=>go("home"); $("#pay")&&($("#pay").onclick=()=>{S.paid=true;save();toast("Prototipo: en la versión real aquí se paga por Nequi, PSE o tarjeta");$("#pay").outerHTML='<p class="note"><b>¡Listo! Premium activado (simulado).</b></p>';}); celebrate(); return; }
+  const k=z.k,p=Math.round(n/t*100),prev=pct(k); S.best[k]=Math.round(prev*.6+p*.4); S.history.unshift({k,n,t});
+  S.level=S.level||{lc:2,ma:2,so:2,cn:2,in:2}; let lvMsg="";
+  if(p>=80&&S.level[k]<3){S.level[k]++;lvMsg=`🚀 ¡Subiste a nivel ${LV[S.level[k]]} en ${AREAS[k].name}! Las preguntas serán un poco más retadoras.`;}
+  else if(p<=40&&S.level[k]>1){S.level[k]--;lvMsg=`🤝 Ajustamos ${AREAS[k].name} a nivel ${LV[S.level[k]]}: más tiempo y pistas para que avances más fácil.`;}
+  save(); header();
+  scr.innerHTML=`<div class="score">${star(n>=t*.6?"happy":"sad")}<h3 style="color:${AREAS[k].c}">${AREAS[k].name}</h3><div class="big">${n}<small>/${t}</small></div><b>${outOfLives?"Te quedaste sin vidas, pero tu progreso quedó guardado":n===t?"¡Perfecto!":n>=t*.6?"¡Muy bien!":"¡Sumaste XP y aprendiste "+(t-n)+" cosas nuevas!"}</b><p class="note">${motivation()}</p>${lvMsg?`<p class="lvmsg">${lvMsg}</p>`:""}
+    <div class="sheet">${z.res.map(r=>`<span class="${r?"ok":"no"}"></span>`).join("")}</div></div>
+   <div class="kpis"><div class="kpi"><b>+${z.pts}</b><small>XP ganados</small></div><div class="kpi"><b>${S.best[k]}</b><small>${AREAS[k].name.split(" ")[0]} /100</small></div><div class="kpi"><b>${est()}</b><small>global /500</small></div></div>
+   <div class="row"><button class="btn" id="again">Otra vez</button><button class="btn sun" id="dare">Retar a un amigo</button></div>
+   <button class="btn ghost wide" id="back">Volver al inicio</button>`;
+  $("#again").onclick=()=>startQuiz("area",k); $("#back").onclick=()=>go("home");
+  $("#dare").onclick=()=>copy(`Saqué ${n}/${t} en ${AREAS[k].name} en Reto Saber de 5. ¿Me ganas?`,"Reto copiado. Pégalo en tu chat");
+  if(n>=t*.6) celebrate();
+}
+function planBox(){ if(!S.plan) return "";
+  if(S.plan==="free") return `<div class="panel"><h3>Tu plan de pago</h3><p><b>Gratis</b>: 1 reto diario por área. Cuando quieras te pasas a Premium.</p></div>`;
+  const base=S.plan==="anual"?12:10, d=disc(), f=Math.round(base*(100-d))/100;
+  return `<div class="panel"><h3>Tu plan de pago</h3><p><b>${S.plan==="anual"?"Plan Anual":"Plan Saber 11"}</b>: ${d?`<span class="old">USD ${base}</span> `:""}<b>USD ${String(f).replace(".",",")}</b> pago único${d?` (${d}% de descuento por redes y referidos)`:""} · ≈ ${cop(f)} pesos</p>${S.paid?'<p class="note"><b>Premium activado (simulado).</b></p>':'<button class="btn sun wide" id="pay">Pagar y activar Premium</button>'}</div>`; }
+function celebrate(){ if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+  const box=$(".phone"),cv=document.createElement("canvas");cv.style.cssText="position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:25";document.body.appendChild(cv);
+  const cx=cv.getContext("2d");cv.width=innerWidth;cv.height=innerHeight;const r=box.getBoundingClientRect(),cols=["#ff5a5f","#ffc93c","#18b8a6","#3a86ff","#8338ec","#ff4fa3"];
+  const ps=Array.from({length:90},(_,i)=>({x:r.left+r.width/2,y:r.top+r.height*.3,vx:(Math.random()-.5)*9,vy:-Math.random()*9-3,c:cols[i%6],s:4+Math.random()*5,a:Math.random()*6}));
+  let f=0;(function loop(){cx.clearRect(0,0,cv.width,cv.height);ps.forEach(p=>{p.vy+=.28;p.x+=p.vx;p.y+=p.vy;p.a+=.2;cx.save();cx.translate(p.x,p.y);cx.rotate(p.a);cx.fillStyle=p.c;cx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);cx.restore();});
+   if(++f<110)requestAnimationFrame(loop);else cv.remove();})(); }
+
+if(MODE==="two"){demoValentina();demoData();SEEDED=true;DB.active=null;S=fresh();persist();}
+go(S.user&&S.consent?(S.diag?"home":"diagIntro"):"welcome");
+})();
+</script>
+
+</body>
+</html>
