@@ -102,3 +102,15 @@ Las preguntas fijas del banco original se intercalan en el ciclo (≈20 % del ci
 - Áreas fuera de la cuota (p. ej. Competencias Ciudadanas) caen al `draw` original.
 - Verificación automática en CI: `tests/v21-unicidad.cjs` (unicidad por espacio,
   integridad ABCD y rotación completa sin repetición).
+
+## Módulo v22 — traspaso de progreso con código
+
+Método práctico de portabilidad además del respaldo por archivo:
+
+- **Generación** (`RS22.generar()`): serializa la cuenta con la misma lista `KP` del respaldo (cbx), la comprime con **LZW** (diccionarios codificador/decodificador separados, límite 65000 entradas) y la empaqueta en base64 URL-safe. Formato `RS1.<payload>.<4 caracteres de checksum>` (checksum aritmético mod 1679616 del JSON original).
+- **Interfaz** (`RS22.tarjeta()`): tarjeta inyectada en el Perfil, después de «Copia de seguridad de mi cuenta», con patrón DOM-injection de v20 (wrapper seguro de `render`, guard `data-v22`). Acciones nuevas `t22g / t22cc / t22ec / t22a` añadidas con `Object.assign(A, …)`.
+- **Aplicación** (`RS22.aplicar()`): valida formato, descomprime, verifica el checksum y reutiliza **`impCuenta()`** del demo (misma sanitización y confirmaciones que el respaldo por archivo).
+- **Enlace directo** (`RS22.enlace()`): construye `URL-actual#rstr=<código>`; al abrirlo, el módulo detecta el hash, limpia la URL y ofrece aplicar el traspaso.
+- **Errores amables**: código cortado, prefijo ajeno, base64 inválido, descompresión fallida o checksum incorrecto producen mensajes accionables sin tocar datos.
+- **Caché PWA**: `rscp-v4` (public/sw.js) y `reto-saber-v2` (pwa/sw.js).
+- **API de pruebas**: `window.RS22 = { generar, decodificar, aplicar, enlace, tarjeta, lzwC, lzwD }`.

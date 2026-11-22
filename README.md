@@ -95,3 +95,18 @@ simulacro, diagnóstico, repaso o duelo. Distribución por área:
   «Generada por la aplicación como práctica · no oficial».
 
 Más detalles en `docs/ARQUITECTURA.md` y en `docs/planeacion/`.
+
+## Traspasar progreso con un código (v22)
+
+Además del respaldo por archivo (Descargar mi copia / Cargar una copia), el Perfil
+incluye **«Traspasar progreso con un código»**: el método práctico para llevar tu
+progreso a otro dispositivo o navegador.
+
+1. **Generar mi código** — produce un código `RS1.<cuerpo>.<verificación>` que comprime la cuenta completa (progreso, racha, insignias, errores para repasar y ajustes) con un algoritmo LZW incorporado + verificación de integridad. En cuentas normales mide menos de ~1.000 caracteres.
+2. **Copiar código** o **Copiar enlace** — el enlace lleva `#rstr=<código>`, listo para mandar por WhatsApp o correo.
+3. En el otro dispositivo: pegar el código en Perfil → *Aplicar el código*, o simplemente abrir el enlace y confirmar. La app valida y muestra el mismo aviso que el archivo de copia.
+
+Nota de privacidad: el código contiene el correo y el progreso — se recomienda
+mandarlo solo a uno mismo. Se comporta como la copia por archivo, con las mismas
+validaciones (estructura, campos numéricos, sanitización del repaso). Si el
+progreso es demasiado grande para un código, la app sugiere usar el archivo.
