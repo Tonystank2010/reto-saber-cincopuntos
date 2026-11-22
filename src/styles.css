@@ -1,0 +1,38 @@
+:root {
+  --ac: #4f46e5;
+  --fondo: #f4f5fb;
+  --tinta: #1e1b4b;
+  --borde: #e2e5f4;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --fondo: #0f1030; --tinta: #eef0ff; --borde: #2c2f66; }
+}
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body { background: var(--fondo); color: var(--tinta); font-family: system-ui, sans-serif; }
+
+.juego { display: block; width: 100%; height: 100%; border: 0; }
+
+.banner {
+  padding: 8px 14px; font-size: 13px; text-align: center;
+  background: var(--ac); color: #fff;
+}
+.cargando { display: grid; place-items: center; height: 100%; }
+
+.login {
+  max-width: 340px; margin: 8vh auto; padding: 24px; text-align: center;
+  border: 1px solid var(--borde); border-radius: 16px; background: var(--fondo);
+}
+.login h1 { font-size: 20px; margin: 12px 0 4px; }
+.login .muted { color: color-mix(in srgb, var(--tinta) 60%, transparent); font-size: 14px; }
+.login input {
+  width: 100%; margin: 6px 0; padding: 10px 12px; font-size: 15px;
+  border: 1px solid var(--borde); border-radius: 10px; background: transparent; color: inherit;
+}
+.login button {
+  width: 100%; margin: 6px 0; padding: 10px 12px; font-size: 15px; font-weight: 600;
+  border: 0; border-radius: 10px; background: var(--ac); color: #fff; cursor: pointer;
+}
+.login button.secundario { background: transparent; color: var(--ac); border: 1px solid var(--ac); }
+.login button:disabled { opacity: 0.5; cursor: default; }
+.login .error { color: #dc2626; font-size: 14px; }

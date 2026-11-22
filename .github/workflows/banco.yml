@@ -1,0 +1,42 @@
+name: Verificar banco de preguntas
+
+on: [push, pull_request]
+
+jobs:
+  banco:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validar banco-preguntas.json
+        run: |
+          python3 - <<'PY'
+          import json,sys
+          d=json.load(open('base-de-datos/banco-preguntas.json',encoding='utf-8'))
+          mal=[];ids=set()
+          for seccion in ('saber11','saberPro'):
+              for q in d.get(seccion,[]):
+                  ops=q.get('opciones') or []
+                  hay={o.get('id') for o in ops}
+                  if len(ops)!=4 or hay!={'A','B','C','D'}: mal.append((q.get('id'),'opciones'))
+                  if q.get('respuesta') not in 'ABCD': mal.append((q.get('id'),'respuesta'))
+                  if not q.get('enunciado') or not q.get('explicacion'): mal.append((q.get('id'),'texto'))
+                  if q.get('id') in ids: mal.append((q.get('id'),'id duplicado'))
+                  ids.add(q.get('id'))
+          print('saber11:',len(d.get('saber11',[])),'| saberPro:',len(d.get('saberPro',[])))
+          if mal: print('inválidas:',len(mal),mal[:5]); sys.exit(1)
+          print('OK')
+          PY
+      - name: Probar el generador (SQLite)
+        run: |
+          mkdir -p /tmp/bd && cp base-de-datos/generar_banco.py /tmp/bd/
+          cd /tmp/bd && python3 generar_banco.py --forzar
+          python3 - <<'PY'
+          import sqlite3,sys
+          con=sqlite3.connect('/tmp/bd/banco-preguntas.db')
+          n=con.execute('select count(*) from preguntas').fetchone()[0]
+          print('preguntas en la base:',n)
+          if n<500: sys.exit('banco insuficiente (<500)')
+          PY

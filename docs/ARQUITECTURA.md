@@ -1,0 +1,88 @@
+# Arquitectura técnica · PROPUESTA de Claude
+
+> **Estado:** propuesta para revisar con Danny y el equipo; no es una decisión confirmada. El demo actual (`demo-html/`) no usa servidor ni base de datos en ejecución: sus preguntas vienen de `base-de-datos/` y se copian dentro del HTML. Nace de las notas de la "Reunión Danny" (18 de octubre) y se complementa con el plan de Copilot (`PROYECTO.md`, `DECISIONES.md`, `TAREAS.md`).
+
+## 1. Qué entendí de las notas
+
+| Nota de la reunión | Cómo la interpreto | Propuesta |
+|---|---|---|
+| Crear esquemas separados | Separar la base de datos por áreas (y, a futuro, por cliente) | Esquemas `core`, `auditoria` y `reportes` (ver `base-de-datos/esquema-inicial.sql`) |
+| BD solo guarda datos | Sin reglas de negocio dentro de la base de datos | Sin triggers ni procedimientos con lógica; la lógica va en la aplicación |
+| Generar de SQL, exportar a Excel | Reportes salen de consultas SQL | Esquema `reportes` con vistas de solo cifras, exportables a CSV/Excel |
+| A futuro montarlo en Postgres | El destino es PostgreSQL | Escribir el SQL compatible con PostgreSQL 15+ desde el inicio |
+| Prender o apagar módulos y de ahí poder cobrar | Cada cliente tiene módulos activos; el cobro se apoyará en eso más adelante | Tabla `organizacion_modulo`. **Sin planes, precios ni cobros por ahora** (decisión vigente) |
+| Parámetros: seguro, backup fácil, rápido, miles de usuarios, concurrencia, escalable | Requisitos no funcionales | Ver sección 3 |
+| Primer módulo: registro de datos; orden de los módulos | Definir qué se construye primero | Ver sección 4 |
+| Crear la empresa y activar sus módulos | Alta de una organización con sus módulos | Tablas `organizacion` y `organizacion_modulo` |
+| Separación de datos y auditoría por cliente | Cada cliente solo ve lo suyo, con su propia traza | `organizacion_id` en todas las tablas, Row Level Security y `auditoria.evento` |
+| Pruebas unitarias | Código probado desde el principio | Ver sección 5 |
+| Responsive | Funciona bien en celular | Diseño pensado primero para celular |
+| GitHub o GitLab | Dónde vive el código | Seguir con GitHub, donde ya está el repositorio y trabaja Copilot |
+| Configurar los "arneses" para que la IA lo tenga más definido | Reglas e instrucciones fijas para las IA | Ver sección 6 |
+| Danny trabaja en JavaScript | Stack alineado con quien lo va a mantener | Node.js con TypeScript y PostgreSQL |
+
+**Supuesto a confirmar:** interpreté "empresa/cliente" como una **organización** (puede ser la propia Empresa 5., un colegio o un grupo piloto). Si en realidad las notas hablan de otro proyecto, hay que ajustar esta propuesta.
+
+## 2. Idea general
+
+```
+Celular / navegador  →  API (Node.js + TypeScript)  →  PostgreSQL
+                                                         ├─ core       (organizaciones, módulos, usuarios)
+                                                         ├─ auditoria  (eventos por cliente)
+                                                         └─ reportes   (vistas para Excel)
+```
+
+## 3. Requisitos no funcionales
+
+- **Seguro:** datos mínimos de personas (apodo, grado, correo); nada de documento, dirección ni fotos; consentimiento del acudiente para menores; claves fuera del repositorio.
+- **Backup fácil:** una sola base PostgreSQL con copias automáticas y una prueba de restauración antes de abrir a usuarios reales.
+- **Rápido y concurrente:** índices por `organizacion_id`; conexiones agrupadas; consultas pequeñas.
+- **Miles de usuarios y escalable:** una sola base compartida con aislamiento por `organizacion_id` escala mejor que un esquema por cliente cuando hay muchos clientes.
+
+## 4. Orden propuesto de los módulos
+
+1. **Registro de datos:** organizaciones, usuarios, consentimientos y auditoría.
+2. **Banco de preguntas:** preguntas originales con la plantilla de `contenido/`.
+3. **Práctica y retos.**
+4. **Progreso y repaso de errores.**
+5. **Simulacro** cronometrado.
+6. *(Fuera de alcance hasta autorización)* Planes y cobros.
+
+## 5. Pruebas
+
+- Pruebas unitarias de la lógica (por ejemplo, reglas de activación de módulos y de consentimiento).
+- Pruebas de aislamiento: un cliente nunca debe ver datos de otro.
+- Datos ficticios en todas las pruebas.
+
+## 6. Arneses para las IA (reglas fijas)
+
+Complementan `.github/copilot-instructions.md`:
+1. La base de datos solo guarda datos; sin lógica de negocio en SQL.
+2. Todo dato de cliente lleva `organizacion_id`.
+3. Ningún dato personal fuera del mínimo definido.
+4. Sin pantallas, botones ni tablas de planes pagos mientras no haya autorización.
+5. Toda función nueva lleva su prueba.
+6. Preguntas propias; nunca copiadas del ICFES.
+7. Las ideas de una IA no son decisiones hasta que el equipo las apruebe.
+
+## 7. Decisiones abiertas (para Danny y el equipo)
+
+1. ¿Aislamiento por **filas** (una base compartida, recomendado) o por **esquema por cliente**?
+2. ¿Qué es exactamente un "cliente" en la primera versión?
+3. ¿Dónde se aloja la base de datos y quién paga el servicio?
+4. ¿PostgreSQL desde el primer día, o algo más sencillo mientras se prototipa?
+5. ¿Cómo y quién autoriza el paso a desarrollo (P07)?
+
+## Autenticación y datos al pasar a un servidor
+
+El demo guarda cuentas y contraseñas (con hash) en el navegador. No debe usarse como base de un servicio real. Al contratar el hosting:
+
+- **Inicio de sesión del proveedor.** Usar la identidad administrada del servicio en lugar de guardar contraseñas propias. Si se guardan, usar un algoritmo de hash lento con sal (por ejemplo, argon2 o bcrypt), no un hash simple.
+- **Verificación de correo y recuperación de contraseña**, que el demo no tiene.
+- **Menores.** Autorización verificable del acudiente antes de activar la cuenta, datos mínimos y sin documento de identidad.
+- **Roles y aislamiento.** Estudiante, docente o acudiente y administrador, con separación por organización (ver `base-de-datos/esquema-inicial.sql`).
+- **Sesiones y transporte.** Sesiones con expiración y HTTPS obligatorio.
+- **Respaldo.** Copias automáticas y una prueba de restauración antes de abrir a usuarios reales.
+- **Eliminación.** Borrar la cuenta elimina el progreso, las estadísticas ligadas a ella y los consentimientos.
+- **Panel de acompañamiento real.** Permisos por relación (acudiente con estudiante, docente con grupo) y consentimiento registrado. El panel del demo es solo local.
+- **Revisión legal** (Ley 1581 y normas de protección de menores) antes de abrir a usuarios reales.
