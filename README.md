@@ -138,3 +138,19 @@ npm start             # ventana propia del juego
 npm run dist          # instaladores: Windows (.exe NSIS), macOS (.dmg), Linux (.AppImage)
 ```
 El progreso persiste en la app entre sesiones y funciona el traspaso con código (v22) y la contraseña guardada (v23). Detalles en `desktop/LEEME.md`.
+
+## Diseño responsive refinado (v26)
+
+Mejoras en pantallas **móviles y tabletas pequeñas** (ancho ≤ 767 px), sin tocar la lógica del juego:
+
+- **Navegación legible**: los botones de la barra inferior ya no bajan a ~10,5 px; ahora mínimo **12 px** y área táctil de 46 px.
+- **Botones que se reordenan**: en filas `.row`, si los botones no caben, se parten en varias filas (ancho mínimo 112 px) en vez de quedar apretados en una sola línea y cortarse.
+- **Etiquetas y chips**: la fila «¿Qué tan seguro estás?» (Seguro/Dudo/Adivino/No lo sé) usa `flex-wrap` para no desbordarse.
+- **Textos largos con corte limpio**: los párrafos (enunciados, explicaciones) rompen palabras largas con `overflow-wrap:anywhere` — ya no aparecen trucos de texto saliéndose de la tarjeta en móvil.
+- **Controles al ancho completo**: `select`, `textarea` y campos de texto/contraseña/correo ocupan todo el ancho en móvil (p. ej., las notas de cuentos y los menús desplegables).
+- **Textareas del traspaso (v22) y clave guardada (v23)** suben de 11 px a **12 px** para más legibilidad.
+- **Títulos compactos**: `h1` a 20 px con interlineado ajustado en pantallas pequeñas.
+
+En tabletas y escritorio (≥ 768 px) nada cambia. El archivo es autocontenido: los ajustes viajan dentro del propio HTML (style `#v26-resp`), así que la versión descargada (v25: «Descargar el juego») también incluye el modo responsive.
+
+**Módulos fuente:** `demo-html/modulos/v26-responsive-general.js` — inyectado igual que v20–v25.
