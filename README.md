@@ -244,3 +244,17 @@ Dirección elegida: **ed-tech moderno** con foco en las pantallas donde vive el 
 - Todo CSS puro, sin animaciones nuevas que rompan la accesibilidad; respeta el mecanismo original de tokens.
 
 **Módulo fuente:** `demo-html/modulos/v34-diseno.css` — inyectado como `<style>` estático (patrón v30). Caché PWA a `rscp-v20` / `reto-saber-v18`.
+
+### v34.1 — Selector de paleta de colores (el usuario elige)
+
+Las 5 paletas del preview quedaron **dentro de la app**: en **Perfil → Accesibilidad**, junto al modo claro/oscuro, aparece una fila de chips con miniatura de cada paleta:
+
+- **Índigo** (de fábrica) · **Azul océano** · **Esmeralda** · **Coral** · **Magenta**
+- Se aplica al instante (custom properties en `:root`), **se guarda en `DB.pref.pal`** y viaja con la nube porque `DB.pref` se sincroniza completo (v27) — el color te acompaña a cualquier dispositivo.
+- Cada paleta tiene **variante clara y luminosa para modo oscuro**; al cambiar el tema se re-aplica sola (también si el sistema operativo cambia el tema con «Automático»).
+- Un id desconocido (dispositivo viejo o dato corrupto) cae sin ruido a la paleta de fábrica.
+- El modo del demo sigue intacto: reusamos `--ac`/`--grad` que ya ocupaba el CSS de v34/v27 para chips, opciones, barras y botones.
+
+**Módulo fuente:** `demo-html/modulos/v341-paletas.js` — bloque `<script>` (patrón v20+). Caché PWA a `rscp-v21` / `reto-saber-v19`.
+
+**Preview para elegir a ojo:** `public/preview-paletas.html` — abierto cerca del demo muestra las 5 paletas maquetadas (claro/oscuro).

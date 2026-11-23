@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reto Saber · Preview de paletas (v34)</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:#eef0f6;color:#1f2430;padding:20px}
+h1{font-size:22px;margin:0 0 4px}
+p.guia{color:#6b7280;margin:0 0 20px}
+.rejilla{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.pal{background:#fff;border-radius:20px;box-shadow:0 1px 2px rgba(15,23,42,.05),0 4px 16px rgba(15,23,42,.07);padding:16px;border:1px solid #e3e6ee}
+.pal h2{margin:0 0 2px;font-size:17px}
+.pal small{color:#6b7280}
+.demoL,.demoT{border-radius:14px;padding:12px;margin-top:10px}
+.demoL{background:var(--bg)}
+.demoT{background:var(--bgD)}
+.card{background:var(--cd);border:1px solid var(--br);border-radius:16px;padding:12px;margin:0 0 8px;box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.demoT .card{box-shadow:0 1px 2px rgba(0,0,0,.35)}
+.q{font-weight:600;margin:0 0 8px}
+.opt{display:block;width:100%;text-align:left;background:var(--cdD,opt);color:var(--tx);border:2px solid var(--br);border-radius:12px;padding:9px 12px;margin:6px 0;font-weight:500;transition:.15s}
+.opt.sel{border-color:var(--ac);box-shadow:0 0 0 3px color-mix(in srgb,var(--ac) 20%,transparent)}
+.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,var(--cd))}
+.cta{min-height:44px;border:0;border-radius:14px;padding:10px 16px;background:var(--grad);color:#fff;font-weight:700;cursor:pointer;width:100%;box-shadow:0 2px 8px color-mix(in srgb,var(--ac) 40%,transparent)}
+.bar{height:10px;background:var(--br);border-radius:9px;overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;width:64%;background:var(--grad)}
+.tit{display:flex;justify-content:space-between;align-items:center;margin:0 0 6px}
+.tit b{font-size:16px;letter-spacing:-.01em}
+.fin{font-size:12px;color:var(--mu);margin:6px 0 0}
+</style>
+</head>
+<body>
+<h1>Reto Saber · Preview de paletas</h1>
+<p class="guia">Así se vería la misma pantalla de pregunta con cada paleta: claro arriba, oscuro abajo. Dime cuál aplico como v34.1.</p>
+<div class="rejilla" id="rejilla"></div>
+<script>
+const PALETAS=[
+ {nombre:'Actual — Índigo→Violeta',ac:'#4f46e5',ac2:'#7c3aed',acD:'#818cf8'},
+ {nombre:'A — Azul Océano',ac:'#2563eb',ac2:'#06b6d4',acD:'#60a5fa'},
+ {nombre:'B — Verde Esmeralda',ac:'#059669',ac2:'#10b981',acD:'#34d399'},
+ {nombre:'C — Coral Cálido',ac:'#ea580c',ac2:'#f59e0b',acD:'#fb923c'},
+ {nombre:'D — Magenta Vibrante',ac:'#db2777',ac2:'#fb7185',acD:'#f472b6'}
+];
+const mock=p=>`
+ <div class="card">
+  <div class="tit"><b>Lección 3 · ¿A cuántos s equivalen 9 min?</b></div>
+  <button class="opt">54</button>
+  <button class="opt">69</button>
+  <button class="opt ok">✔ 540</button>
+  <button class="opt">5400</button>
+  <button class="cta" style="margin-top:8px">Continuar</button>
+  <div class="bar"><i></i></div>
+  <p class="fin">Racha 🔥 4 · XP +10</p>
+ </div>`;
+document.getElementById('rejilla').innerHTML=PALETAS.map(p=>{
+ const grad=`linear-gradient(135deg,${p.ac},${p.ac2})`,gradD=`linear-gradient(135deg,${p.acD},${p.ac2})`;
+ return `<div class="pal" style="--ac:${p.ac};--grad:${grad}">
+  <h2>${p.nombre}</h2>
+  <small>${p.ac} → ${p.ac2}</small>
+  <div class="demoL" style="--bg:#f6f7fb;--cd:#fff;--br:#e3e6ee;--tx:#1f2430;--mu:#6b7280;--ok:#16a34a;--grad:${grad};--ac:${p.ac}">${mock(p)}</div>
+  <div class="demoT" style="--bg:#12141b;--cd:#1c1f29;--br:#2c3040;--tx:#eef0f6;--mu:#9aa1b2;--ok:#22c55e;--grad:${gradD};--ac:${p.acD};--cdD:#232838">${mock(p)}</div>
+ </div>`;
+}).join('');
+</script>
+</body>
+</html>
