@@ -258,3 +258,15 @@ Las 5 paletas del preview quedaron **dentro de la app**: en **Perfil → Accesib
 **Módulo fuente:** `demo-html/modulos/v341-paletas.js` — bloque `<script>` (patrón v20+). Caché PWA a `rscp-v21` / `reto-saber-v19`.
 
 **Preview para elegir a ojo:** `public/preview-paletas.html` — abierto cerca del demo muestra las 5 paletas maquetadas (claro/oscuro).
+
+### v35 — Iconos propios (SVG) + colores por área
+
+Adiós a los emoji genéricos del sistema, que se ven distintos en cada teléfono:
+
+- **32 iconos SVG únicos** diseñados en la propia app (trazo redondeado, 24×24, `currentColor`): Camino (ruta con paradas), Cuentos (libro), Repaso (flechas), Carreras (birrete), Liga (trofeo), Perfil, corazón, llama, estrellas de lección, diana de misiones, pin, plan, cuaderno, bombilla de pista, candado, altavoz, nube sube/baja, calendario, alerta, check, corazón roto, duelo, medalla, gema, móvil, ojo… Cambian de color con el tema y **se escalan con la paleta que el usuario elija** (v34.1), porque usan `currentColor`.
+- **Reemplazo automático post-render** (árbol de texto del body, sin tocar las plantillas del juego): sobrevive a los re-renders y a las nuevas tarjetas de versiones futuras. Detalle curioso: el botón «Tarjetas» usaba un pushpin con codepoint no estándar (U+1F0CD) — también mapeado.
+- **Colores por área**: cada nodo del Camino y cada chip de área toma su color — Lectura **azul** `#2563eb`, Matemáticas/Razonamiento **naranja** `#ea580c`, Sociales/Ciudadanas **violeta** `#7c3aed`, Ciencias **verde** `#059669`, Inglés **magenta** `#db2777`, Comunicación Escrita **cian** `#0891b2`; las áreas de carrera de Saber Pro reciben un color estable derivado de su nombre. El nodo muestra el área en su `title` (accesible).
+- **Micro-interacción amable**: iconos que crecen sutilmente al pasar el dedo/cursor, el corazón de las vidas late y la llama de la racha flamea — todo dentro de `@media (prefers-reduced-motion: no-preference)`.
+- Los `::before` con ✓/✗ de aciertos y errores se conservan (gauges semánticos, no decoración).
+
+**Módulo fuente:** `demo-html/modulos/v35-area-iconos.js` — bloque `<script>` (patrón v20+) con CSS inyectado por el propio módulo (`#rs35css`). Caché PWA a `rscp-v22` / `reto-saber-v20`.
