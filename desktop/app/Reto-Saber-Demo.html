@@ -1305,16 +1305,40 @@ function iniciarSincronizacion(){
    por el formulario: si no hay sesion en la nube y DB.rec tiene credenciales,
    firma solo con esa misma cuenta. Max 3 intentos, siempre que siga activo. */
 var intentosAuto=0;
+/* v27.4: alta/recuperacion unificada. Si un camino falla, prueba el otro:
+   signIn sin usuario -> signUp; signUp ya registrado -> signIn. */
+function cloudAuth(modo,em,pw){
+  var A1=(modo==='up')
+    ?sb.auth.signUp({email:em,password:pw})
+    :sb.auth.signInWithPassword({email:em,password:pw});
+  return A1.then(function(r){
+    if(r&&r.data&&r.data.session)return r;
+    var err=(r&&r.error)?String(r.error.message||'').toLowerCase():'';
+    var sinUsuario=err.indexOf('invalid login')>=0||err.indexOf('not found')>=0||err.indexOf('no aplica')>=0;
+    var yaExiste=err.indexOf('already')>=0||err.indexOf('registered')>=0||err.indexOf('exists')>=0;
+    if(sinUsuario||yaExiste){
+      var A2=(modo==='up')
+        ?sb.auth.signInWithPassword({email:em,password:pw})
+        :sb.auth.signUp({email:em,password:pw});
+      return A2.then(function(r2){
+        if(r2&&r2.error&&r2.error.message)console.warn('[v27] Supabase:',r2.error.message);
+        return r2;
+      }).catch(function(){return null});
+    }
+    if(err)console.warn('[v27] Supabase:',(r&&r.error&&r.error.message)||err);
+    return null;
+  }).catch(function(){return null});
+}
+
 function autoSesion(){
   try{
     if(!sb||uid||arrancado||intentosAuto>2)return;
     intentosAuto++;
     var rec=(typeof DB!=='undefined'&&DB.rec)?DB.rec:null;
     if(!rec||!rec.em||!rec.pw)return;
-    sb.auth.signInWithPassword({email:rec.em,password:rec.pw}).then(function(r){
+    cloudAuth('in',rec.em,rec.pw).then(function(r){
       if(r&&r.data&&r.data.session){uid=r.data.session.user.id;pendiente=true;iniciarSincronizacion();}
-      else if(r&&r.error){console.warn('[v27] Supabase:',r.error.message);}
-    }).catch(function(){});
+    });
   }catch(e){}
 }
 
@@ -1340,20 +1364,16 @@ function restaurar(){
 function entrarEnLaNube(modo,em,pw){
   if(!sb||typeof S==='undefined'||S.view!=='app')return;
   if(!em||!pw)return;
-  var p=(modo==='up')
-    ?sb.auth.signUp({email:em,password:pw})
-    :sb.auth.signInWithPassword({email:em,password:pw});
-  p.then(function(r){
+  cloudAuth(modo,em,pw).then(function(r){
     if(r&&r.data&&r.data.session){uid=r.data.session.user.id;pendiente=true;iniciarSincronizacion();}
-    else if(r&&r.error)console.warn('[v27] Supabase:',r.error.message);
-  }).catch(function(){});
+  });
 }
 
 /* Login local fallo y la nube tiene la cuenta: firmar sesión, bajar progreso,
    fusionar y recargar (v27.2 — otro dispositivo). */
 function recuperarDeLaNube(em,pw){
   if(!sb||!em||!pw)return;
-  sb.auth.signInWithPassword({email:em,password:pw}).then(function(r){
+  cloudAuth('in',em,pw).then(function(r){
     if(!r||!r.data||!r.data.session)return;
     uid=r.data.session.user.id;
     sb.from('progreso').select('datos').eq('user_id',uid).single().then(function(x){
