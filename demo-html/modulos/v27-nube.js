@@ -180,8 +180,14 @@ function salir(){
   uid=null;pendiente=false;arrancado=false;intentosAuto=0;
 }
 
+/* v32: cambiar la contrasena en la nube (el juego ya la actualiza local con su hash) */
+function cambiarClave(pw){
+  if(!sb||!uid)return Promise.resolve(null);
+  return sb.auth.updateUser({password:pw});
+}
+
 /* API minima para pruebas y depuracion */
-window.RS27={fusionar:fusionar,estado:function(){return{uid:uid,arrancado:arrancado,configurado:!!(cfg.url&&cfg.clave)}},forzar:arrancar,subir:subir,bajar:bajar,salir:salir};
+window.RS27={fusionar:fusionar,estado:function(){return{uid:uid,arrancado:arrancado,configurado:!!(cfg.url&&cfg.clave)}},forzar:arrancar,subir:subir,bajar:bajar,salir:salir,cambiarClave:cambiarClave};
 
 /* API minima para pruebas y depuracion */
 var ya=false;

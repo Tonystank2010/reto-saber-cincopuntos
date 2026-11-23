@@ -95,6 +95,10 @@ Estética sin cambios de lógica: transiciones suaves en tarjetas, chips, opcion
 
 > Nota de seguridad: esta es una herramienta de estudio sin datos sensibles. No insertes contraseñas que uses en servicios reales.
 
+### Cambiar contraseña (v32)
+
+En **Perfil → 🔑 Cambiar contraseña**: valida tu clave actual, actualiza el hash local y la clave recordada, y si tienes sesión de nube la cambia también en Supabase Auth (`auth.updateUser`). Punto único de verdad para la misma cuenta en todos los dispositivos.
+
 La conexión usa la clave anon (pública por diseño); la protección real son las políticas RLS del SQL del punto 1. Sin red, el script de Supabase no carga y el juego queda local, sin errores.
 
 ## Despliegue en Vercel (estático, sin React)
