@@ -126,6 +126,21 @@ function entrarEnLaNube(modo,em,pw){
 
 /* Login local fallo y la nube tiene la cuenta: firmar sesión, bajar progreso,
    fusionar y recargar (v27.2 — otro dispositivo). */
+/* v28: bajar la nube a mano (visor del boton «Bajar de la nube» del perfil).
+   Fusiona solo si difiere y recarga una unica vez. */
+function bajar(){
+  if(!sb||!uid)return;
+  sb.from('progreso').select('datos').eq('user_id',uid).single().then(function(x){
+    var rem=x&&x.data&&x.data.datos;
+    if(rem){
+      var antes=leerLocal();
+      var nuevo=fusionar(rem);
+      if(nuevo&&JSON.stringify(nuevo)!==JSON.stringify(antes))location.reload();
+      else if(typeof render==='function')try{render()}catch(e){}
+    }
+  }).catch(function(e){console.warn('[v27] bajar:',(e&&e.message)||e)});
+}
+
 function recuperarDeLaNube(em,pw){
   if(!sb||!em||!pw)return;
   cloudAuth('in',em,pw).then(function(r){
@@ -160,7 +175,7 @@ function envolverAccion(nombre,modo){
 }
 
 /* API minima para pruebas y depuracion */
-window.RS27={fusionar:fusionar,estado:function(){return{uid:uid,arrancado:arrancado,configurado:!!(cfg.url&&cfg.clave)}},forzar:arrancar};
+window.RS27={fusionar:fusionar,estado:function(){return{uid:uid,arrancado:arrancado,configurado:!!(cfg.url&&cfg.clave)}},forzar:arrancar,subir:subir,bajar:bajar};
 
 /* API minima para pruebas y depuracion */
 var ya=false;

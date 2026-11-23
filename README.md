@@ -69,6 +69,15 @@ Opcional. Sin configurar, el juego es 100% local (como siempre). Para activar el
 5. Ya en el juego: al crear la cuenta o entrar, v27 registra/valida en Supabase Auth y sincroniza el progreso (`progreso.datos`) cada 30 s, al ocultar la pestaña y al cerrar.
 6. **Otro dispositivo**: con la misma URL/clave, entra con ese correo y contraseña → recupera su progreso. Lo mismo vale para el código de traspaso (v22) y la clave guardada (v23): mismo correo + contraseña.
 
+### Panel de nube en el Perfil (v28)
+
+El área de **Perfil** incluye la tarjeta «☁️ Nube (Supabase)» con el estado real de la sincronización (conectado / sin sesión / modo local) y dos botones manuales:
+
+- **Subir ahora**: envía inmediatamente tu progreso a la nube (upsert en `progreso` + `perfiles`), sin esperar el ciclo automático de 30 s.
+- **Bajar de la nube**: pide tu progreso guardado y lo fusiona (gana el mayor XP); solo recarga si algo cambió.
+
+Para depuración desde consola: `window.RS27.estado()` y también `window.RS27.subir()` / `window.RS27.bajar()`.
+
 La conexión usa la clave anon (pública por diseño); la protección real son las políticas RLS del SQL del punto 1. Sin red, el script de Supabase no carga y el juego queda local, sin errores.
 
 ## Despliegue en Vercel (estático, sin React)
