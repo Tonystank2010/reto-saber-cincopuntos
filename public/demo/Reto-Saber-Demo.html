@@ -1296,15 +1296,33 @@ function iniciarSincronizacion(){
   }
   setInterval(function(){if(pendiente)subir()},30000);
   setInterval(subir,120000);
+  setInterval(autoSesion,15000);
   document.addEventListener('visibilitychange',function(){if(document.hidden&&pendiente)subir()});
   window.addEventListener('beforeunload',function(){if(pendiente)subir()});
+}
+
+/* v27.3: el juego puede arrancar ya dentro (sesion recordada v23) sin pasar
+   por el formulario: si no hay sesion en la nube y DB.rec tiene credenciales,
+   firma solo con esa misma cuenta. Max 3 intentos, siempre que siga activo. */
+var intentosAuto=0;
+function autoSesion(){
+  try{
+    if(!sb||uid||arrancado||intentosAuto>2)return;
+    intentosAuto++;
+    var rec=(typeof DB!=='undefined'&&DB.rec)?DB.rec:null;
+    if(!rec||!rec.em||!rec.pw)return;
+    sb.auth.signInWithPassword({email:rec.em,password:rec.pw}).then(function(r){
+      if(r&&r.data&&r.data.session){uid=r.data.session.user.id;pendiente=true;iniciarSincronizacion();}
+      else if(r&&r.error){console.warn('[v27] Supabase:',r.error.message);}
+    }).catch(function(){});
+  }catch(e){}
 }
 
 function restaurar(){
   if(!sb)return;
   sb.auth.getSession().then(function(res){
     var s=res&&res.data&&res.data.session;
-    if(!s)return;
+    if(!s){autoSesion();return}
     uid=s.user.id;
     sb.from('progreso').select('datos').eq('user_id',uid).single()
       .then(function(r){
