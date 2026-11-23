@@ -231,3 +231,16 @@ La app no puede borrar la memoria del navegador, pero ahora ayuda a resolverlo e
 **Módulo fuente:** `demo-html/modulos/v33-clave.js` — inyectado como bloque `<script>` independiente (patrón v20–v32). Caché PWA a `rscp-v19` / `reto-saber-v17` para forzar la actualización en dispositivos con el demo ya instalado.
 
 **Consejo del lado del celular:** al entrar por primera vez desde un dispositivo, si el gestor ofrece una clave y falla, usa «Ver clave», bórrala y escribe la correcta; luego el navegador ofrecerá actualizar la clave guardada — acepta y quedará sincronizada para la próxima.
+
+### v34 — Diseño ed-tech moderno (lección y examen) con modo oscuro incluido
+
+Dirección elegida: **ed-tech moderno** con foco en las pantallas donde vive el 80 % del tiempo de estudio (Camino → pregunta → resultado), y modo oscuro rediseñado junto al claro.
+
+- **Design tokens**: acento dual índigo→violeta (`--grad`), sombras de profundidad sutil (`--shC`/`--shA`), radios ampliados (tarjetas 20 px).
+- **Pregunta**: opciones `.opt` táctiles (radios 14 px, hover con borde acento, anillo al seleccionar, `:active` que «hunde» la opción), retroalimentación con barra lateral verde/roja.
+- **Botones primarios**: gradiente índigo→violeta con elevación; chips activos con tinte suave; barra de progreso CN con gradiente.
+- **Nodos del Camino**: hover con leve zoom (respeta `prefers-reduced-motion`).
+- **Modo oscuro**: superficies elevadas diferenciadas (`--cd2`) para opciones y campos, sombras recalibradas, acento más luminoso — funciona tanto con el interruptor del demo (`data-th`) como con el tema del sistema operativo.
+- Todo CSS puro, sin animaciones nuevas que rompan la accesibilidad; respeta el mecanismo original de tokens.
+
+**Módulo fuente:** `demo-html/modulos/v34-diseno.css` — inyectado como `<style>` estático (patrón v30). Caché PWA a `rscp-v20` / `reto-saber-v18`.

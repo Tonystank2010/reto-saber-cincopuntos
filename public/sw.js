@@ -1,6 +1,6 @@
 // Service worker de Reto Saber · Cinco Puntos: guarda la app para abrirla sin conexión.
 // Requiere HTTPS (Vercel lo provee) y se actualiza al cambiar el cache name.
-const V = 'rscp-v19'
+const V = 'rscp-v20'
 const ARCH = ['/', '/demo/Reto-Saber-Demo.html', '/manifest.webmanifest', '/icon.svg']
 self.addEventListener('install', e => e.waitUntil(caches.open(V).then(c => c.addAll(ARCH))))
 self.addEventListener('activate', e => e.waitUntil(
