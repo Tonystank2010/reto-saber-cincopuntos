@@ -76,7 +76,24 @@ El área de **Perfil** incluye la tarjeta «☁️ Nube (Supabase)» con el esta
 - **Subir ahora**: envía inmediatamente tu progreso a la nube (upsert en `progreso` + `perfiles`), sin esperar el ciclo automático de 30 s.
 - **Bajar de la nube**: pide tu progreso guardado y lo fusiona (gana el mayor XP); solo recarga si algo cambió.
 
-Para depuración desde consola: `window.RS27.estado()` y también `window.RS27.subir()` / `window.RS27.bajar()`.
+Para depuración desde consola: `window.RS27.estado()` y también `window.RS27.subir()` / `window.RS27.bajar()` / `window.RS27.salir()`.
+
+### Cuenta regresiva para el examen (v29)
+
+Camino incluye la tarjeta «🎯 Mi examen»: guardas la fecha de tu citación (el ICFES publica fechas oficiales) y ves los días restantes con una sugerencia de estudio. La fecha vive en tu usuario, así que se sincroniza con la nube como el resto del progreso.
+
+### Pulido visual (v30)
+
+Estética sin cambios de lógica: transiciones suaves en tarjetas, chips, opciones y barra de progreso; micro-animación al acertar; estados `:focus-visible` para navegación por teclado; sombras sutiles en tarjetas y barra inferior. Todo respeta `prefers-reduced-motion` (si tu sistema pide menos movimiento, no se anima nada).
+
+### Seguridad y privacidad (v31)
+
+- **Content-Security-Policy** en el HTML: limita scripts al propio origen + CDN oficial (`https://cdn.jsdelivr.net`), conexiones solo a tu proyecto Supabase, y bloquea objetos/frames externos.
+- **Opt-out de «recordar mi contraseña»**: casilla visible en el formulario de entrada/creación (marcada por defecto para no cambiar la comodidad actual). Si la desmarcas, la clave no quedará guardada en ese dispositivo.
+- **Tarjeta «🛡️ Privacidad, fuentes y legal»** en el Perfil: donde viven tus datos (dispositivo local + tu propia base Supabase), ausencia de rastreadores, atribución al ICFES y aviso de no afiliación.
+- **«Olvidar este dispositivo»**: borra la contraseña recordada y cierra la sesión de nube en ese dispositivo, sin tocar tu progreso local.
+
+> Nota de seguridad: esta es una herramienta de estudio sin datos sensibles. No insertes contraseñas que uses en servicios reales.
 
 La conexión usa la clave anon (pública por diseño); la protección real son las políticas RLS del SQL del punto 1. Sin red, el script de Supabase no carga y el juego queda local, sin errores.
 

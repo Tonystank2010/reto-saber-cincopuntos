@@ -174,8 +174,14 @@ function envolverAccion(nombre,modo){
   }catch(e){}
 }
 
+/* v31: cerrar sesion de nube en este dispositivo (sin borrar progreso local) */
+function salir(){
+  if(sb){try{sb.auth.signOut()}catch(e){}}
+  uid=null;pendiente=false;arrancado=false;intentosAuto=0;
+}
+
 /* API minima para pruebas y depuracion */
-window.RS27={fusionar:fusionar,estado:function(){return{uid:uid,arrancado:arrancado,configurado:!!(cfg.url&&cfg.clave)}},forzar:arrancar,subir:subir,bajar:bajar};
+window.RS27={fusionar:fusionar,estado:function(){return{uid:uid,arrancado:arrancado,configurado:!!(cfg.url&&cfg.clave)}},forzar:arrancar,subir:subir,bajar:bajar,salir:salir};
 
 /* API minima para pruebas y depuracion */
 var ya=false;
