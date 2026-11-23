@@ -1545,6 +1545,67 @@ try{
 
 </script>
 <script>
+/* ---- v29: cuenta regresiva para el examen ----
+   El usuario guarda la fecha de su examen (vive en su usuario -> se sincroniza a la nube).
+   Card en Camino con días restantes y sugerencia de estudio, sin inventar fechas de ICFES. */
+(function(){
+'use strict';
+if(window.self!==window.parent)return;
+
+function diasRest(f){
+  var t=new Date(f+'T00:00:00');
+  if(isNaN(t.getTime()))return NaN;
+  var h=new Date();h.setHours(0,0,0,0);
+  return Math.round((t.getTime()-h.getTime())/864e5);
+}
+
+function card(u){
+  var f=u.fex||'';
+  if(!f)return'<div class="card" data-v29="1"><b>🎯 Mi examen</b><p class="mu">Elige la fecha de tu examen para ver tu cuenta regresiva y un recordatorio en el Camino. (El ICFES publica fechas oficiales: elige la de tu citación.)</p><div class="row"><input id="fex29" type="date" style="max-width:210px"><button data-a="fex">Guardar fecha</button></div></div>';
+  var d=diasRest(f),msg,sug='concertado';
+  if(isNaN(d))msg='Fecha no válida; actualízala.';
+  else if(d<0)msg='Tu examen fue el '+esc(f)+'. Si tienes nueva fecha, actualízala.';
+  else if(d===0)msg='¡HOY es tu examen! 🍀 Mucha suerte: lee con calma, respira y confía en tu preparación.';
+  else if(d===1)msg='Tu examen es MAÑANA. Descansa bien hoy y repasa solo tus preguntas marcadas (Repaso y Perfil).';
+  else msg='Tu examen es en <b>'+d+' días</b> ('+esc(f)+').';
+  if(d===1)sug='Esta noche: revisa el glosario y las estrategias; no empieces temas nuevos.';
+  else if(d>0&&!isNaN(d))sug='Con '+Math.max(1,Math.round(d/7))+' semana(s): mantén tu plan diario y un simulacro por semana.';
+  return'<div class="card" data-v29="1"><b>🎯 Mi examen</b><p>'+msg+'</p>'+(sug?'<p class="mu">'+sug+'</p>':'')+'<div class="row" style="margin-top:6px"><input id="fex29" type="date" value="'+esc(f)+'" style="max-width:210px"><button class="g" data-a="fex">Cambiar fecha</button><button class="g" data-a="fdel">Quitar</button></div></div>';
+}
+
+function inyectar(){
+  try{
+    if(document.querySelector('[data-v29]'))return;
+    var sv=null;try{sv=S}catch(e){}
+    var u=null;try{u=U()}catch(e){}
+    if(!sv||sv.view!=='app'||sv.tab!=='camino'||sv.L||!u)return;
+    var main=document.querySelector('main');if(!main)return;
+    main.insertAdjacentHTML('afterbegin',card(u));
+  }catch(e){}
+}
+
+try{
+  var _r29=render;
+  render=function(){var r=_r29.apply(this,arguments);try{(S&&S.view==='app'&&S.tab==='camino')&&inyectar()}catch(e){}return r};
+}catch(e){}
+
+try{
+  Object.assign(A,{
+    fex:function(){var el=document.getElementById('fex29');if(!el||!el.value)return;
+      var d=diasRest(el.value);
+      if(isNaN(d)){alert('Fecha no válida.');return}
+      if(d<0&&!confirm('Esa fecha ya pasó ('+el.value+'). ¿Guardarla de todos modos?'))return;
+      var u=U();u.fex=el.value;save();render()},
+    fdel:function(){var u=U();delete u.fex;save();render()}
+  });
+}catch(e){}
+/* v31-fix: auto-inyeccion al arranque (el bootstrap inicial renderiza antes de instalar wrappers) */
+try{setTimeout(inyectar,0)}catch(e){}
+window.RS29={diasRest:diasRest};
+})();
+
+</script>
+<script>
 /* ---- v31: seguridad y privacidad ----
    a) Opt-out de «recordar contraseña»: checkbox en el formulario; si se desmarca,
       no se guarda la clave en este dispositivo (v23 solo guardaba siempre).
@@ -1624,67 +1685,6 @@ try{
 
 /* API minima para pruebas */
 window.RS31={olvidar:olvidar,quieroRec:quieroRec};
-})();
-
-</script>
-<script>
-/* ---- v29: cuenta regresiva para el examen ----
-   El usuario guarda la fecha de su examen (vive en su usuario -> se sincroniza a la nube).
-   Card en Camino con días restantes y sugerencia de estudio, sin inventar fechas de ICFES. */
-(function(){
-'use strict';
-if(window.self!==window.parent)return;
-
-function diasRest(f){
-  var t=new Date(f+'T00:00:00');
-  if(isNaN(t.getTime()))return NaN;
-  var h=new Date();h.setHours(0,0,0,0);
-  return Math.round((t.getTime()-h.getTime())/864e5);
-}
-
-function card(u){
-  var f=u.fex||'';
-  if(!f)return'<div class="card" data-v29="1"><b>🎯 Mi examen</b><p class="mu">Elige la fecha de tu examen para ver tu cuenta regresiva y un recordatorio en el Camino. (El ICFES publica fechas oficiales: elige la de tu citación.)</p><div class="row"><input id="fex29" type="date" style="max-width:210px"><button data-a="fex">Guardar fecha</button></div></div>';
-  var d=diasRest(f),msg,sug='concertado';
-  if(isNaN(d))msg='Fecha no válida; actualízala.';
-  else if(d<0)msg='Tu examen fue el '+esc(f)+'. Si tienes nueva fecha, actualízala.';
-  else if(d===0)msg='¡HOY es tu examen! 🍀 Mucha suerte: lee con calma, respira y confía en tu preparación.';
-  else if(d===1)msg='Tu examen es MAÑANA. Descansa bien hoy y repasa solo tus preguntas marcadas (Repaso y Perfil).';
-  else msg='Tu examen es en <b>'+d+' días</b> ('+esc(f)+').';
-  if(d===1)sug='Esta noche: revisa el glosario y las estrategias; no empieces temas nuevos.';
-  else if(d>0&&!isNaN(d))sug='Con '+Math.max(1,Math.round(d/7))+' semana(s): mantén tu plan diario y un simulacro por semana.';
-  return'<div class="card" data-v29="1"><b>🎯 Mi examen</b><p>'+msg+'</p>'+(sug?'<p class="mu">'+sug+'</p>':'')+'<div class="row" style="margin-top:6px"><input id="fex29" type="date" value="'+esc(f)+'" style="max-width:210px"><button class="g" data-a="fex">Cambiar fecha</button><button class="g" data-a="fdel">Quitar</button></div></div>';
-}
-
-function inyectar(){
-  try{
-    if(document.querySelector('[data-v29]'))return;
-    var sv=null;try{sv=S}catch(e){}
-    var u=null;try{u=U()}catch(e){}
-    if(!sv||sv.view!=='app'||sv.tab!=='camino'||sv.L||!u)return;
-    var main=document.querySelector('main');if(!main)return;
-    main.insertAdjacentHTML('afterbegin',card(u));
-  }catch(e){}
-}
-
-try{
-  var _r29=render;
-  render=function(){var r=_r29.apply(this,arguments);try{(S&&S.view==='app'&&S.tab==='camino')&&inyectar()}catch(e){}return r};
-}catch(e){}
-
-try{
-  Object.assign(A,{
-    fex:function(){var el=document.getElementById('fex29');if(!el||!el.value)return;
-      var d=diasRest(el.value);
-      if(isNaN(d)){alert('Fecha no válida.');return}
-      if(d<0&&!confirm('Esa fecha ya pasó ('+el.value+'). ¿Guardarla de todos modos?'))return;
-      var u=U();u.fex=el.value;save();render()},
-    fdel:function(){var u=U();delete u.fex;save();render()}
-  });
-}catch(e){}
-/* v31-fix: auto-inyeccion al arranque (el bootstrap inicial renderiza antes de instalar wrappers) */
-try{setTimeout(inyectar,0)}catch(e){}
-window.RS29={diasRest:diasRest};
 })();
 
 </script>
@@ -1769,6 +1769,57 @@ try{
   });
 }catch(e){}
 window.RS32={version:'32'};
+})();
+
+</script>
+<script>
+/* ---- v33: ojo para ver la clave + aviso de autocompletado ----
+   Problema: el gestor de contrasenas del celular (Google/Chrome) rellena solito
+   una clave ANTIGUA guardada de este sitio y el acceso falla.
+   Solucion desde la app:
+   a) Boton "Ver" junto al campo de clave para VER que se autocompleto y corregirlo a mano.
+   b) Aviso visible en la pantalla de acceso sobre claves autocompletadas antiguas. */
+(function(){
+'use strict';
+if(window.self!==window.parent)return;
+
+function inyectar(){
+  try{
+    if(S&&S.view!=='auth')return;
+    var pw=document.getElementById('pw');if(!pw)return;
+    if(document.getElementById('rs33ojo'))return;
+    var lbl=pw.closest('label')||pw;
+    /* boton ojo: despues del label de la clave */
+    lbl.insertAdjacentHTML('afterend','<div style="display:flex;gap:8px;align-items:center;margin-top:-8px"><button type="button" class="chip" id="rs33ojo" data-a="rs33ojo" aria-label="Mostrar u ocultar la contrasena">&#128065; Ver clave</button></div>');
+    /* aviso de autocompletado */
+    lbl.insertAdjacentHTML('afterend','<p class="mu" id="rs33aviso" style="font-size:.9em">&#9888;&#65039; Si tu navegador o Google complet&oacute; la clave y da error, puede estar poniendo una clave <b>antigua guardada</b>: pulsa &laquo;Ver clave&raquo; para revisarla, b&oacute;rrala y escr&iacute;bela a mano.</p>');
+  }catch(e){}
+}
+
+function ojo(){
+  try{
+    var pw=document.getElementById('pw');if(!pw)return;
+    var mostrar=(pw.type==='password');
+    pw.type=mostrar?'text':'password';
+    var b=document.getElementById('rs33ojo');
+    if(b)b.innerHTML=(mostrar?'&#128064; Ocultar':'&#128065; Ver')+' clave';
+  }catch(e){}
+}
+
+try{
+  var _r33=render;
+  render=function(){var r=_r33.apply(this,arguments);
+    try{(S&&S.view==='auth')&&setTimeout(inyectar,0)}
+    catch(e){}
+    return r};
+}catch(e){}
+
+try{setTimeout(inyectar,0)}catch(e){}
+
+try{Object.assign(A,{rs33ojo:function(){ojo()}})}catch(e){}
+
+/* API minima para pruebas */
+window.RS33={ver:document.getElementById.bind(document)};
 })();
 
 </script>

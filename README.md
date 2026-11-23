@@ -217,3 +217,17 @@ Mejoras en pantallas **móviles y tabletas pequeñas** (ancho ≤ 767 px), sin t
 En tabletas y escritorio (≥ 768 px) nada cambia. El archivo es autocontenido: los ajustes viajan dentro del propio HTML (style `#v26-resp`), así que la versión descargada (v25: «Descargar el juego») también incluye el modo responsive.
 
 **Módulos fuente:** `demo-html/modulos/v26-responsive-general.js` — inyectado igual que v20–v25.
+
+### v33 — Ojo de contraseña + aviso de autocompletado
+
+Problema detectado en la prueba multi-dispositivo: el gestor de contraseñas del celular (Google/Chrome) rellena solito una **clave antigua guardada** de este sitio y el acceso falla con «correo o contraseña incorrectos», aunque la clave real sea correcta.
+
+La app no puede borrar la memoria del navegador, pero ahora ayuda a resolverlo en segundos:
+
+- **Botón «👁 Ver clave»** junto al campo de contraseña (pantalla de acceso): muestra/oculta la clave para revisar qué autocompletó el navegador y corregirla a mano.
+- **Aviso visible** bajo el campo: explica que si el navegador completó la clave y da error, puede tratarse de una clave antigua guardada; se puede borrar y escribirla a mano.
+- No cambia nada del flujo de acceso ni de la nube; solo añade el botón y el aviso cuando se ve `S.view==='auth'`.
+
+**Módulo fuente:** `demo-html/modulos/v33-clave.js` — inyectado como bloque `<script>` independiente (patrón v20–v32). Caché PWA a `rscp-v19` / `reto-saber-v17` para forzar la actualización en dispositivos con el demo ya instalado.
+
+**Consejo del lado del celular:** al entrar por primera vez desde un dispositivo, si el gestor ofrece una clave y falla, usa «Ver clave», bórrala y escribe la correcta; luego el navegador ofrecerá actualizar la clave guardada — acepta y quedará sincronizada para la próxima.
