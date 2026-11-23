@@ -1272,8 +1272,7 @@ function fusionar(rem){
     else cur=Object.keys(out.users)[0]||null;
     out.cur=cur;
     ['pref','est','tm','dst','rep'].forEach(function(j){if(rem[j]!==undefined)out[j]=rem[j]});
-    guardarLocal(out);
-    if(typeof save==='function')save();
+    guardarLocal(out);  /* v27.5: SIN save() — save() reescribiria el DB viejo en memoria y desharia la fusion (causa del bucle de recargas) */
     return out;
   }catch(e){return null}
 }
@@ -1352,9 +1351,11 @@ function restaurar(){
       .then(function(r){
         var rem=r&&r.data&&r.data.datos;
         if(rem){
+          /* v27.5: comparar ANTES vs DESPUES de fusionar (no despues de save(),
+             que reescribia el DB viejo y forzaba un reload eterno) */
+          var antes=leerLocal();
           var nuevo=fusionar(rem);
-          var mismo=nuevo&&JSON.stringify(nuevo)===JSON.stringify(leerLocal());
-          if(!mismo){location.reload();return}
+          if(nuevo&&JSON.stringify(nuevo)!==JSON.stringify(antes)){location.reload();return}
         }
         iniciarSincronizacion();
       }).catch(function(){iniciarSincronizacion()});
@@ -1378,7 +1379,11 @@ function recuperarDeLaNube(em,pw){
     uid=r.data.session.user.id;
     sb.from('progreso').select('datos').eq('user_id',uid).single().then(function(x){
       var rem=x&&x.data&&x.data.datos;
-      if(rem){fusionar(rem);location.reload()}
+      if(rem){
+        var antes=leerLocal();            /* v27.5: recargar solo si la fusion cambio algo */
+        var nuevo=fusionar(rem);
+        if(nuevo&&JSON.stringify(nuevo)!==JSON.stringify(antes))location.reload();
+      }
     }).catch(function(){});
   }).catch(function(){});
 }
