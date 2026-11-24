@@ -149,10 +149,16 @@ function accesorio(tipo,f,colBase){
     const w=cw*0.62,l=50-w/2;
     return`<path d="M${l} ${ty+2}l3.5-10 6.5 7 6-10 7 10 6.5-7 3.5 10z" style="fill:#fbbf24"/><path d="M${l} ${ty+2}h${w}v3.5h-${w}z" style="fill:#f59e0b"/><circle cx="${50}" cy="${ty-1}" r="1.8" style="fill:#fde68a"/>`;
   }
-  if(tipo===6){ /* auriculares: diadema + almohadillas */
-    const p=cw/2+5;
-    return`<path d="M${50-p} ${g.ey-2}q0 -${g.ey-ty+16} ${p*2} 0" style="fill:none;stroke:#334155;stroke-width:4;stroke-linecap:round"/>`
-     +`<rect x="${50-p-4.5}" y="${g.ey-4}" width="9" height="13" rx="4" style="fill:#475569"/><rect x="${50+p-4.5}" y="${g.ey-4}" width="9" height="13" rx="4" style="fill:#475569"/>`;
+  if(tipo===6){ /* auriculares: diadema acolchada con brillo + copas ovaladas con interior */
+    const p=cw/2+5,yb=g.ey+3,tp=g.ty-13;
+    const cpcb='#334155',cpin='#475569';
+    const copa=sx=>`<ellipse cx="${50+sx*p}" cy="${yb+5}" rx="6.8" ry="10" style="fill:${cpcb};stroke:rgba(0,0,0,.25);stroke-width:1.5"/>`
+      +`<ellipse cx="${50+sx*p}" cy="${yb+5}" rx="4.1" ry="6.8" style="fill:${cpin}"/>`
+      +`<circle cx="${50+sx*p}" cy="${yb+1.5}" r="1.5" style="fill:rgba(255,255,255,.38)"/>`
+      +`<rect x="${50+sx*p-2}" y="${yb-9}" width="4" height="8" rx="2" style="fill:${cpcb}"/>`;
+    return`<path d="M${50-p-3} ${yb} C ${50-p-3} ${tp} ${50+p+3} ${tp} ${50+p+3} ${yb}" style="fill:none;stroke:${cpcb};stroke-width:5.5;stroke-linecap:round"/>`
+      +`<path d="M${50-p-3} ${yb-1.5} C ${50-p-3} ${tp+4} ${50+p+3} ${tp+4} ${50+p+3} ${yb-1.5}" style="fill:none;stroke:rgba(255,255,255,.30);stroke-width:1.6;stroke-linecap:round"/>`
+      +copa(-1)+copa(1);
   }
   return'';
 }
@@ -410,6 +416,7 @@ try{Object.assign(A,{rs37v:function(v){const p=String(v).split(':');delta(p[0],p
 window.RS37={cfg:cfg,random:random,svg:avatarSVG,mini:miniAvatar,inyectar:inyectarTodo,inyectarFB:inyectarFBp,FORMAS:FORMAS,COLORES:COLORES};
 window.RS36=window.RS37;
 })();
+
 </script>
 <script>
 var col='#4f46e5';

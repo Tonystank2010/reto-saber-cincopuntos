@@ -224,7 +224,7 @@ function camino0(u){const ex=CAT.examenes.map(e=>`<button class="chip ${e.id===S
 function repaso0(u){const d=u.rev.filter(x=>x.due<=Date.now()).length;
  return`<div class="card"><b>Repaso</b><p>${u.rev.length?`Tienes <b>${u.rev.length}</b> pregunta(s) para repasar, <b>${d}</b> lista(s) hoy. Aquí no hay tiempo límite ni se gastan vidas, y te explico cada error.`:'No tienes errores por repasar. Las preguntas que falles aparecerán aquí.'}</p><button data-a="rev" ${u.rev.length?'':'disabled'}>${d||!u.rev.length?'Repasar ahora':'Adelantar repaso'}</button></div>`}
 function liga(u){const rows=Object.values(DB.users).filter(x=>x!==u&&x.liga===u.liga&&x.wk===wk()).map(x=>({n:x.name,xp:x.wxp})).concat([{n:u.name,xp:u.wxp,me:1}]),b=board(wk(),u.liga,(dow()+1)/7,rows);
- return`<div class="card"><b>🏆 Liga ${LG[u.liga]}</b><p class="mu">Los 3 primeros suben y los 3 últimos bajan al cerrar la semana. Rivales ficticios y cuentas de este dispositivo.</p>${b.map((x,i)=>`<div class="lg ${x.me?'me':''} ${i<3?'up':i>=b.length-3?'dn':''}"><b>${i+1}</b><span>${esc(x.n)}${x.me?' (tú)':''}</span>${x.xp} XP</div>`).join('')}</div>`}
+ return`<div class="card"><b>🏆 Liga ${LG[u.liga]}</b><p class="mu">Los 3 primeros suben y los 3 últimos bajan al cerrar la semana. Con la nube activa compites contra cuentas reales sincronizadas (marca nube); las demás son cuentas de este dispositivo o rivales de ejemplo.</p>${b.map((x,i)=>`<div class="lg ${x.me?'me':''} ${i<3?'up':i>=b.length-3?'dn':''}"><b>${i+1}</b><span>${esc(x.n)}${x.me?' (tú)':x.rs?' · nube':''}</span>${x.xp} XP${x.me?'':` <button class="g rs41d" data-a="rs41d" data-v="${encodeURIComponent(x.n)}" aria-label="Duelar contra ${esc(x.n)}">Duelar</button>`}</div>`).join('')}</div>`}
 function perfil0(u){return`<div class="card"><b>${esc(u.name)}</b> <span class="mu">${esc(u.email)} ${esc(u.grado)}</span><p>⭐ ${u.xp} XP · 🔥 racha ${u.streak} · ❤️ ${u.v}/5 · 🏅 ${LG[u.liga]}<br>Aciertos: ${u.ok} de ${u.tot}${u.tot?` (${Math.round(u.ok/u.tot*100)}%)`:''}</p></div>
 ${ST(u).diag?`<div class="card"><b>Evaluación de admisión · ${S.exam}</b>${diagRes(ST(u).diag,ST(u).hist)}<button class="g" data-a="diag">Repetir evaluación</button></div>`:''}
 <div class="card"><div class="row"><button class="g" data-a="out">Cerrar sesión</button><button class="g" data-a="del">Eliminar cuenta</button></div><p class="mu">Las cuentas viven solo en este navegador.${mem?' ⚠️ Tu navegador bloqueó el guardado: el progreso se perderá al cerrar.':''}</p></div>`}
@@ -276,7 +276,9 @@ function cuEnd(L){const ok=L.ok>=2;return`<div class="card"><h2>${ok?'¡Etapa su
 function banner(u){let h='';vidas(u);if(u.v<=0)h+=`<div class="card">💔 <b>Te quedaste sin vidas</b><p>${u.vr<3?`Haz una evaluación de 5 preguntas (3 aciertos para aprobar) y recupera 1 vida. Recuperadas: ${u.vr} de 3.`:'Ya recuperaste 3 vidas con evaluaciones.'} Si no la haces, todas tus vidas vuelven en ${tleft(u)}.</p>${u.vr<3?'<button data-a="vid">Evaluación para recuperar una vida</button>':''}</div>`;else if(u.vt&&u.v<5)h+=`<p class="mu">❤️ Tus vidas se completan en ${tleft(u)}.</p>`;if(ST(u).dg)h+=`<div class="card">⏸️ <b>Evaluación en pausa</b><p>Vas por la pregunta ${ST(u).dg.i+1} de ${ST(u).dg.qs.length}.</p><button data-a="dgr">Continuar</button></div>`;
  if(ST(u).diag&&!ST(u).dg){const c=sc(ST(u).diag),w=AR.slice().sort((a,b)=>c[a]-c[b])[0],x=ST(u).diag[w];h+=`<div class="card">🧭 <b>Tu siguiente paso (sugerido)</b><p>Tu área con más oportunidad es ${esc(w)} (${c[w]}/100). Empieza en nivel ${NIV[rec(x.ok/x.tot)]}. Puedes elegir otra ruta.</p><button class="g" data-a="sug" data-v="${esc(w+'|'+rec(x.ok/x.tot))}">Ir allí</button></div>`}return h}
 const camino=u=>misionesCard(u)+banner(u)+plan(u)+ds(u)+camino0(u)+(S.exam==='Saber 11'?'':'<p class="mu">Contenido inicial de muestra para Saber Pro y TyT: mezcla preguntas propias y de apoyo; faltan más preguntas originales de este nivel.</p>');
-const perfil=u=>perfil0(u)+dominioCard(u)+metaCard(u)+evo(u)+ins(u)+histCard(u)+marcCard(u)+fichaCard()+vozCard()+pilotoCard(u)+panelCard(u)+copiaCard()+bancoCard()+acc()+`<div class="card"><b>Tiempo por pregunta</b><p class="mu">Cada pregunta de las lecciones y evaluaciones tiene 45 s; si se agota, cuenta como fallada y pierdes una vida. En el Repaso y en Cuentos no hay límite. Si necesitas más tiempo por accesibilidad, puedes duplicarlo.</p><button class="${u.reto?'':'g'}" data-a="reto">${u.reto?'Volver a 45 s':'Ampliar a 90 s'}</button><p class="mu">📓 Diario de lectura: ${u.diario.length} entrada(s), solo visibles para ti.</p></div>`;
+const pctabs=()=>{const t=(S.ptab||'prog');return `<div class="row rs41pc" style="margin-bottom:6px">${[['perso','Personalizar'],['prog','Progreso'],['ajus','Ajustes']].map(x=>`<button class="chip${t===x[0]?' on':''}" data-a="ptab" data-v="${x[0]}" aria-pressed="${t===x[0]}">${x[1]}</button>`).join('')}</div>`};
+const perfil=u=>{if(!S.ptab)S.ptab='prog';const seg={perso:'',prog:perfil0(u)+dominioCard(u)+metaCard(u)+evo(u)+ins(u)+histCard(u)+marcCard(u),ajus:fichaCard()+vozCard()+pilotoCard(u)+panelCard(u)+copiaCard()+bancoCard()+acc()+`<div class="card"><b>Tiempo por pregunta</b><p class="mu">Cada pregunta de las lecciones y evaluaciones tiene 45 s; si se agota, cuenta como fallada y pierdes una vida. En el Repaso y en Cuentos no hay límite. Si necesitas más tiempo por accesibilidad, puedes duplicarlo.</p><button class="${u.reto?'':'g'}" data-a="reto">${u.reto?'Volver a 45 s':'Ampliar a 90 s'}</button><p class="mu">📓 Diario de lectura: ${u.diario.length} entrada(s), solo visibles para ti.</p></div>`}[S.ptab]||'';return pctabs()+seg};
+A.ptab=v=>{S.ptab=v;S.L=null;S.R=null;stopTTS();render()};
 function cuentos(u){const e=u.cu.e;return`<div class="card"><b>📖 Cuentos · Lectura crítica</b><p class="mu">Cuento de muestra. Cada etapa reduce las ayudas hasta leer sin asistencia.</p><div class="mu">Madurez lectora: ${Math.round(e/4*100)} % (solo sube al superar etapas con buena comprensión)</div><div class="bar"><i style="width:${e/4*100}%"></i></div><p>Nivel: <b>${ET[Math.min(e,3)].n}</b></p>${ET.map((x,i)=>`<button class="opt" data-a="ro" data-v="${i}" ${i>e?'disabled':''}>${i>e?'🔒':i<e?'✓':'▶'} Etapa ${i+1} · ${x.n}</button>`).join('')}</div>`}
 function reader(u){const R=S.R,a=ET[R.e];return`<div class="top"><button class="g" data-a="home" aria-label="Salir">✕</button><b>Etapa ${R.e+1} · ${a.n}</b></div><div class="card"><h3>${esc(CU.t)}</h3><p id="st">${CU.s.map((x,i)=>`<span class="${R.t.res&&R.i===i?'hl':''}">${esc(x)}</span>`).join(' ')}</p><div class="row"><label><input type="checkbox" data-a="tg" data-v="nar" ${R.t.nar?'checked':''}> Narración</label><label><input type="checkbox" data-a="tg" data-v="res" ${R.t.res?'checked':''}> Resaltado</label></div>${R.t.nar?'<div class="row"><button class="g" data-a="sp">▶ Escuchar</button><select id="vel"><option value="1">Velocidad normal</option><option value=".8">Pausada</option><option value="1.2">Rápida</option></select></div>':''}<p class="mu">${a.pis===1?'Tendrás pistas durante las preguntas.':a.pis===2?'Las pistas aparecen al terminar cada pregunta.':'Sin pistas en esta etapa.'}</p><button data-a="rq">Ir a las preguntas</button></div>`}
 const stopTTS=()=>{if(window.speechSynthesis)speechSynthesis.cancel()},nx=L=>{L.i++;L.sel=null;L.chk=0;L.to=0;L.hint=0;L.tr=0;L.q0=Date.now();L.cf=null;L.t0=L.t0?Date.now():0};
@@ -520,7 +522,7 @@ setInterval(()=>{const L=S.L;if(!L||L.kind!=='con'||L.end)return;const left=L.du
 /* envolturas */
 const _lesson=lesson;lesson=function(){const L=S.L;if(L){if(L.kind==='flash'&&!L.end)return flashView(L);if(L.kind==='con'&&!L.end)return conView(L);if(L.end&&['duel','flash','con'].includes(L.kind))return endNew(L)}
  let h=_lesson();if(L&&!L.end&&!L.intro&&!L.blk&&L.qs&&L.qs[L.i]&&L.kind!=='flash'&&L.kind!=='con'){h=h.replace('<div class="card">','<div class="card">'+markBtn(L.qs[L.i]));
-  if(L.kind==='duel')h=`<div class="card" role="status">⚔️ <b>Tú ${L.su}</b> · <b>${esc(L.bn)} ${L.bs}</b> <span class="mu">(pregunta ${L.i+1} de ${L.qs.length})${L.chk&&L.bl?' · '+(L.bl[L.i]?'el bot acertó':'el bot falló'):''}</span></div>`+h}return h};
+  if(L.kind==='duel')h=`<div class="card" role="status">⚔️ <b>Tú ${L.su}</b> · <b>${esc(L.bn)} ${L.bs}</b> <span class="mu">(pregunta ${L.i+1} de ${L.qs.length})${L.chk&&L.bl?' · '+(L.bl[L.i]?(L.rival?'tu rival acertó':'el bot acertó'):(L.rival?'tu rival falló':'el bot falló')):''}</span></div>`+h}return h};
 const _answer=answer;answer=function(sel,to){const L=S.L,q=L.qs[L.i],ok=sel===q.respuesta;_answer(sel,to);rec(q,ok);if(ok)misAdd('ac',1);
  if(L.kind==='duel'){L.bl=L.bl||[];const b=Math.random()<L.bp;L.bl[L.i]=b;if(b)L.bs++;if(ok)L.su++}
  if(DB.pref&&DB.pref.tts&&window.speechSynthesis){try{speechSynthesis.cancel();const t=new SpeechSynthesisUtterance(q.explicacion);t.lang='es-ES';t.rate=DB.pref.rate||1;speechSynthesis.speak(t)}catch(e){}}};
@@ -539,7 +541,7 @@ KP.push('mis','ses','mrk','pst','pstc','duel','con','flk','tmp','bd2','fl');
 /* tarjetas de la interfaz */
 window.misionesCard=function(u){if(!u.onb)return'';misInit(u);const m=u.mis,sz=[8,15,25];
  const rows=m.m.map(id=>{const d=MIS.find(x=>x.id===id),p=Math.min(m.p[id]||0,d.n),ok=m.ok.includes(id);return`<div class="lg" style="padding:4px 0"><span>${ok?'✅':'⬜'} ${esc(d.t)}</span>${p}/${d.n}${ok?' · +15 XP':''}</div><div class="bar"><i style="width:${p/d.n*100}%"></i></div>`}).join('');
- return`<div class="card">🎯 <b>Misiones de hoy</b>${rows}<div class="row" style="margin-top:10px"><button data-a="duel">⚔️ Duelo</button><button data-a="con">⏱️ Contrarreloj</button><button data-a="flash">🃍 Tarjetas</button></div><div class="row" style="margin-top:10px;align-items:center"><span class="mu">Simulacro a medida, preguntas por área:</span>${sz.map(x=>`<button class="chip ${(S.ssz||8)===x?'on':''}" data-a="ssz" data-v="${x}">${x}</button>`).join('')}<button class="g" data-a="simc">Simulacro a medida</button></div><p class="mu">Duelo: 10 preguntas contra un bot de tu liga. Contrarreloj: 90 segundos. Los modos nuevos no gastan vidas.</p></div>`};
+ return`<div class="card">🎯 <b>Misiones de hoy</b>${rows}<div class="row" style="margin-top:10px"><button data-a="duel">⚔️ Duelo</button><button data-a="con">⏱️ Contrarreloj</button><button data-a="flash">🃍 Tarjetas</button></div><div class="row" style="margin-top:10px;align-items:center"><span class="mu">Simulacro a medida, preguntas por área:</span>${sz.map(x=>`<button class="chip ${(S.ssz||8)===x?'on':''}" data-a="ssz" data-v="${x}">${x}</button>`).join('')}<button class="g" data-a="simc">Simulacro a medida</button></div><p class="mu">Duelo: 10 preguntas; desde la Liga puedes desafiar a rivales reales. Contrarreloj: 90 segundos. Los modos nuevos no gastan vidas.</p></div>`};
 function cuadCard(u){const n=u.rev.length;return`<div class="card"><b>📒 Cuadernillo de errores</b><p>Fallos registrados: <b>${u.fl||0}</b> · Sin dominar: <b>${n}</b></p><button data-a="cuad" ${n?'':'disabled'}>Practicar ${Math.min(15,n)} errores</button></div>`}
 function tarjCard(u){const f=isO(u.flk)?u.flk:{n:0,ok:0};return`<div class="card"><b>🃍 Tarjetas</b><p class="mu">Ronda de 15 preguntas: mira la pregunta, revela la respuesta y califícate. Sin vidas ni tiempo. Acumulado: ${f.n} tarjetas, ${f.ok} que sabías.</p><button class="g" data-a="flash">Empezar ronda</button></div>`}
 window.dominioCard=function(u){const p=isO(u.pst)?u.pst:{},c=isO(u.pstc)?u.pstc:{},ar=Object.entries(p).filter(e=>e[1][1]>0).map(e=>[e[0],e[1][0]/e[1][1],e[1][1]]).sort((x,y)=>x[1]-y[1]);
@@ -2106,7 +2108,7 @@ const MAP={
   '📅':'calendario','🗓':'calendario','⚠':'alerta','✅':'check','⚔':'duelo','🏅':'medalla',
   '💎':'gema','📱':'movil','🌸':'cuentos','👁':'ojo','🗨':'duelo',
   '\u23F1':'reloj','\u23F3':'relojarena','\u23F8':'pausa','\u2691':'bandera',
-  '\u2192':'flecha-der','\u2190':'flecha-izq',
+  '\u2192':'flecha-der','\u2190':'flecha-izq','\uD83D\uDCD2':'cuaderno','\uD83D\uDD58':'reloj',
   '\u2713':'check','\u2714':'check','\u2715':'cerrar','\u2716':'cerrar','\u25B6':'reproducir','\u2B1C':'casilla',
   '🍀':'trebol','🎲':'dado','👉':'dedo','💾':'disquete','📊':'grafica','📲':'movil','🔐':'candado','🔑':'llave','🖨':'impresora','🛡':'escudo','🧭':'brujula','🕘':'reloj'
 };
@@ -2252,6 +2254,7 @@ window.RS35={ico:ico,colorDe:colorDe,pase:paseFull,iconificar:iconificar,pintar:
 })();
 
 
+
 </script>
 <script>
 /* ---- v37: renace del ecosistema de mascota Cinco Puntos ----
@@ -2379,10 +2382,16 @@ function accesorio(tipo,f,colBase){
     const w=cw*0.62,l=50-w/2;
     return`<path d="M${l} ${ty+2}l3.5-10 6.5 7 6-10 7 10 6.5-7 3.5 10z" style="fill:#fbbf24"/><path d="M${l} ${ty+2}h${w}v3.5h-${w}z" style="fill:#f59e0b"/><circle cx="${50}" cy="${ty-1}" r="1.8" style="fill:#fde68a"/>`;
   }
-  if(tipo===6){ /* auriculares: diadema + almohadillas */
-    const p=cw/2+5;
-    return`<path d="M${50-p} ${g.ey-2}q0 -${g.ey-ty+16} ${p*2} 0" style="fill:none;stroke:#334155;stroke-width:4;stroke-linecap:round"/>`
-     +`<rect x="${50-p-4.5}" y="${g.ey-4}" width="9" height="13" rx="4" style="fill:#475569"/><rect x="${50+p-4.5}" y="${g.ey-4}" width="9" height="13" rx="4" style="fill:#475569"/>`;
+  if(tipo===6){ /* auriculares: diadema acolchada con brillo + copas ovaladas con interior */
+    const p=cw/2+5,yb=g.ey+3,tp=g.ty-13;
+    const cpcb='#334155',cpin='#475569';
+    const copa=sx=>`<ellipse cx="${50+sx*p}" cy="${yb+5}" rx="6.8" ry="10" style="fill:${cpcb};stroke:rgba(0,0,0,.25);stroke-width:1.5"/>`
+      +`<ellipse cx="${50+sx*p}" cy="${yb+5}" rx="4.1" ry="6.8" style="fill:${cpin}"/>`
+      +`<circle cx="${50+sx*p}" cy="${yb+1.5}" r="1.5" style="fill:rgba(255,255,255,.38)"/>`
+      +`<rect x="${50+sx*p-2}" y="${yb-9}" width="4" height="8" rx="2" style="fill:${cpcb}"/>`;
+    return`<path d="M${50-p-3} ${yb} C ${50-p-3} ${tp} ${50+p+3} ${tp} ${50+p+3} ${yb}" style="fill:none;stroke:${cpcb};stroke-width:5.5;stroke-linecap:round"/>`
+      +`<path d="M${50-p-3} ${yb-1.5} C ${50-p-3} ${tp+4} ${50+p+3} ${tp+4} ${50+p+3} ${yb-1.5}" style="fill:none;stroke:rgba(255,255,255,.30);stroke-width:1.6;stroke-linecap:round"/>`
+      +copa(-1)+copa(1);
   }
   return'';
 }
@@ -2646,6 +2655,8 @@ window.RS36=window.RS37;
 
 
 
+
+
 </script>
 <script>
 /* ---- v39: consola de estudio (barra lateral con tiles de icono, marca propia y banner de seccion) ----
@@ -2768,6 +2779,195 @@ try{
 try{window.RS39={inyectar:inyectar,SUBT:SUBT,glifo:glifo}}catch(e){}
 
 })();
+</script>
+<script>
+/* ---- v41: pestañas del perfil + texto que encaja + ligas y duelos con personas reales ----
+   Aquí vive:
+   (b) encaje de texto en chips/casillas sobre todo en móvil vertical,
+   (c) refuerzo de las pestañas internas del perfil: Personalizar / Progreso / Ajustes
+       (la barra y la acción viven en el código base; aquí se oculta/muestra el editor),
+   (d) ligas y duelos con personas reales: si la nube está activa y el proyecto
+       ejecutó supabase/ligas.sql, se leen filas reales de la vista liga_publica
+       y se puede duelar contra ellas; sin nube, todo queda como antes (cuentas locales). */
+(function(){
+'use strict';
+if(typeof window==='undefined')return;
+
+/* ---------- (b) encaje de texto y ajustes visuales ---------- */
+function css(){
+  if(document.getElementById('rs41css'))return;
+  var est=document.createElement('style');est.id='rs41css';
+  est.textContent=[
+    /* el editor de mascota solo vive en la pestaña Personalizar */
+    'body[data-rsptab]:not([data-rsptab="perso"]) [data-v40]{display:none!important}',
+    /* el texto siempre cabe dentro de botones, chips, filas y tarjetas */
+    'button{min-width:0;max-width:100%;overflow-wrap:anywhere;white-space:normal}',
+    '.chip{max-width:100%;min-width:0}',
+    '.lg span{min-width:0;flex:1 1 auto}',
+    '.lg .g{flex:0 0 auto;margin-left:8px;min-height:34px;padding:4px 10px;font-size:13px}',
+    '.rs40nom,.rs40ttl{max-width:100%;overflow-wrap:anywhere}',
+    '.rs39brand{max-width:100%;overflow:hidden}',
+    /* móvil vertical: compactar para que nada se salga de su caja */
+    '@media(max-width:480px){',
+    ' .chip{font-size:13px;padding:7px 11px;min-height:40px}',
+    ' .lg{font-size:14px;gap:6px;padding:9px 10px}',
+    ' .lg .g{margin-left:6px;font-size:12px;padding:4px 8px}',
+    ' .opt{font-size:15px}',
+    ' .rs40t{width:56px;min-height:56px}',
+    ' .rs40sw{width:31px;min-height:31px}}'
+  ].join('');document.head.appendChild(est);
+}
+
+/* ---------- (d) personas reales de la nube (vista liga_publica) ---------- */
+var REM=[],fetched=false,fetching=false,cuando=0;
+var STANDALONE=true;
+try{STANDALONE=window.self===window.parent}catch(e){}
+
+function cfgNube(){var c=window.RS_NUBE||{};return (c.url&&c.clave)?c:null}
+
+function traerNube(forzar){
+  if(!STANDALONE)return;
+  if(!cfgNube()||!window.supabase)return;
+  if(fetching)return;
+  if(fetched&&!forzar&&Date.now()-cuando<60000)return;
+  fetching=true;
+  try{
+    var c=cfgNube();
+    var sb=window.supabase.createClient(c.url,c.clave);
+    sb.from('liga_publica').select('nombre,liga,wk,wxp,xp,ok,tot').limit(200)
+      .then(function(r){
+        fetching=false;fetched=true;cuando=Date.now();
+        var d=(r&&r.data)||[];
+        if(r&&r.error){REM=[];return}
+        var vistos={},out=[];
+        d.forEach(function(f){
+          var n=(f.nombre||'').trim();
+          if(!n)return;
+          if(vistos[n]){var v=vistos[n];if((f.wxp||0)>(v.wxp||0))vistos[n]=f;return}
+          vistos[n]={n:n,liga:f.liga|0,wk:f.wk|0,wxp:f.wxp|0,xp:f.xp|0,ok:f.ok|0,tot:f.tot|0,rs:1};
+          out.push(vistos[n]);
+        });
+        REM=out;
+        repintar();
+      });
+  }catch(e){fetching=false}
+}
+
+function repintar(){
+  try{
+    if(typeof S==='undefined'||!S||S.view!=='app'||S.L)return;
+    if(S.tab!=='liga'&&S.tab!=='perfil')return;
+    if(typeof render!=='function')return;
+    var cont=document.querySelector('main .lg');
+    if(cont&&!cont.hasAttribute('data-rs41')){cont.setAttribute('data-rs41','1');render()}
+  }catch(e){}
+}
+
+/* filas reales de la semana y liga indicadas, excluyendo a quien marca me */
+function reales(w,l,nombreMe){
+  return REM.filter(function(r){return r.wk===w&&r.liga===l&&r.n!==nombreMe});
+}
+
+/* accesor del tablero: suma las filas de la nube a las locales */
+function instalarTablero(){
+  var b0=null;
+  try{b0=window.board}catch(e){b0=null}
+  if(typeof b0!=='function'||window.board.__rs41)return;
+  var board0=b0;
+  window.board=function(w,l,fr,me){
+    var mi=(me&&me.length)?me[me.length-1]:null;
+    var nomMe=(mi&&mi.me)?mi.n:null;
+    var extra=reales(w,l,nomMe).map(function(r){return{n:r.n,xp:Math.round(r.wxp*Math.max(0,fr)),rs:1}});
+    return board0(w,l,fr,extra.concat(me||[]));
+  };
+  window.board.__rs41=1;
+}
+
+/* 10 preguntas sin audio (equivalente a sinAudio, que no es visible desde módulos) */
+function preguntasSinAudio(){
+  var qs=[],t;
+  AR.forEach(function(a){
+    var o=draw(a,null,2).filter(function(q){return !q.audio}),k=2;t=0;
+    while(o.length<k&&t++<8){var x=draw(a,null,1)[0];if(x&&!x.audio&&!o.some(function(y){return y.id===x.id}))o.push(x)}
+    qs=qs.concat(o);
+  });
+  return qs;
+}
+
+/* duelar contra una persona real (o de este dispositivo): 10 preguntas,
+   el rival contesta según su precisión real registrada en la nube */
+function duelar(nom){
+  var u=U();
+  var r=REM.filter(function(x){return x.n===nom})[0];
+  var loc=Object.values(DB.users).filter(function(x){return x!==u&&x.name===nom})[0];
+  var base=[.4,.55,.7][u.liga]||.4,p=base;
+  if(r&&r.tot>4)p=Math.max(.25,Math.min(.85,r.ok/r.tot));
+  else if(loc&&loc.tot>4)p=Math.max(.25,Math.min(.85,loc.ok/loc.tot));
+  S.L=mk('duel',preguntasSinAudio(),{bn:nom,bp:p,bs:0,su:0,bl:[],rival:1});
+  render();
+}
+
+function instalarAcciones(){
+  try{
+    if(typeof A==='undefined')return;
+    var refuerzo={};
+    if(!A.ptab)refuerzo.ptab=function(v){S.ptab=v;S.L=null;S.R=null;stopTTS();render()};
+    refuerzo.rs41d=function(v){
+      try{duelar(decodeURIComponent(v||''))}catch(e){}
+    };
+    Object.assign(A,refuerzo);
+  }catch(e){}
+}
+
+/* ---------- refuerzo de pestañas del perfil (si el parche base faltara) ---------- */
+function reforzarPestanas(){
+  try{
+    if(typeof S==='undefined')return;
+    if(S.view==='app'&&S.tab==='perfil'&&!S.L){
+      if(!S.ptab)S.ptab='prog';
+      if(typeof render==='function'){
+        var main=document.querySelector('main');
+        if(main&&!main.querySelector('.rs41pc')){
+          main.insertAdjacentHTML('afterbegin',
+            '<div class="row rs41pc" style="margin-bottom:6px">'+[['perso','Personalizar'],['prog','Progreso'],['ajus','Ajustes']]
+            .map(function(t){return '<button class="chip'+(S.ptab===t[0]?' on':'')+'" data-a="ptab" data-v="'+t[0]+'" aria-pressed="'+(S.ptab===t[0])+'">'+t[1]+'</button>'}).join('')+'</div>');
+        }
+      }
+    }
+  }catch(e){}
+}
+
+function instalarRender(){
+  if(window.__rs41render)return;
+  if(typeof render!=='function')return;
+  var r0=render;
+  render=function(){
+    try{if(typeof S!=='undefined'&&S&&S.view==='app'&&S.tab==='perfil'&&!S.L&&!S.ptab)S.ptab='prog'}catch(e){}
+    var out=r0.apply(this,arguments);
+    try{
+      document.body.setAttribute('data-rsptab',(typeof S!=='undefined'&&S&&S.ptab)||'');
+      if(typeof S!=='undefined'&&S&&S.view==='app')traerNube(false);
+      reforzarPestanas();
+    }catch(e){}
+    return out;
+  };
+  window.__rs41render=1;
+}
+
+css();
+instalarAcciones();
+instalarTablero();
+instalarRender();
+
+window.RS41={
+  reales:reales,
+  traerNube:traerNube,
+  duelar:duelar,
+  estado:function(){return{rem:REM.length,fetched:fetched,configurado:!!cfgNube(),standalone:STANDALONE}}
+};
+})();
+
+
 </script>
 </body>
 </html>
