@@ -275,7 +275,7 @@ function cardAvatar(){
   return`<div class="card" data-v37="1">`
    +`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">`
    +`<div class="rs37hero"><div class="rs37escena" data-v37v="1">${miniAvatar()}</div>`
-   +`<button class="g" data-a="rs37r">🎲 Sorpréndeme</button></div>`
+   +`<button class="g" data-a="rs37r"><svg viewBox="0 0 24 24" style="width:1.15em;height:1.15em;vertical-align:-.18em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3.5"/><circle cx="8.7" cy="8.7" r="1.1"/><circle cx="15.3" cy="8.7" r="1.1"/><circle cx="8.7" cy="15.3" r="1.1"/><circle cx="15.3" cy="15.3" r="1.1"/><circle cx="12" cy="12" r="1.1"/></svg> Sorpréndeme</button></div>`
    +`<div style="flex:1;min-width:220px"><b>Tu mascota</b>`
    +`<p class="mu">Tu compañero de estudio del ecosistema Cinco Puntos: ${NOMF[c.f]||'Punto'} con ${NOMA[c.a]||'nada'}. Se guarda contigo y viaja con la nube.</p></div></div>`
    +`<div class="mu" style="margin-top:10px">Forma</div>`+chips('f',FORMAS,FORMAS.map(x=>NOMF[x]),c.f,false)

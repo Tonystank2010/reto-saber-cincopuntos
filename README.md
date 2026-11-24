@@ -290,8 +290,20 @@ Rediseño integral del ecosistema de mascota, por las 4 líneas a la vez:
 - **Editor nuevo en Perfil**: vista previa grande con escena (170 px), chips agrupados y descripción viva («tu Chigüiro con gorra»), más «Sorpréndeme» destacado.
 - **Corrección clave**: v36 tenía un guard que apagaba todo el avatar cuando el demo se abre **fuera de un iframe** (o sea, en GitHub Pages standalone). Eliminado: la mascota funciona en cualquier contexto.
 - **Compatibilidad**: los datos guardados de v36 (y de versiones indexadas numéricamente) se leen igual; los datos corruptos caen a valores de fábrica.
-- **Adiós al emoji restante**: el catálogo de iconos propios se amplía de 32 a **62 iconos SVG** (nuevos: reloj, reloj de arena, pausa, bandera de reporte, cerrar, casilla, trébol, dado, dedo, disquete, gráfica, llave, impresora, escudo, brújula y reproducir) y se mapean los 26 caracteres que aún se veían como emoji (⏱⏳⏸⚑✓✔✕✖▶⬜🍀🎲👉💾📊📲🔐🔑🕘🖨🛡🧭...). Verificado con prueba automática: **cero emojis visibles** en Perfil/Camino/Liga. Las únicas excepciones son los ✓/✗ semánticos de acierto/error (CSS `::before`) y las flechas → ← que son tipografía, no emoji.
+- **Adiós al emoji restante**: el catálogo de iconos propios se amplía de 32 a **62 iconos SVG** (nuevos: reloj, reloj de arena, pausa, bandera de reporte, cerrar, casilla, trébol, dado, dedo, disquete, gráfica, llave, impresora, escudo, brújula y reproducir) y se mapean los 26 caracteres que aún se veían como emoji (⏱⏳⏸⚑✓✔✕✖▶⬜🍀🎲👉💾📊📲🔐🔑🕘🖨🛡🧭...). Verificado con prueba automática: **cero emojis visibles** en Perfil/Camino/Liga (en v38 se elimina también la última excepción, ver abajo).
 - **Guard eliminado en v35** también: los iconos y colores por área ya no dependen del contexto del documento.
 - **Preview del arte**: nueva página `preview-mascota.html` con las 16 tarjetas (8 formas × normal/celebrando) para evaluar el diseño de un vistazo.
 
 **Módulo:** `demo-html/modulos/v37-mascota.js` — bloque `<script>` (patrón v20+) con CSS propio (`#rs37css`) y API `window.RS37`; catálogo extendido en `v35-area-iconos.js`. Caché PWA a `rscp-v24` / `reto-saber-v22`.
+
+### v38 — Cero emojis, sin ninguna excepción
+
+La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco en los casos que se veían como tipografía.
+
+- **Flechas → ← sustituidas por iconos SVG propios** (`flecha-der`, `flecha-izq`): desaparecen de la meta semanal, dominio, glosario, rutas y textos de navegación, porque el reemplazo es automático en cada render.
+- **Marcadores ✔ / ✖ del CSS eliminados**: las opciones correcta/errónea ya no usan `content:'✔'`; ahora el `::before` dibuja el icono con una máscara SVG (`mask`) en `currentColor`, a tono con el catálogo propio.
+- **Iconificador a prueba de todo**: v35 instala un observador ligero (MutationObserver con filtro anti-bucle) que repinta también las vistas que se re-renderizan sin pasar por `render()` (formularios de entrar/crear cuenta, avisos, etc.). Antes esas pantallas quedaban con emojis.
+- **Página de preview limpia**: `preview-mascota.html` ya no tiene emoji ninguno (el dado de «Sorpréndeme» es SVG).
+- **Verificado con pruebas automáticas**: cero emojis y cero flechas en login, registro, app sembrada y Perfil (texto visible y atributos); navegación Cuentos/Repaso/Carreras/Perfil/Camino y flujo de pregunta sin errores de runtime.
+
+**Módulo:** `demo-html/modulos/v35-area-iconos.js` (catálogo 64 iconos). Caché PWA a `rscp-v25` / `reto-saber-v23`.
