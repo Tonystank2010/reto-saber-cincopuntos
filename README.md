@@ -378,3 +378,5 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 - Sin emojis: iconos propios (reloj, bandera, cuaderno, libro) del catálogo v35.
 
 **Módulos:** `demo-html/modulos/v44-plan-nocturno.js` (nuevo; plan, CSS y recompensa; `window.RS44` para pruebas, `window.RS44HORA` para fijar la hora en tests). Caché PWA a `rscp-v31` / `reto-saber-v29`.
+
+**Mejora (v44.1) — cajones con aire y ventanas funcionales**: los chips/cajones (carreras, áreas, exámenes) ya no recortan su texto ni quedan apretados en horizontal: las filas **envuelven** en varias líneas con espacio uniforme y cada caja muestra su nombre completo. La ventana emergente (Vidas/Racha) gana aire: más padding y separación (20 px/14 px), corazones más grandes y **botones al ancho completo** en las ventanas centradas — los precios de la Tienda no se tocan, siguen en su fila.

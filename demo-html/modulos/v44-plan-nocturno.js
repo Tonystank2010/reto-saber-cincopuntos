@@ -8,7 +8,9 @@
    c) Cada bloque es tachable; al completar todo el plan del dia el estudiante
       gana 60 monedas (una sola vez por plan).
    d) window.RS44HORA permite fijar la hora para las pruebas.
-   e) Expone window.RS44 para pruebas (construir, generar, tarjeta, rotulo). */
+   e) Expone window.RS44 para pruebas (construir, generar, tarjeta, rotulo).
+   f) v44.1: cajones/chips con aire y sin texto recortado; ventana emergente
+      (Vidas/Racha/Tienda) mas aireada y con botones al ancho en las centradas. */
 (function(){
 var DIAS=['lunes','martes','miercoles','jueves','viernes','sabado','domingo'];
 function hora(){try{if(window.RS44HORA!=null)return+window.RS44HORA}catch(e){}try{return new Date().getHours()}catch(e){return 12}}
@@ -36,7 +38,17 @@ function css(){
   '.rs44ic svg.rsic{width:17px;height:17px}',
   '.rs44pi{display:flex;align-items:center;gap:10px}',
   '.rs44pi b{font-size:16px}',
-  '@media(max-width:480px){.rs44bd{align-self:flex-start;margin-top:6px}.rs44r{flex-wrap:wrap}.rs44btn{flex:1 1 auto}}'
+  '@media(max-width:480px){.rs44bd{align-self:flex-start;margin-top:6px}.rs44r{flex-wrap:wrap}.rs44btn{flex:1 1 auto}}',
+  /* v44.1: los cajones (chips) con aire y sin texto recortado */
+  '.row.sc{flex-wrap:wrap;overflow-x:visible}',
+  '.row.sc .chip{flex:0 0 auto;max-width:none}',
+  /* v44.1: ventana emergente mas aireada y funcional */
+  '.rs42m{padding:20px;gap:14px;max-width:400px}',
+  '.rs42m h3{margin:0 0 2px;font-size:18px}',
+  '.rs42vs{gap:10px}',
+  '.rs42vs .rs42c svg.rsic{width:36px;height:36px}',
+  '.rs42cen>button,.rs42cen .rs42pr{width:100%;justify-content:center}',
+  '.rs42it{padding:11px 13px}'
  ].join('');
  document.head.appendChild(st);
 }
