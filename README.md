@@ -416,3 +416,13 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 - Sin estado nuevo en el usuario: el aviso vive en la sesión. En lección o repaso se calla; con la pestaña quieta lo revisa cada minuto. `window.RS48HORA` permite fijar la hora en pruebas; API `window.RS48`.
 
 **Módulos:** `demo-html/modulos/v48-recordatorio.js` (nuevo; `window.RS48`). Cache PWA a `rscp-v35` / `reto-saber-v33`.
+
+### v49 — Ventanas con aire, precios acordes a las ganancias, icono de objetivos y tienda solo en su pestaña
+
+- **Espacio entre botones en las ventanas (vidas y racha)**: los botones y textos de los cajones ahora quedan en columna con un aire de 10px entre cada elemento (`display:flex` + `gap`), y en móvil ya no se ven pegados ni encimados.
+- **Precios de la tienda ajustados a las ganancias**: con una ganancia típica de 100–250 monedas diarias, ahora quedan así: protector de racha **250**, recuperar vidas **350**, colores premium **600** cada uno, bigote **900**, diadema **800**; el Sombrero vueltiao subió a **2500** y la Bufanda sabia a **2000** como artículos de lujo de largo plazo.
+- **Icono de objetivos en la cartera**: donde estaba el icono de la moneda ahora está la **diana de objetivos**, dibujada en SVG propio y tocable (abre la tienda) exactamente igual que los iconos de vidas y racha del topbar. El encabezado de la tienda también usa la diana.
+- **La tienda vive solo en su pestaña**: se quitó la tarjeta de tienda que estaba incrustada en el Camino (ahora el camino queda limpio). La ventana de la tienda ganó la línea «Tienes N monedas», así que es autosuficiente.
+- **Pruebas**: test-v42 reescrito para el flujo nuevo (comprar desde la ventana, nada inyectado en el camino, precios v49), test-v47 recalibrado a 2500/2000. Batería completa en verde; las 3 copias del demo idénticas.
+
+**Módulos:** `demo-html/modulos/v42-tienda.js` (CSS de ventanas, precios, cartera en el modal, inyección reducida) y sprite diana en el MAP del topbar (`v35-area-iconos.js`). Caché PWA a `rscp-v36` / `reto-saber-v34`.

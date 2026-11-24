@@ -86,7 +86,7 @@ const MAP={
   '📅':'calendario','🗓':'calendario','⚠':'alerta','✅':'check','⚔':'duelo','🏅':'medalla',
   '💎':'gema','📱':'movil','🌸':'cuentos','👁':'ojo','🗨':'duelo',
   '\u23F1':'reloj','\u23F3':'relojarena','\u23F8':'pausa','\u2691':'bandera',
-  '\uD83E\uDE99':'moneda','\u2192':'flecha-der','\u2190':'flecha-izq','\uD83D\uDCD2':'cuaderno','\uD83D\uDD58':'reloj',
+  '\uD83E\uDE99':'diana','\u2192':'flecha-der','\u2190':'flecha-izq','\uD83D\uDCD2':'cuaderno','\uD83D\uDD58':'reloj',
   '\uD83D\uDED2':'tienda','\uD83C\uDFEA':'tienda',
   '\u2713':'check','\u2714':'check','\u2715':'cerrar','\u2716':'cerrar','\u25B6':'reproducir','\u2B1C':'casilla',
   '🍀':'trebol','🎲':'dado','👉':'dedo','💾':'disquete','📊':'grafica','📲':'movil','🔐':'candado','🔑':'llave','🖨':'impresora','🛡':'escudo','🧭':'brujula','🕘':'reloj'

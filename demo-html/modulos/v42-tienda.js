@@ -47,8 +47,8 @@ function css(){
     '.rs42vs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}',
     '.rs42vs .rs42c svg.rsic{width:34px;height:34px}',
     '.rs42vs .rs42c:not(.si){opacity:.25}',
-    '.rs42cen{text-align:center}',
-    '.rs42cen>p{margin:4px 0}',
+    '.rs42cen{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}',
+    '.rs42cen>p{margin:0}',
     '.rs42big{font-size:44px;font-weight:900;line-height:1.1}',
     /* barra semanal de dias activos */
     '.rs42wk{display:flex;gap:8px;justify-content:center}',
@@ -73,7 +73,7 @@ function I(n){try{return(window.RS35&&RS35.ico(n))||''}catch(e){return''}}
 function pool(){if(!DB.pref)DB.pref={};if(!DB.pref.avit)DB.pref.avit={};return DB.pref.avit}
 function tengo(llave){return !!(DB.pref&&DB.pref.avit&&DB.pref.avit[llave])}
 
-var PRECIO={'pr':500,'vi':800,'a:7':1200,'a:8':1000,'a:9':1500,'a:10':1300,'c:#f5c542':900,'c:#22d3ee':900,'c:#e879f9':900};
+var PRECIO={'pr':250,'vi':350,'a:7':900,'a:8':800,'a:9':2500,'a:10':2000,'c:#f5c542':600,'c:#22d3ee':600,'c:#e879f9':600};
 var DOW=['L','Ma','Mi','J','V','S','D'];/* dow() 0 = lunes */
 var NCOLOR={'#f5c542':'Oro real','#22d3ee':'Cian hielo','#e879f9':'Lila neon'};
 
@@ -136,7 +136,7 @@ function ventana(u){
       '<button class="rs42pr" data-a="rs42buy" data-v="pr" '+(monedas(u)<PRECIO.pr||(u.pr|0)>=3?'disabled':'')+'>Comprar protector, '+PRECIO.pr+' monedas</button>'+
       '<p class="mu">Con un protector, fallar un dia no rompe tu racha.</p></div>';
   }else{
-    c='<h3>'+I('moneda')+' Tienda</h3>'+items(u).map(function(x){
+    c='<h3>'+I('diana')+' Tienda</h3><p class="mu">Tienes '+monedas(u)+' monedas. Gana XP y cambialas por ayudas o articulos.</p>'+items(u).map(function(x){
       var ic=x.sw?('<span class="rs42sw" style="--sw:'+x.sw+'"></span>'):('<span class="rs42ic">'+I(x.ico)+'</span>');
       var der=x.on
         ?('<button class="rs42pr" data-a="rs42buy" data-v="'+x.k+'" '+(monedas(u)<x.p?'disabled':'')+'>'+x.p+'</button>')
@@ -181,18 +181,9 @@ try{
 function inyectar(){
   try{
     var main=document.querySelector('main');if(!main)return;
-    /* tarjeta de tienda, solo en el camino; se refresca en cada render para
-       que la cartera y los precios deshabilitados nunca queden viejos */
-    var card=main.querySelector('[data-rs42]');
+    /* la tienda vive SOLO en su pestana (v49); nada se inyecta en el camino */
+    var card=null;
     var enCamino=!!main.querySelector('.rs39ban[data-k="camino"]');
-    if(enCamino&&!(S.L||S.R)){
-      var ancla=main.querySelector('.rs39ban[data-k="camino"]')||main.querySelector(':scope>.top');
-      if(ancla){
-        var htmC=tiendaCard(U());
-        if(card){card.outerHTML=htmC}
-        else ancla.insertAdjacentHTML('afterend',htmC);
-      }
-    }else if(card&&card.remove){card.remove()}
     /* ventana emergente: SIEMPRE una sola. Se quitan todas las existentes y
        se agrega una nueva; asi ningun doble toque o reentrada deja capas
        superpuestas. Se cierra sola si entra una leccion o un cuento. */
