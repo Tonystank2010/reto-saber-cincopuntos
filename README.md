@@ -190,7 +190,7 @@ progreso es demasiado grande para un código, la app sugiere usar el archivo.
 **Opción 1 · archivo único (recomendado):**
 - En el juego: **Perfil → «💾 Descargar el juego» → «Descargar el juego (un solo archivo)»**.
 - Descarga `Reto-Saber-Demo.html` (~0,9 MB). Se abre con **doble clic**, sin internet; el progreso se guarda en el navegador del archivo (en Chromium/Edge, cada archivo local comparte almacenamiento; en Firefox, por ruta).
-- Alternativa sin abrir el juego: descargar el archivo directamente desde el [demo en línea](https://tonystank2010.github.io/reto-saber-cincopuntos/public/demo/Reto-Saber-Demo.html) (Ctrl/Cmd+S o botón derecho → Guardar como).
+- Alternativa sin abrir el juego: descargar el archivo directamente desde el [demo en línea](https://reto-saber-cincopuntos.vercel.app/demo/Reto-Saber-Demo.html) (Ctrl/Cmd+S o botón derecho → Guardar como).
 
 **Opción 2 · app de escritorio (Electron):**
 ```bash
