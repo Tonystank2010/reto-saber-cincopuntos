@@ -73,7 +73,7 @@ function I(n){try{return(window.RS35&&RS35.ico(n))||''}catch(e){return''}}
 function pool(){if(!DB.pref)DB.pref={};if(!DB.pref.avit)DB.pref.avit={};return DB.pref.avit}
 function tengo(llave){return !!(DB.pref&&DB.pref.avit&&DB.pref.avit[llave])}
 
-var PRECIO={'pr':500,'vi':800,'a:7':1200,'a:8':1000,'c:#f5c542':900,'c:#22d3ee':900,'c:#e879f9':900};
+var PRECIO={'pr':500,'vi':800,'a:7':1200,'a:8':1000,'a:9':1500,'a:10':1300,'c:#f5c542':900,'c:#22d3ee':900,'c:#e879f9':900};
 var DOW=['L','Ma','Mi','J','V','S','D'];/* dow() 0 = lunes */
 var NCOLOR={'#f5c542':'Oro real','#22d3ee':'Cian hielo','#e879f9':'Lila neon'};
 
@@ -88,6 +88,8 @@ function items(u){
   });
   lista.push({k:'a:7',ico:'ojo',n:'Bigote',d:'Articulo de avatar premium.',p:PRECIO['a:7'],on:!tengo('m')});
   lista.push({k:'a:8',ico:'estrella',n:'Diadema de estrella',d:'Articulo de avatar premium.',p:PRECIO['a:8'],on:!tengo('d')});
+  lista.push({k:'a:9',ico:'vueltiao',n:'Sombrero vueltiao',d:'Articulo de avatar premium: identidad colombiana.',p:PRECIO['a:9'],on:!tengo('s')});
+  lista.push({k:'a:10',ico:'bufanda',n:'Bufanda sabia',d:'Articulo de avatar premium: para las noches de estudio.',p:PRECIO['a:10'],on:!tengo('f')});
   return lista;
 }
 
@@ -159,6 +161,8 @@ function comprar(k){
   else if(k==='vi'){u.v=5;u.vt=0;u.vr=0;say('Corazones recuperados.')}
   else if(k==='a:7'){pool().m=1;say('Bigote comprado. Ponlo en Perfil, Personalizar.')}
   else if(k==='a:8'){pool().d=1;say('Diadema de estrella comprada. Ponla en Perfil, Personalizar.')}
+  else if(k==='a:9'){pool().s=1;say('Sombrero vueltiao comprado. Ponlo en Perfil, Personalizar.')}
+  else if(k==='a:10'){pool().f=1;say('Bufanda sabia comprada. Ponla en Perfil, Personalizar.')}
   else if(k.indexOf('c:')===0){pool()['c'+k.slice(2)]=1;say('Color premium comprado. Usalo en Perfil, Personalizar.')}
   save();S.rs42='tienda';render();
 }

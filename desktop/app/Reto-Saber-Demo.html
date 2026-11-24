@@ -2100,7 +2100,9 @@ const P={
  forma:'<rect x="5" y="5" width="14" height="14" rx="5"/>',
  paleta:'<path d="M12 3.5a8.5 8.5 0 1 0 .6 17c1.7 0 2.3-1 1.6-2.3-.7-1.5.3-2.7 2-2.7h1.6A3.3 3.3 0 0 0 20.5 12C20 7.2 16.6 3.5 12 3.5z"/><circle cx="8.3" cy="9.3" r="1.2"/><circle cx="13" cy="7.2" r="1.2"/><circle cx="16.6" cy="10.6" r="1.2"/>',
  boca:'<path d="M5.5 10.5q6.5 7.5 13 0"/><circle cx="5.5" cy="10.5" r="1"/><circle cx="18.5" cy="10.5" r="1"/>',
- gorra:'<path d="M6.5 15a5.5 5.5 0 0 1 11 0"/><path d="M3.5 15h17"/><path d="M12 6.8V5.2"/><circle cx="12" cy="4.8" r=".8"/>'
+ gorra:'<path d="M6.5 15a5.5 5.5 0 0 1 11 0"/><path d="M3.5 15h17"/><path d="M12 6.8V5.2"/><circle cx="12" cy="4.8" r=".8"/>',
+ vueltiao:'<path d="M3.5 16.5h17"/><path d="M7 16.5q0-7 5-7t5 7"/><path d="M7.8 13.2q4.2-2.6 8.4 0"/><path d="M7 16.5q5-3.4 10 0"/>',
+ bufanda:'<path d="M6 8.5h12M6 8.5v4.5h12V8.5"/><path d="M9 13v7M11.5 13v7M14 13v7"/><path d="M6 8.5q6-4 12 0"/>'
 };
 const LLENOS=',corazon,fuego,estrella,gema,medalla,corazonroto,estrella0,reproducir,';
 
@@ -2282,7 +2284,7 @@ window.RS35={ico:ico,colorDe:colorDe,pase:paseFull,iconificar:iconificar,pintar:
 'use strict';
 
 const FORMAS=['punto','chiguiro','zorro','robot','tucan','perezoso','gato','buho'];
-const OJOS=4,BOCAS=4,ACCS=9;/* 7=bigote, 8=diadema de estrella (articulos de la tienda) */
+const OJOS=4,BOCAS=4,ACCS=11;/* 7=bigote, 8=diadema de estrella, 9=sombrero vueltiao, 10=bufanda sabia (articulos de la tienda) */
 const COLORES=['','#f59e0b','#ef4444','#8b5cf6','#3b82f6','#10b981','#ec4899','#14b8a6','#f97316','#64748b','#0ea5e9','#84cc16','#a855f7'];
 
 /* anclas por forma: altura de ojos (ey), tope de la cabeza (ty),
@@ -2301,7 +2303,7 @@ const NOMF={punto:'Punto',chiguiro:'Chigüiro',zorro:'Zorro',robot:'Robot',tucan
 const NOMC=['Automático','Miel','Coral rojo','Violeta','Azul cielo','Esmeralda','Rosa fucsia','Turquesa','Naranja','Gris pizarra','Celeste','Lima','Orquídea'];
 const NOMO=['Normales','Brillo de estrellas','Guiño','Felices (∧)'];
 const NOMB=['Sonrisa','Asombro (o)','Lengua fuera','Seria'];
-const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella'];const PREMC=['#f5c542','#22d3ee','#e879f9'];const PREMN=['Oro real','Cian hielo','Lila neon'];
+const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella','Sombrero vueltiao','Bufanda sabia'];const PREMC=['#f5c542','#22d3ee','#e879f9'];const PREMN=['Oro real','Cian hielo','Lila neon'];
 
 
 function cfg(){
@@ -2415,6 +2417,21 @@ function accesorio(tipo,f,colBase){
     const tp=g.ty-9;
     return`<path d="M${50-g.cw/2-2} ${tp+9}q${g.cw/2+2} -13 ${g.cw+4} 0" style="fill:none;stroke:#0ea5e9;stroke-width:4;stroke-linecap:round"/>`
       +`<path d="M50 ${tp}l3 6.2 6.5 1-4.7 4.7 1.1 6.6-5.9-3.1-5.9 3.1 1.1-6.6-4.7-4.7 6.5-1z" style="fill:#f5c542;stroke:rgba(0,0,0,.18);stroke-width:1"/>`;
+  }
+  if(tipo===9){ /* sombrero vueltiao: copa crema con bandas negras y ala ancha */
+    const ala=`<ellipse cx="50" cy="${ty+3}" rx="${cw*0.44}" ry="4.2" style="fill:#f1e5c3;stroke:rgba(0,0,0,.24);stroke-width:1"/>`;
+    const copa=`<path d="M${50-cw*0.18} ${ty+2}q0-17 ${cw*0.36} 0z" style="fill:#f1e5c3;stroke:rgba(0,0,0,.18);stroke-width:1"/>`;
+    const b1=`<path d="M${50-cw*0.18} ${ty-4}q${cw*0.18} -6 ${cw*0.36} 0" style="fill:none;stroke:#1c1917;stroke-width:2.6;stroke-linecap:round"/>`;
+    const b2=`<path d="M${50-cw*0.15} ${ty-1}q${cw*0.15} -4.5 ${cw*0.3} 0" style="fill:none;stroke:#1c1917;stroke-width:2.6;stroke-linecap:round"/>`;
+    const b3=`<path d="M${50-cw*0.19} ${ty+1.5}q${cw*0.19} -3 ${cw*0.38} 0" style="fill:none;stroke:#1c1917;stroke-width:2.6;stroke-linecap:round"/>`;
+    return copa+b1+b2+b3+ala;
+  }
+  if(tipo===10){ /* bufanda sabia: vueltas al cuello con cola colgando y flecos */
+    const y=Math.max(62,g.ey+15);
+    return`<rect x="26" y="${y}" width="48" height="10" rx="5" style="fill:#0d9488;stroke:rgba(0,0,0,.18);stroke-width:1"/>`
+      +`<rect x="57" y="${y+3}" width="9" height="17" rx="3.5" style="fill:#0f766e"/>`
+      +`<path d="M59 ${y+17}v5M62 ${y+17}v5M65 ${y+17}v5" style="stroke:#f1e5c3;stroke-width:1.6;stroke-linecap:round"/>`
+      +`<path d="M30 ${y+8}q20 4 40 0" style="fill:none;stroke:rgba(255,255,255,.30);stroke-width:2;stroke-linecap:round"/>`;
   }
   return'';
 }
@@ -2544,7 +2561,7 @@ function tilesDe(k,actual){
   else if(k==='c'){return tilesColor(actual)}
   else if(k==='o'){vals=[0,1,2,3];nombres=NOMO}
   else if(k==='b'){vals=[0,1,2,3];nombres=NOMB}
-  else{vals=[0,1,2,3,4,5,6,7,8];nombres=NOMA}
+  else{vals=[0,1,2,3,4,5,6,7,8,9,10];nombres=NOMA}
   return vals.map(function(v,i){
     var valor=String(v);
     var on=valor===String(actual)?' on':'';
@@ -2563,6 +2580,8 @@ function tilesDe(k,actual){
 function esPremium(k,v){
   if(k==='a'&&+v===7)return'm';
   if(k==='a'&&+v===8)return'd';
+  if(k==='a'&&+v===9)return's';
+  if(k==='a'&&+v===10)return'f';
   if(k==='c'&&(v==='#f5c542'||v==='#22d3ee'||v==='#e879f9'))return'c'+v;
   return null;
 }
@@ -3105,7 +3124,7 @@ function I(n){try{return(window.RS35&&RS35.ico(n))||''}catch(e){return''}}
 function pool(){if(!DB.pref)DB.pref={};if(!DB.pref.avit)DB.pref.avit={};return DB.pref.avit}
 function tengo(llave){return !!(DB.pref&&DB.pref.avit&&DB.pref.avit[llave])}
 
-var PRECIO={'pr':500,'vi':800,'a:7':1200,'a:8':1000,'c:#f5c542':900,'c:#22d3ee':900,'c:#e879f9':900};
+var PRECIO={'pr':500,'vi':800,'a:7':1200,'a:8':1000,'a:9':1500,'a:10':1300,'c:#f5c542':900,'c:#22d3ee':900,'c:#e879f9':900};
 var DOW=['L','Ma','Mi','J','V','S','D'];/* dow() 0 = lunes */
 var NCOLOR={'#f5c542':'Oro real','#22d3ee':'Cian hielo','#e879f9':'Lila neon'};
 
@@ -3120,6 +3139,8 @@ function items(u){
   });
   lista.push({k:'a:7',ico:'ojo',n:'Bigote',d:'Articulo de avatar premium.',p:PRECIO['a:7'],on:!tengo('m')});
   lista.push({k:'a:8',ico:'estrella',n:'Diadema de estrella',d:'Articulo de avatar premium.',p:PRECIO['a:8'],on:!tengo('d')});
+  lista.push({k:'a:9',ico:'vueltiao',n:'Sombrero vueltiao',d:'Articulo de avatar premium: identidad colombiana.',p:PRECIO['a:9'],on:!tengo('s')});
+  lista.push({k:'a:10',ico:'bufanda',n:'Bufanda sabia',d:'Articulo de avatar premium: para las noches de estudio.',p:PRECIO['a:10'],on:!tengo('f')});
   return lista;
 }
 
@@ -3191,6 +3212,8 @@ function comprar(k){
   else if(k==='vi'){u.v=5;u.vt=0;u.vr=0;say('Corazones recuperados.')}
   else if(k==='a:7'){pool().m=1;say('Bigote comprado. Ponlo en Perfil, Personalizar.')}
   else if(k==='a:8'){pool().d=1;say('Diadema de estrella comprada. Ponla en Perfil, Personalizar.')}
+  else if(k==='a:9'){pool().s=1;say('Sombrero vueltiao comprado. Ponlo en Perfil, Personalizar.')}
+  else if(k==='a:10'){pool().f=1;say('Bufanda sabia comprada. Ponla en Perfil, Personalizar.')}
   else if(k.indexOf('c:')===0){pool()['c'+k.slice(2)]=1;say('Color premium comprado. Usalo en Perfil, Personalizar.')}
   save();S.rs42='tienda';render();
 }
@@ -3588,6 +3611,206 @@ try{
     deXP:function(xp){return capa(null,'neutro')}};/* deXP se usa en tests: capa ya lee U() */
 }catch(e){}
 
+})();
+</script>
+
+<script>
+/* ---- v46: rival sugerido y marcador de duelos entre personas reales ----
+   En la Liga aparece una tarjeta que:
+   - sugiere el rival de tu semana y liga cuyo XP semanal esta mas cerca
+     del tuyo (rivales reales de la nube o cuentas de tu dispositivo);
+   - guarda tu marcador contra cada rival (victorias/derrotas/empates)
+     y lo muestra; los retos usan el boton Duelo de siempre (v41),
+     asi que el match se juega con la precision real del rival.
+   El marcador vive en u.riv (diccionario por nombre); los datos del
+   usuario viajan completos en la nube (v27), nada extra que cuidar.
+   API: window.RS46. Sin emojis: todo SVG propio (v35). */
+(function(){
+'use strict';
+if(typeof window==='undefined')return;
+
+/* ---------- CSS ---------- */
+function css(){
+  if(document.getElementById('rs46css'))return;
+  var est=document.createElement('style');est.id='rs46css';
+  est.textContent=[
+   '.rs46{margin:10px 0}',
+   '.rs46 .card b{font-size:16px}',
+   '.rs46r{display:flex;align-items:center;gap:10px;border:1px solid var(--br);border-radius:14px;padding:9px 12px;margin-top:8px;min-width:0}',
+   '.rs46r .ic{flex:0 0 auto;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:var(--ac);color:var(--ac-tx,#fff)}',
+   '.rs46r .ic svg{width:17px;height:17px}',
+   '.rs46r .tx{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}',
+   '.rs46r .tx b{display:block;font-size:14.5px}',
+   '.rs46r .tx span{font-size:12.5px;opacity:.75}',
+   '.rs46r .bt{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;border:0;background:var(--ac);color:var(--ac-tx,#fff);border-radius:999px;padding:8px 13px;font-weight:800;font-size:13.5px;cursor:pointer}',
+   '.rs46r .bt svg{width:14px;height:14px}',
+   '.rs46m{margin:8px 0 0;font-size:12.5px;opacity:.75;overflow-wrap:anywhere}'
+  ].join('');
+  document.head.appendChild(est);
+}
+function I(n){try{return(window.RS35&&RS35.ico(n))||''}catch(e){return''}}
+
+/* ---------- candidatos: reales de la nube + cuentas locales de la misma liga/semana ---------- */
+function candidatos(u){
+  var w=wk(),l=u.liga|0,out=[],visto={};
+  function add(n,wx,rs){
+    n=String(n||'').trim();if(!n||n===u.name||visto[n])return;
+    seen(visto,n);out.push({n:n,wxp:wx|0,rs:!!rs});
+  }
+  try{
+    if(window.RS41&&RS41.reales)RS41.reales(w,l,u.name).forEach(function(r){add(r.n,r.wxp,r.rs===1)});
+  }catch(e){}
+  try{
+    Object.values(DB.users).forEach(function(x){
+      if(x===u||x.name===u.name)return;
+      if((x.liga|0)===l&&x.wk===w)add(x.name,x.wxp,false);
+    });
+  }catch(e){}
+  return out;
+}
+function seen(v,n){v[n]=1}
+
+function marcadorRival(u){
+  try{var r=u.riv;return (r&&typeof r==='object')?r:{}}catch(e){return{}}
+}
+/* texto del marcador contra un rival: '2V · 1D · 1E' */
+function miniMarc(u,n){
+  var m=marcadorRival(u)[n];if(!m)return'';
+  return m.w+'V'+(m.l?'\u00b7 '+m.l+'D':'')+(m.e?'\u00b7 '+m.e+'E':'');
+}
+
+/* ---------- tarjeta inyectada en la Liga ---------- */
+function tarjeta(){
+  var u=U();
+  var cands=candidatos(u);
+  cands.sort(function(a,b){
+    var da=Math.abs(a.wxp-(u.wxp|0)),db=Math.abs(b.wxp-(u.wxp|0));
+    return (da-db)||(b.wxp-a.wxp);
+  });
+  var filas=cands.slice(0,3).map(function(c,i){
+    var suf=i===0?' — tu nivel de XP ahora mismo':'';
+    var mm=miniMarc(u,c.n);
+    return '<div class="rs46r"><span class="ic">'+I(c.rs?'duelo':'movil')+'</span>'
+      +'<span class="tx"><b>'+esc(c.n)+'</b><span>'
+      +(c.rs?'Rival real (nube)':'De este dispositivo')
+      +' \u00b7 '+ (c.wxp) +' XP de la semana'+suf+(mm?' | marcador '+mm:'')+'</span></span>'
+      +'<button class="bt" data-a="rs41d" data-v="'+encodeURIComponent(c.n)+'" title="Duelo contra '+esc(c.n)+'">'+I('duelo')+' Duelo</button></div>';
+  }).join('');
+  if(!filas){
+    filas='<div class="rs46r"><span class="tx"><b>Aun no hay rivales disponibles</b><span>Entra a la nube con otra cuenta (o crea usuarios en este dispositivo, mismo liga) y aca aparecen sus datos reales para duelar.</span></span></div>';
+  }
+  var d=(u.duel&&typeof u.duel==='object')?u.duel:{w:0,n:0};
+  var total=d.n|0,gan=d.w|0;
+  var resumen='<p class="rs46m">Tus duelos: <b>'+gan+'</b> de <b>'+total+'</b> '+(total===1?'ganado':'ganados')+'. El rival responde con su precision real: ganarle es ganarle de verdad.</p>';
+  return '<section class="rs46" data-rs46="1"><div class="card"><b>'+I('duelo')+' Rival sugerido</b>'
+    +filas+resumen+'</div></section>';
+}
+function inyectar(){
+  try{
+    if(!(S&&S.view==='app'&&S.tab==='liga'&&!S.L&&!S.R))return;
+    if(typeof U!=='function')return;
+    var u=U();if(!u)return;
+    var main=document.querySelector('main');if(!main)return;
+    var t=main.querySelector('[data-rs46]');
+    var html=tarjeta();
+    if(t){if(t.outerHTML!==html)t.outerHTML=html;return}
+    var ancla=main.querySelector('.top')||main.firstChild;
+    if(ancla&&ancla.insertAdjacentHTML)ancla.insertAdjacentHTML('afterend',html);
+  }catch(e){}
+}
+
+/* ---------- marcador personal: se llena al terminar cada duelo ---------- */
+function registrar(resultado,rival){
+  try{
+    var u=U();if(!u||!rival)return;
+    if(!(u.riv&&typeof u.riv==='object'&&!Array.isArray(u.riv)))u.riv={};
+    var m=u.riv[rival]||{w:0,l:0,e:0};
+    if(resultado==='w')m.w=(m.w|0)+1;else if(resultado==='l')m.l=(m.l|0)+1;else m.e=(m.e|0)+1;
+    u.riv[rival]=m;
+    save();
+  }catch(e){}
+}
+/* al terminar un duelo (L.kind==='duel' con L.end): registra una vez */
+function chequearDuelo(){
+  try{
+    var L=S&&S.L;
+    if(L&&L.kind==='duel'&&L.end&&L.res&&!L.__rs46){
+      L.__rs46=1;
+      registrar(L.res,L.bn);
+    }
+  }catch(e){}
+}
+
+/* ---------- render wrapper ---------- */
+try{
+  if(typeof render==='function'){
+    var _r46=render;
+    render=function(){var r=_r46.apply(this,arguments);try{chequearDuelo();inyectar()}catch(e){}return r};
+  }
+  setTimeout(function(){try{inyectar()}catch(e){}},0);
+}catch(e){}
+
+window.RS46={candidatos:candidatos,tarjeta:tarjeta,inyectar:inyectar,miniMarc:miniMarc,registrar:registrar,chequearDuelo:chequearDuelo,estado:function(){return{riv:(U()&&U().riv)||{}}}};
+})();
+</script>
+
+<script>
+/* ---- v48: recordatorio del plan nocturno ----
+   Si la app queda abierta, avisa sin que tengas que refrescar:
+   - a partir de las 19:00, si el plan de manana todavia no se ha armado,
+     invita a verlo (el plan se arma en cuanto el render lo nota, pero
+     si la pestana esta quieta nadie lo provoca);
+   - a partir de las 20:00, si el plan de manana ya esta armado pero
+     tiene bloques pendientes, lo recuerda una vez al dia.
+   Nadie guarda estado en el usuario: es un aviso de sesion (una vez por
+   dia). API: window.RS48 (revisar/hora/estado), window.RS48HORA para
+   fijar la hora en pruebas. Sin emojis. */
+(function(){
+'use strict';
+if(typeof window==='undefined')return;
+
+var aviso=null;/* dia ya avisado (lo que se hizo hoy) */
+function hora(){
+  try{if(window.RS48HORA!=null)return +window.RS48HORA}catch(e){}
+  try{return new Date().getHours()}catch(e){return 12}
+}
+
+function revisar(){
+  try{
+    if(!(typeof S!=='undefined'&&S&&S.view==='app'))return 0;
+    if(S.L||S.R)return 0;
+    if(!window.RS44||!window.RS44.diaPlan)return 0;
+    var u=U();if(!u)return 0;
+    var h=hora(),diap=RS44.diaPlan()|0,cons=(h>=19?'1':'')+(h>=20?'2':'');
+    if(!cons)return 0;
+    var pn=u.pn;
+    if(!pn||((pn.d|0)!==diap)){
+      if(aviso===1+diap*10)return 0;
+      aviso=1+diap*10;
+      try{say('Son las '+h+' h: ya se puede armar tu plan nocturno para manana. Un vistazo al Camino y listo.')}catch(e){}
+      return 1;
+    }
+    if(!pn.r&&(pn.h||[]).some(function(x){return !x})){
+      if(aviso===2+diap*10)return 0;
+      aviso=2+diap*10;
+      var faltan=(pn.h||[]).filter(function(x){return !x}).length;
+      try{say('Tu plan nocturno para manana tiene '+faltan+' bloque'+(faltan===1?'':'s')+' pendiente'+(faltan===1?'':'s')+'. Aun estas a tiempo.')}catch(e){}
+      return 2;
+    }
+    return 0;
+  }catch(e){return 0}
+}
+
+try{
+  if(typeof render==='function'){
+    var _r48=render;
+    render=function(){var r=_r48.apply(this,arguments);try{(S.L||S.R)?0:revisar()}catch(e){}return r};
+  }
+  setTimeout(function(){try{revisar()}catch(e){}},2000);
+  setInterval(function(){try{revisar()}catch(e){}},60000);
+}catch(e){}
+
+window.RS48={revisar:revisar,hora:hora,estado:function(){return{aviso:aviso}}};
 })();
 </script>
 
