@@ -296,6 +296,31 @@ Rediseño integral del ecosistema de mascota, por las 4 líneas a la vez:
 
 **Módulo:** `demo-html/modulos/v37-mascota.js` — bloque `<script>` (patrón v20+) con CSS propio (`#rs37css`) y API `window.RS37`; catálogo extendido en `v35-area-iconos.js`. Caché PWA a `rscp-v24` / `reto-saber-v22`.
 
+### v39 — Consola de estudio: barra lateral ed-tech propia (inspirada, no copiada)
+
+Rediseño de la navegacion y del encabezado de seccion inspirado en las consolas de estudio modernas, con identidad 100% propia para no imitar a ninguna marca:
+
+- **Marca propia en la barra lateral**: glifo geometrico de cinco puntos + wordmark CINCO PUNTOS. Ni búhos, ni verdes ajenos, ni logotipos de terceros.
+- **Tiles de icono**: cada seccion (Camino, Cuentos, Repaso, Carreras, Liga, Perfil) lleva su icono del catalogo propio en un tile redondeado; el activo queda resaltado con el acento de la paleta del usuario.
+- **Banner de seccion**: tarjeta de color con el nombre de la seccion y su subtitulo descriptivo, sobre el contenido (se oculta dentro de lecciones y evaluaciones).
+- **Escritorio y movil**: barra lateral ancha en pantallas grandes (icono + etiqueta en fila); en movil se mantiene la barra inferior compacta y la marca se oculta por CSS.
+- Inyeccion idempotente tras cada render con observador ligero (mismo patron v35/v38).
+
+**Modulo:** `demo-html/modulos/v39-consola.js` (nuevo). Sin emojis.
+
+### v40 — Editor de mascota rediseñado: consola de creacion a dos columnas
+
+El editor del avatar adopta el patron de los editores de caricatura: todo en una tarjeta, dos columnas:
+
+- **Izquierda**: panel de vista previa grande (radial sutil sobre el fondo de tarjeta) con la mascota viva (respira/parpadea), el nombre descriptivo ("Chigüiro con gorra") y el boton "Sorpréndeme" con icono SVG de dado.
+- **Derecha**: columna de **categorias con icono** (forma, color, ojos, boca, accesorio — 4 iconos nuevos en el catalogo v35: `forma`, `paleta`, `boca`, `gorra`) + **rejilla de opciones** de la categoria activa.
+- **Cada tile de opcion muestra la mascota con esa opcion aplicada** (no un texto): la forma, los ojos, la boca y el accesorio se ven de verdad antes de tocarlos; el color va como rejilla de swatches redondos con anillo de seleccion.
+- **Accesible**: `aria-pressed` en tiles y categorias, `aria-label` con nombre de la opcion, foco de boton nativo.
+- En movil la consola se apila: preview arriba, categorias de fila, rejilla debajo. Respeta `prefers-reduced-motion`.
+- **Compatibilidad intacta**: mismas acciones `rs37v`/`rs37r`, mismos datos guardados (f/c/o/b/a), misma API `RS37`/`RS36`.
+
+**Modulo:** `demo-html/modulos/v37-mascota.js` (editor dentro del bloque v37; nuevo `css40`). Catalogo v35 ahora con 68 iconos. `preview-mascota.html` actualizada con stub de iconos. Cache PWA a `rscp-v26` / `reto-saber-v24`.
+
 ### v38 — Cero emojis, sin ninguna excepción
 
 La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco en los casos que se veían como tipografía.
