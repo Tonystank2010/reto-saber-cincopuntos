@@ -73,7 +73,7 @@ function I(n){try{return(window.RS35&&RS35.ico(n))||''}catch(e){return''}}
 function pool(){if(!DB.pref)DB.pref={};if(!DB.pref.avit)DB.pref.avit={};return DB.pref.avit}
 function tengo(llave){return !!(DB.pref&&DB.pref.avit&&DB.pref.avit[llave])}
 
-var PRECIO={'pr':250,'vi':350,'a:7':900,'a:8':800,'a:9':2500,'a:10':2000,'c:#f5c542':600,'c:#22d3ee':600,'c:#e879f9':600};
+var PRECIO={'pr':250,'vi':350,'a:7':900,'a:8':800,'a:9':2500,'a:10':2000,'a:11':1250,'a:12':1600,'c:#f5c542':600,'c:#22d3ee':600,'c:#e879f9':600};
 var DOW=['L','Ma','Mi','J','V','S','D'];/* dow() 0 = lunes */
 var NCOLOR={'#f5c542':'Oro real','#22d3ee':'Cian hielo','#e879f9':'Lila neon'};
 
@@ -90,6 +90,8 @@ function items(u){
   lista.push({k:'a:8',ico:'estrella',n:'Diadema de estrella',d:'Articulo de avatar premium.',p:PRECIO['a:8'],on:!tengo('d')});
   lista.push({k:'a:9',ico:'vueltiao',n:'Sombrero vueltiao',d:'Articulo de avatar premium: identidad colombiana.',p:PRECIO['a:9'],on:!tengo('s')});
   lista.push({k:'a:10',ico:'bufanda',n:'Bufanda sabia',d:'Articulo de avatar premium: para las noches de estudio.',p:PRECIO['a:10'],on:!tengo('f')});
+  lista.push({k:'a:11',ico:'mochila',n:'Mochila escolar',d:'Articulo de avatar premium: tu maleta de estudio.',p:PRECIO['a:11'],on:!tengo('b')});
+  lista.push({k:'a:12',ico:'corbata',n:'Corbata de honor',d:'Articulo de avatar premium: para dias grandes.',p:PRECIO['a:12'],on:!tengo('t')});
   return lista;
 }
 
@@ -163,6 +165,8 @@ function comprar(k){
   else if(k==='a:8'){pool().d=1;say('Diadema de estrella comprada. Ponla en Perfil, Personalizar.')}
   else if(k==='a:9'){pool().s=1;say('Sombrero vueltiao comprado. Ponlo en Perfil, Personalizar.')}
   else if(k==='a:10'){pool().f=1;say('Bufanda sabia comprada. Ponla en Perfil, Personalizar.')}
+  else if(k==='a:11'){pool().b=1;say('Mochila escolar comprada. Ponla en Perfil, Personalizar.')}
+  else if(k==='a:12'){pool().t=1;say('Corbata de honor comprada. Ponla en Perfil, Personalizar.')}
   else if(k.indexOf('c:')===0){pool()['c'+k.slice(2)]=1;say('Color premium comprado. Usalo en Perfil, Personalizar.')}
   save();S.rs42='tienda';render();
 }

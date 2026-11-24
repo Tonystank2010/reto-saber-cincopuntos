@@ -426,3 +426,19 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 - **Pruebas**: test-v42 reescrito para el flujo nuevo (comprar desde la ventana, nada inyectado en el camino, precios v49), test-v47 recalibrado a 2500/2000. Batería completa en verde; las 3 copias del demo idénticas.
 
 **Módulos:** `demo-html/modulos/v42-tienda.js` (CSS de ventanas, precios, cartera en el modal, inyección reducida) y sprite diana en el MAP del topbar (`v35-area-iconos.js`). Caché PWA a `rscp-v36` / `reto-saber-v34`.
+
+### v50 — La voz lee pesos colombianos en toda la app
+
+- La narración de cuentos ya decía el dinero en pesos colombianos (`$5.000` se leía «cinco mil pesos colombianos», «monedas» se leía «pesos colombianos»); ahora **toda la voz de la app** hace lo mismo: los enunciados narrados, las explicaciones al responder y cualquier aviso hablado en español convierten el dinero a pesos colombianos en el audio.
+- Se hace con un envoltorio sobre `speechSynthesis.speak` (vía `RS43.vozPesos`, que es idempotente: un texto ya convertido nunca se vuelve a tocar). El **audio en inglés** (escuchar preguntas) no se toca; en pantalla el texto sigue igual — es solo la voz.
+- Re-auditoría «cero emojis» de fondo: 0 emojis en atributos (`title`/`aria-label`/`value`) y 0 emojis sueltos fuera del mapa de iconos — todo lo que podía verse está cubierto.
+
+**Módulos:** `demo-html/modulos/v50-voz-pesos.js` (nuevo; envoltorio de TTS; API `window.RS50`).
+
+### v51 — Dos artículos nuevos para la mascota: Mochila escolar y Corbata de honor
+
+- **Mochila escolar** (11): correas sobre el bloque y maleta naranja al hombro — para llevar la PKM de estudio a todos lados. **1250 monedas**.
+- **Corbata de honor** (12): nudo azul con pica y línea de brillo, para los días grandes. **1600 monedas**.
+- Ambos: premium (candado en el editor que compra directo), catálogo de la Tienda con icono SVG propio (`mochila` y `corbata` van al sprite v35) y dibujo en `v37` anclado a las guías de cada forma. El catálogo de accesorios del editor pasa de 11 a **13** opciones; Sorpréndeme sigue eligiendo solo entre los 7 gratuitos.
+
+**Módulos:** sprites «mochila» y «corbata» en `v35-area-iconos.js`; `ACCS=13`, nombres, `esPremium` (llaves `b` y `t`), tiles `0..12` y dibujo en `v37-mascota.js`; precios/catálogo/compra en `v42-tienda.js`.

@@ -11,7 +11,7 @@
 'use strict';
 
 const FORMAS=['punto','chiguiro','zorro','robot','tucan','perezoso','gato','buho'];
-const OJOS=4,BOCAS=4,ACCS=11;/* 7=bigote, 8=diadema de estrella, 9=sombrero vueltiao, 10=bufanda sabia (articulos de la tienda) */
+const OJOS=4,BOCAS=4,ACCS=13;/* 7=bigote, 8=diadema de estrella, 9=sombrero vueltiao, 10=bufanda sabia, 11=mochila escolar, 12=corbata de honor (articulos de la tienda) */
 const COLORES=['','#f59e0b','#ef4444','#8b5cf6','#3b82f6','#10b981','#ec4899','#14b8a6','#f97316','#64748b','#0ea5e9','#84cc16','#a855f7'];
 
 /* anclas por forma: altura de ojos (ey), tope de la cabeza (ty),
@@ -30,7 +30,7 @@ const NOMF={punto:'Punto',chiguiro:'Chigüiro',zorro:'Zorro',robot:'Robot',tucan
 const NOMC=['Automático','Miel','Coral rojo','Violeta','Azul cielo','Esmeralda','Rosa fucsia','Turquesa','Naranja','Gris pizarra','Celeste','Lima','Orquídea'];
 const NOMO=['Normales','Brillo de estrellas','Guiño','Felices (∧)'];
 const NOMB=['Sonrisa','Asombro (o)','Lengua fuera','Seria'];
-const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella','Sombrero vueltiao','Bufanda sabia'];const PREMC=['#f5c542','#22d3ee','#e879f9'];const PREMN=['Oro real','Cian hielo','Lila neon'];
+const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella','Sombrero vueltiao','Bufanda sabia','Mochila escolar','Corbata de honor'];const PREMC=['#f5c542','#22d3ee','#e879f9'];const PREMN=['Oro real','Cian hielo','Lila neon'];
 
 
 function cfg(){
@@ -160,6 +160,22 @@ function accesorio(tipo,f,colBase){
       +`<path d="M59 ${y+17}v5M62 ${y+17}v5M65 ${y+17}v5" style="stroke:#f1e5c3;stroke-width:1.6;stroke-linecap:round"/>`
       +`<path d="M30 ${y+8}q20 4 40 0" style="fill:none;stroke:rgba(255,255,255,.30);stroke-width:2;stroke-linecap:round"/>`;
   }
+  if(tipo===11){ /* mochila escolar: correas sobre el bloque + saquito al hombro */
+    const p=cw/2+4,xb=50+p,ty2=ty;
+    return`<rect x="${50-cw*0.30-2}" y="${ty2-2}" width="4" height="17" rx="2" style="fill:#d97706"/>`
+      +`<rect x="${50+cw*0.30-2}" y="${ty2-2}" width="4" height="17" rx="2" style="fill:#d97706"/>`
+      +`<path d="M${50-cw*0.30-2} ${ty2+14}h4M${50+cw*0.30-2} ${ty2+14}h4" style="stroke:#b45309;stroke-width:1.6"/>`
+      +`<rect x="${xb-5}" y="${ty2+7}" width="12" height="17" rx="4.5" style="fill:#ea580c;stroke:rgba(0,0,0,.18);stroke-width:1"/>`
+      +`<path d="M${xb-5} ${ty2+13}h12" style="stroke:#c2410c;stroke-width:2"/>`
+      +`<rect x="${xb-2}" y="${ty2+16}" width="6" height="5" rx="1.5" style="fill:#fdba74"/>`
+      +`<path d="M${xb-3} ${ty2+8.5}q0-2.5 3-2.5t3 2.5" style="fill:none;stroke:#b45309;stroke-width:1.8"/>`;
+  }
+  if(tipo===12){ /* corbata de honor: nudo azul + pica con brillo */
+    const y=Math.max(62,g.ey+15);
+    return`<rect x="47" y="${y-2}" width="6" height="5" rx="1.5" style="fill:#1d4ed8"/>`
+      +`<path d="M50 ${y+2.5}L45.8 ${y+16.5}L50 ${y+21}L54.2 ${y+16.5}z" style="fill:#1d4ed8;stroke:rgba(0,0,0,.18);stroke-width:1"/>`
+      +`<path d="M47.6 ${y+13}L50 ${y+19.5}" style="fill:none;stroke:rgba(255,255,255,.30);stroke-width:1.6;stroke-linecap:round"/>`;
+  }
   return'';
 }
 
@@ -288,7 +304,7 @@ function tilesDe(k,actual){
   else if(k==='c'){return tilesColor(actual)}
   else if(k==='o'){vals=[0,1,2,3];nombres=NOMO}
   else if(k==='b'){vals=[0,1,2,3];nombres=NOMB}
-  else{vals=[0,1,2,3,4,5,6,7,8,9,10];nombres=NOMA}
+  else{vals=[0,1,2,3,4,5,6,7,8,9,10,11,12];nombres=NOMA}
   return vals.map(function(v,i){
     var valor=String(v);
     var on=valor===String(actual)?' on':'';
@@ -309,6 +325,8 @@ function esPremium(k,v){
   if(k==='a'&&+v===8)return'd';
   if(k==='a'&&+v===9)return's';
   if(k==='a'&&+v===10)return'f';
+  if(k==='a'&&+v===11)return'b';
+  if(k==='a'&&+v===12)return't';
   if(k==='c'&&(v==='#f5c542'||v==='#22d3ee'||v==='#e879f9'))return'c'+v;
   return null;
 }

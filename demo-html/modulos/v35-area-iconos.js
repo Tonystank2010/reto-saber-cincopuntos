@@ -67,6 +67,8 @@ const P={
  boca:'<path d="M5.5 10.5q6.5 7.5 13 0"/><circle cx="5.5" cy="10.5" r="1"/><circle cx="18.5" cy="10.5" r="1"/>',
  gorra:'<path d="M6.5 15a5.5 5.5 0 0 1 11 0"/><path d="M3.5 15h17"/><path d="M12 6.8V5.2"/><circle cx="12" cy="4.8" r=".8"/>',
  vueltiao:'<path d="M3.5 16.5h17"/><path d="M7 16.5q0-7 5-7t5 7"/><path d="M7.8 13.2q4.2-2.6 8.4 0"/><path d="M7 16.5q5-3.4 10 0"/>',
+ mochila:'<rect x="5" y="7.5" width="14" height="12.5" rx="3.5"/><path d="M9.5 7.5v-1a2.5 2.5 0 0 1 5 0v1"/><path d="M9 13.5h6M9 17h3.5"/>',
+ corbata:'<path d="M9 3.5h6l-1.4 3.5h-3.2z"/><path d="M9.6 7l-2.1 9 4.5 4 4.5-4-2.1-9z"/><path d="M12 12v5"/>',
  bufanda:'<path d="M6 8.5h12M6 8.5v4.5h12V8.5"/><path d="M9 13v7M11.5 13v7M14 13v7"/><path d="M6 8.5q6-4 12 0"/>'
 };
 const LLENOS=',corazon,fuego,estrella,gema,medalla,corazonroto,estrella0,reproducir,';

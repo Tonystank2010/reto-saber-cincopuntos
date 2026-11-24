@@ -2102,6 +2102,8 @@ const P={
  boca:'<path d="M5.5 10.5q6.5 7.5 13 0"/><circle cx="5.5" cy="10.5" r="1"/><circle cx="18.5" cy="10.5" r="1"/>',
  gorra:'<path d="M6.5 15a5.5 5.5 0 0 1 11 0"/><path d="M3.5 15h17"/><path d="M12 6.8V5.2"/><circle cx="12" cy="4.8" r=".8"/>',
  vueltiao:'<path d="M3.5 16.5h17"/><path d="M7 16.5q0-7 5-7t5 7"/><path d="M7.8 13.2q4.2-2.6 8.4 0"/><path d="M7 16.5q5-3.4 10 0"/>',
+ mochila:'<rect x="5" y="7.5" width="14" height="12.5" rx="3.5"/><path d="M9.5 7.5v-1a2.5 2.5 0 0 1 5 0v1"/><path d="M9 13.5h6M9 17h3.5"/>',
+ corbata:'<path d="M9 3.5h6l-1.4 3.5h-3.2z"/><path d="M9.6 7l-2.1 9 4.5 4 4.5-4-2.1-9z"/><path d="M12 12v5"/>',
  bufanda:'<path d="M6 8.5h12M6 8.5v4.5h12V8.5"/><path d="M9 13v7M11.5 13v7M14 13v7"/><path d="M6 8.5q6-4 12 0"/>'
 };
 const LLENOS=',corazon,fuego,estrella,gema,medalla,corazonroto,estrella0,reproducir,';
@@ -2284,7 +2286,7 @@ window.RS35={ico:ico,colorDe:colorDe,pase:paseFull,iconificar:iconificar,pintar:
 'use strict';
 
 const FORMAS=['punto','chiguiro','zorro','robot','tucan','perezoso','gato','buho'];
-const OJOS=4,BOCAS=4,ACCS=11;/* 7=bigote, 8=diadema de estrella, 9=sombrero vueltiao, 10=bufanda sabia (articulos de la tienda) */
+const OJOS=4,BOCAS=4,ACCS=13;/* 7=bigote, 8=diadema de estrella, 9=sombrero vueltiao, 10=bufanda sabia, 11=mochila escolar, 12=corbata de honor (articulos de la tienda) */
 const COLORES=['','#f59e0b','#ef4444','#8b5cf6','#3b82f6','#10b981','#ec4899','#14b8a6','#f97316','#64748b','#0ea5e9','#84cc16','#a855f7'];
 
 /* anclas por forma: altura de ojos (ey), tope de la cabeza (ty),
@@ -2303,7 +2305,7 @@ const NOMF={punto:'Punto',chiguiro:'Chigüiro',zorro:'Zorro',robot:'Robot',tucan
 const NOMC=['Automático','Miel','Coral rojo','Violeta','Azul cielo','Esmeralda','Rosa fucsia','Turquesa','Naranja','Gris pizarra','Celeste','Lima','Orquídea'];
 const NOMO=['Normales','Brillo de estrellas','Guiño','Felices (∧)'];
 const NOMB=['Sonrisa','Asombro (o)','Lengua fuera','Seria'];
-const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella','Sombrero vueltiao','Bufanda sabia'];const PREMC=['#f5c542','#22d3ee','#e879f9'];const PREMN=['Oro real','Cian hielo','Lila neon'];
+const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella','Sombrero vueltiao','Bufanda sabia','Mochila escolar','Corbata de honor'];const PREMC=['#f5c542','#22d3ee','#e879f9'];const PREMN=['Oro real','Cian hielo','Lila neon'];
 
 
 function cfg(){
@@ -2433,6 +2435,22 @@ function accesorio(tipo,f,colBase){
       +`<path d="M59 ${y+17}v5M62 ${y+17}v5M65 ${y+17}v5" style="stroke:#f1e5c3;stroke-width:1.6;stroke-linecap:round"/>`
       +`<path d="M30 ${y+8}q20 4 40 0" style="fill:none;stroke:rgba(255,255,255,.30);stroke-width:2;stroke-linecap:round"/>`;
   }
+  if(tipo===11){ /* mochila escolar: correas sobre el bloque + saquito al hombro */
+    const p=cw/2+4,xb=50+p,ty2=ty;
+    return`<rect x="${50-cw*0.30-2}" y="${ty2-2}" width="4" height="17" rx="2" style="fill:#d97706"/>`
+      +`<rect x="${50+cw*0.30-2}" y="${ty2-2}" width="4" height="17" rx="2" style="fill:#d97706"/>`
+      +`<path d="M${50-cw*0.30-2} ${ty2+14}h4M${50+cw*0.30-2} ${ty2+14}h4" style="stroke:#b45309;stroke-width:1.6"/>`
+      +`<rect x="${xb-5}" y="${ty2+7}" width="12" height="17" rx="4.5" style="fill:#ea580c;stroke:rgba(0,0,0,.18);stroke-width:1"/>`
+      +`<path d="M${xb-5} ${ty2+13}h12" style="stroke:#c2410c;stroke-width:2"/>`
+      +`<rect x="${xb-2}" y="${ty2+16}" width="6" height="5" rx="1.5" style="fill:#fdba74"/>`
+      +`<path d="M${xb-3} ${ty2+8.5}q0-2.5 3-2.5t3 2.5" style="fill:none;stroke:#b45309;stroke-width:1.8"/>`;
+  }
+  if(tipo===12){ /* corbata de honor: nudo azul + pica con brillo */
+    const y=Math.max(62,g.ey+15);
+    return`<rect x="47" y="${y-2}" width="6" height="5" rx="1.5" style="fill:#1d4ed8"/>`
+      +`<path d="M50 ${y+2.5}L45.8 ${y+16.5}L50 ${y+21}L54.2 ${y+16.5}z" style="fill:#1d4ed8;stroke:rgba(0,0,0,.18);stroke-width:1"/>`
+      +`<path d="M47.6 ${y+13}L50 ${y+19.5}" style="fill:none;stroke:rgba(255,255,255,.30);stroke-width:1.6;stroke-linecap:round"/>`;
+  }
   return'';
 }
 
@@ -2561,7 +2579,7 @@ function tilesDe(k,actual){
   else if(k==='c'){return tilesColor(actual)}
   else if(k==='o'){vals=[0,1,2,3];nombres=NOMO}
   else if(k==='b'){vals=[0,1,2,3];nombres=NOMB}
-  else{vals=[0,1,2,3,4,5,6,7,8,9,10];nombres=NOMA}
+  else{vals=[0,1,2,3,4,5,6,7,8,9,10,11,12];nombres=NOMA}
   return vals.map(function(v,i){
     var valor=String(v);
     var on=valor===String(actual)?' on':'';
@@ -2582,6 +2600,8 @@ function esPremium(k,v){
   if(k==='a'&&+v===8)return'd';
   if(k==='a'&&+v===9)return's';
   if(k==='a'&&+v===10)return'f';
+  if(k==='a'&&+v===11)return'b';
+  if(k==='a'&&+v===12)return't';
   if(k==='c'&&(v==='#f5c542'||v==='#22d3ee'||v==='#e879f9'))return'c'+v;
   return null;
 }
@@ -3124,7 +3144,7 @@ function I(n){try{return(window.RS35&&RS35.ico(n))||''}catch(e){return''}}
 function pool(){if(!DB.pref)DB.pref={};if(!DB.pref.avit)DB.pref.avit={};return DB.pref.avit}
 function tengo(llave){return !!(DB.pref&&DB.pref.avit&&DB.pref.avit[llave])}
 
-var PRECIO={'pr':250,'vi':350,'a:7':900,'a:8':800,'a:9':2500,'a:10':2000,'c:#f5c542':600,'c:#22d3ee':600,'c:#e879f9':600};
+var PRECIO={'pr':250,'vi':350,'a:7':900,'a:8':800,'a:9':2500,'a:10':2000,'a:11':1250,'a:12':1600,'c:#f5c542':600,'c:#22d3ee':600,'c:#e879f9':600};
 var DOW=['L','Ma','Mi','J','V','S','D'];/* dow() 0 = lunes */
 var NCOLOR={'#f5c542':'Oro real','#22d3ee':'Cian hielo','#e879f9':'Lila neon'};
 
@@ -3141,6 +3161,8 @@ function items(u){
   lista.push({k:'a:8',ico:'estrella',n:'Diadema de estrella',d:'Articulo de avatar premium.',p:PRECIO['a:8'],on:!tengo('d')});
   lista.push({k:'a:9',ico:'vueltiao',n:'Sombrero vueltiao',d:'Articulo de avatar premium: identidad colombiana.',p:PRECIO['a:9'],on:!tengo('s')});
   lista.push({k:'a:10',ico:'bufanda',n:'Bufanda sabia',d:'Articulo de avatar premium: para las noches de estudio.',p:PRECIO['a:10'],on:!tengo('f')});
+  lista.push({k:'a:11',ico:'mochila',n:'Mochila escolar',d:'Articulo de avatar premium: tu maleta de estudio.',p:PRECIO['a:11'],on:!tengo('b')});
+  lista.push({k:'a:12',ico:'corbata',n:'Corbata de honor',d:'Articulo de avatar premium: para dias grandes.',p:PRECIO['a:12'],on:!tengo('t')});
   return lista;
 }
 
@@ -3214,6 +3236,8 @@ function comprar(k){
   else if(k==='a:8'){pool().d=1;say('Diadema de estrella comprada. Ponla en Perfil, Personalizar.')}
   else if(k==='a:9'){pool().s=1;say('Sombrero vueltiao comprado. Ponlo en Perfil, Personalizar.')}
   else if(k==='a:10'){pool().f=1;say('Bufanda sabia comprada. Ponla en Perfil, Personalizar.')}
+  else if(k==='a:11'){pool().b=1;say('Mochila escolar comprada. Ponla en Perfil, Personalizar.')}
+  else if(k==='a:12'){pool().t=1;say('Corbata de honor comprada. Ponla en Perfil, Personalizar.')}
   else if(k.indexOf('c:')===0){pool()['c'+k.slice(2)]=1;say('Color premium comprado. Usalo en Perfil, Personalizar.')}
   save();S.rs42='tienda';render();
 }
@@ -3802,6 +3826,47 @@ try{
 }catch(e){}
 
 window.RS48={revisar:revisar,hora:hora,estado:function(){return{aviso:aviso}}};
+})();
+</script>
+
+<script>
+/* ---- v50: voz en pesos colombianos en TODA la app ----
+   v43 trajo la narracion de cuentos hablando el dinero como pesos
+   colombianos. Este modulo lleva ese mismo tratamiento a todas las
+   voces de la aplicacion: enunciados, explicaciones, avisos y cualquier
+   texto que la voz lea en espanol.
+   Como: envuelve speechSynthesis.speak; si la utterance va en idioma
+   espanol, pasa su texto por el helper vozPesos del demo (idempotente:
+   los pesos ya dichos no se duplican), igual que en cuentos.
+   El audio en ingles (escuchar preguntas) no se toca.
+   API window.RS50={estado}. */
+(function(){
+'use strict';
+if(typeof window==='undefined')return;
+function listo(){
+  try{
+    var ss=window.speechSynthesis;
+    if(!ss||ss.__rs50)return;
+    var orig=ss.speak.bind(ss);
+    ss.speak=function(u){
+      try{
+        if(u&&typeof u.text==='string'&&String(u.lang||'').toLowerCase().indexOf('es')===0
+           &&window.RS43&&RS43.vozPesos){
+          var t=RS43.vozPesos(u.text);
+          if(t!==u.text)u.text=t;
+        }
+      }catch(e){}
+      return orig(u);
+    };
+    ss.__rs50=1;
+  }catch(e){}
+}
+listo();
+window.RS50={estado:function(){
+  try{var ss=window.speechSynthesis;
+    return {activo:!!(ss&&ss.__rs50),hayVozPesos:!!(window.RS43&&RS43.vozPesos)};
+  }catch(e){return {activo:false,hayVozPesos:false}}
+}};
 })();
 </script>
 
