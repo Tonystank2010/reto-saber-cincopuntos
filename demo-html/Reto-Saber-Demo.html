@@ -219,7 +219,7 @@ function camino0(u){const ex=CAT.examenes.map(e=>`<button class="chip ${e.id===S
  let b;if(S.niv==null){const x=ST(u).diag&&ST(u).diag[S.area],rc=x?rec(x.ok/x.tot):-1;
   b=`<b>${esc(S.area)}</b><p>Elige la dificultad:</p><div class="dif">${NIV.map((n,j)=>`<button class="${j===rc?'':'g'}" data-a="niv" data-v="${j}">${n}<small>${j===rc?'★ Recomendado':'50 niveles'}</small></button>`).join('')}</div>`}
  else{b=`<div class="top"><button class="g" data-a="back">← Dificultad</button><b>${esc(S.area)} · ${NIV[S.niv]}</b></div><div class="path">`+Array.from({length:50},(_,i)=>{const k=(S.exam==='Saber 11'?'':S.exam+'|')+S.area+'|'+S.niv+'|',lk=i>0&&!u.done[k+(i-1)],st=u.done[k+i]||0;
-   return`<div class="node" style="--x:${Math.round(Math.sin(i*.9)*52)}px"><button class="dot ${lk?'lk':''}" ${lk?'disabled':''} data-a="les" data-v="${esc(S.area+'|'+S.niv+'|'+i)}">${lk?'🔒':st?'✓':i+1}</button><span>${'★'.repeat(st)}${'☆'.repeat(3-st)}</span></div>`}).join('')+'</div>'}
+   return`<div class="node" style="--x:${Math.round(Math.sin(i*.9)*52)}px"><button class="dot ${lk?'lk':''}" ${lk?'disabled':''} data-a="les" data-v="${esc(S.area+'|'+S.niv+'|'+i)}">${lk?'🔒':st?'✓':i+1}</button><span>${'★'.repeat(st)}${'☆'.repeat(3-st)}</span></div>`}).join('')+`<div class="node"><button class="dot cun" data-a="ro" data-v="${Math.min(u.cu.e|0,3)}" aria-label="Cuento: lectura critica, etapa ${Math.min(u.cu.e|0,3)+1} de 4">📖</button><span>Cuento</span></div>`+'</div>'}
  return`${dg}<div class="row sc">${ex}</div><div class="row sc" style="margin-top:8px">${as}</div><div class="card">${b}</div>`}
 function repaso0(u){const d=u.rev.filter(x=>x.due<=Date.now()).length;
  return`<div class="card"><b>Repaso</b><p>${u.rev.length?`Tienes <b>${u.rev.length}</b> pregunta(s) para repasar, <b>${d}</b> lista(s) hoy. Aquí no hay tiempo límite ni se gastan vidas, y te explico cada error.`:'No tienes errores por repasar. Las preguntas que falles aparecerán aquí.'}</p><button data-a="rev" ${u.rev.length?'':'disabled'}>${d||!u.rev.length?'Repasar ahora':'Adelantar repaso'}</button></div>`}
@@ -241,13 +241,20 @@ function render0(){const app=document.getElementById('app'),u=U();
  if(S.view==='auth'||!u){S.view='auth';app.innerHTML=auth();return}
  vidas(u);
  const m=S.L?lesson():S.R?reader(u):S.tab==='camino'?camino(u):S.tab==='cuentos'?cuentos(u):S.tab==='carreras'?carreras(u):S.tab==='repaso'?repaso(u):S.tab==='liga'?liga(u):perfil(u);
- const tb=[['camino','🗺️','Camino'],['cuentos','📖','Cuentos'],['repaso','🔁','Repaso'],['carreras','🎓','Carreras']].concat([['liga','🏆','Liga']],[['perfil','👤','Perfil']]).map(t=>`<button class="${S.tab===t[0]?'on':''}" data-a="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('');
+ const tb=[['camino','🗺️','Camino'],['tienda','🛒','Tienda'],['repaso','🔁','Repaso'],['carreras','🎓','Carreras']].concat([['liga','🏆','Liga']],[['perfil','👤','Perfil']]).map(t=>`<button class="${t[0]==='tienda'?(S.rs42==='tienda'?'on':''):(S.tab===t[0]?'on':'')}" data-a="${t[0]==='tienda'?'rs42t':'tab'}" data-v="${t[0]==='tienda'?'':t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('');
  app.innerHTML=`<main><div class="top"><b>👤 ${esc(u.name)}</b><span class="rs42st"><button class="stb" data-a="rs42v" aria-label="Vidas: toca para ver tus vidas">❤️ ${u.v}</button><button class="stb" data-a="rs42r" aria-label="Racha de dias">🔥 ${u.streak}</button><button class="stb" data-a="rs42t" aria-label="Monedas y tienda">🪙 ${Math.max(0,(u.xp|0)-(u.gasto|0))}</button></span></div>${m}${S.L?'':note}</main>${S.L?'':`<nav>${tb}</nav>`}`;const pa=document.querySelector('.path'),dd=pa&&[...pa.querySelectorAll('.dot')].find(d=>!d.disabled&&d.textContent!=='✓');if(dd)pa.scrollLeft=dd.offsetLeft-pa.clientWidth/2}
 
 /* ---- v4: pentágono, modo estudio/reto, no lo sé, bloques, Cuentos ---- */
 const ET=[{n:'Lector Acompañado',nar:1,res:1,pis:1},{n:'Lector Guiado',nar:0,res:0,pis:1},{n:'Analista Crítico',nar:0,res:0,pis:2},{n:'Lector Autónomo',nar:0,res:0,pis:0}];
 const cq=(id,c,en,o,r,ex,p)=>({id,area:'Lectura Crítica',competencia:c,enunciado:en,opciones:o.map((x,i)=>({id:'ABCD'[i],texto:x[0],why:x[1]})),respuesta:r,explicacion:ex,pista:p,marcaContenido:'Texto y preguntas de práctica originales, no oficiales'});
 const CU={t:'La biblioteca sin reloj',s:['En el pueblo de Altamira, la biblioteca abría cada mañana cuando sonaba la campana de la plaza.','Un martes la campana no sonó, y Teresa, la bibliotecaria, esperó junto a la puerta cerrada.','Los vecinos pasaban sin detenerse, convencidos de que ese día no habría lectura.','Cuando el sol ya estaba alto, Teresa abrió de todos modos y encendió las lámparas.','Esa tarde, tres niños entraron a preguntar si podían leer en voz alta para los demás.','Al caer la noche, Teresa guardó la campana en un estante y escribió en su cuaderno: «Las costumbres ayudan, pero no son la razón de abrir».']};
+const vozPesos=s=>String(s)
+ .replace(/\$\s*([\d][\d.,]*)/g,'$1 pesos colombianos')
+ .replace(/unas monedas/g,'unos pesos colombianos').replace(/una moneda/g,'un peso colombiano')
+ .replace(/monedas/g,'pesos colombianos').replace(/moneda/g,'peso colombiano')
+ .replace(/COP\b/g,'pesos colombianos')
+ .replace(/pesos(?! colombian)/g,'pesos colombianos')
+ .replace(/peso(?!s| colombian)/g,'peso colombiano');
 const CQ=[cq('cu1','Lectura literal','¿Qué ocurrió un martes en Altamira?',[['La campana de la plaza no sonó.',''],['La biblioteca se quemó.','El texto no menciona ningún incendio. Estrategia: busca la información explícita antes de responder.'],['Los niños cerraron la puerta.','Los niños entran después; no cierran nada.'],['Teresa viajó a otro pueblo.','Teresa espera junto a la puerta, no viaja.']],'A','La segunda oración dice que la campana no sonó ese martes.','Relee la segunda oración.'),
 cq('cu2','Inferencia','¿Por qué los vecinos pasaban sin detenerse?',[['Porque no sabían leer.','El texto no dice eso: es una suposición sin evidencia.'],['Porque Teresa los había echado.','No hay evidencia de que Teresa los echara.'],['Porque daban por hecho que sin campana no habría lectura.',''],['Porque preferían quedarse en la plaza.','Nada en el texto sugiere esa preferencia.']],'C','La expresión «convencidos de que» muestra que suponían que la biblioteca estaría cerrada.','Fíjate en la expresión «convencidos de que».'),
 cq('cu3','Lectura crítica','¿Qué postura expresa Teresa al final?',[['Que las campanas deben retirarse.','Confunde un gesto (guardar la campana) con una tesis.'],['Que una costumbre es útil, pero no justifica por sí sola abrir o cerrar.',''],['Que los vecinos tenían razón.','Contradice su decisión de abrir.'],['Que leer en voz alta está prohibido.','Es una idea inventada: el texto muestra lo contrario.']],'B','Su frase final separa la costumbre (útil) de la razón de abrir (servir a los lectores).','Compara la frase final del cuaderno con lo que hizo durante el día.')];
@@ -275,7 +282,7 @@ function blk(){const L=S.L;return`<div class="card"><h2>Bloque ${(L.i+1)/10} de 
 function cuEnd(L){const ok=L.ok>=2;return`<div class="card"><h2>${ok?'¡Etapa superada!':'Sigue practicando'}</h2><p>Aciertos: ${L.ok} de ${L.qs.length}${ok?'':'. Necesitas 2 de 3 para avanzar.'}</p>${L.e>=2?'<label>Tu diario de lectura (privado: nadie lo evalúa ni lo ve)<textarea id="dr" rows="3"></textarea></label>':''}${L.e===3?'<p><b>Resumen con rúbrica</b></p><textarea id="rs" rows="3" placeholder="Resume el cuento en 2 o 3 frases"></textarea>'+['Dice la idea central','Incluye ideas de apoyo','Usa evidencia del texto','Se entiende con claridad'].map(x=>`<label><input type="checkbox" class="rb"> ${x}</label>`).join(''):''}<br><button data-a="svd">Continuar</button></div>`}
 function banner(u){let h='';vidas(u);if(u.v<=0)h+=`<div class="card">💔 <b>Te quedaste sin vidas</b><p>${u.vr<3?`Haz una evaluación de 5 preguntas (3 aciertos para aprobar) y recupera 1 vida. Recuperadas: ${u.vr} de 3.`:'Ya recuperaste 3 vidas con evaluaciones.'} Si no la haces, todas tus vidas vuelven en ${tleft(u)}.</p>${u.vr<3?'<button data-a="vid">Evaluación para recuperar una vida</button>':''}</div>`;else if(u.vt&&u.v<5)h+=`<p class="mu">❤️ Tus vidas se completan en ${tleft(u)}.</p>`;if(ST(u).dg)h+=`<div class="card">⏸️ <b>Evaluación en pausa</b><p>Vas por la pregunta ${ST(u).dg.i+1} de ${ST(u).dg.qs.length}.</p><button data-a="dgr">Continuar</button></div>`;
  if(ST(u).diag&&!ST(u).dg){const c=sc(ST(u).diag),w=AR.slice().sort((a,b)=>c[a]-c[b])[0],x=ST(u).diag[w];h+=`<div class="card">🧭 <b>Tu siguiente paso (sugerido)</b><p>Tu área con más oportunidad es ${esc(w)} (${c[w]}/100). Empieza en nivel ${NIV[rec(x.ok/x.tot)]}. Puedes elegir otra ruta.</p><button class="g" data-a="sug" data-v="${esc(w+'|'+rec(x.ok/x.tot))}">Ir allí</button></div>`}return h}
-const camino=u=>misionesCard(u)+banner(u)+plan(u)+ds(u)+camino0(u)+(S.exam==='Saber 11'?'':'<p class="mu">Contenido inicial de muestra para Saber Pro y TyT: mezcla preguntas propias y de apoyo; faltan más preguntas originales de este nivel.</p>');
+const camino=u=>misionesCard(u)+banner(u)+plan(u)+ds(u)+camino0(u)+cuentos(u)+(S.exam==='Saber 11'?'':'<p class="mu">Contenido inicial de muestra para Saber Pro y TyT: mezcla preguntas propias y de apoyo; faltan más preguntas originales de este nivel.</p>');
 const pctabs=()=>{const t=(S.ptab||'prog');return `<div class="row rs41pc" style="margin-bottom:6px">${[['perso','Personalizar'],['prog','Progreso'],['ajus','Ajustes']].map(x=>`<button class="chip${t===x[0]?' on':''}" data-a="ptab" data-v="${x[0]}" aria-pressed="${t===x[0]}">${x[1]}</button>`).join('')}</div>`};
 const perfil=u=>{if(!S.ptab)S.ptab='prog';const seg={perso:'',prog:perfil0(u)+dominioCard(u)+metaCard(u)+evo(u)+ins(u)+histCard(u)+marcCard(u),ajus:fichaCard()+vozCard()+pilotoCard(u)+panelCard(u)+copiaCard()+bancoCard()+acc()+`<div class="card"><b>Tiempo por pregunta</b><p class="mu">Cada pregunta de las lecciones y evaluaciones tiene 45 s; si se agota, cuenta como fallada y pierdes una vida. En el Repaso y en Cuentos no hay límite. Si necesitas más tiempo por accesibilidad, puedes duplicarlo.</p><button class="${u.reto?'':'g'}" data-a="reto">${u.reto?'Volver a 45 s':'Ampliar a 90 s'}</button><p class="mu">📓 Diario de lectura: ${u.diario.length} entrada(s), solo visibles para ti.</p></div>`}[S.ptab]||'';return pctabs()+seg};
 A.ptab=v=>{S.ptab=v;S.L=null;S.R=null;stopTTS();render()};
@@ -294,7 +301,7 @@ Object.assign(A,{
  ro:v=>{const e=+v,a=ET[e];S.R={e,t:{nar:a.nar,res:a.res},i:-1};render()},
  tg:v=>{S.R.t[v]=S.R.t[v]?0:1;if(!S.R.t.nar)stopTTS();render()},
  sp:()=>{const ss=window.speechSynthesis;if(!ss){alert('Tu navegador no ofrece narración.');return}ss.cancel();const v=+document.getElementById('vel').value;
-  CU.s.forEach((x,i)=>{const t=new SpeechSynthesisUtterance(x);t.lang='es-ES';t.rate=v;t.onstart=()=>{if(S.R)document.querySelectorAll('#st span').forEach((y,j)=>y.className=S.R.t.res&&j===i?'hl':'')};ss.speak(t)})},
+  CU.s.forEach((x,i)=>{const t=new SpeechSynthesisUtterance(vozPesos(x));t.lang='es-ES';t.rate=v;t.onstart=()=>{if(S.R)document.querySelectorAll('#st span').forEach((y,j)=>y.className=S.R.t.res&&j===i?'hl':'')};ss.speak(t)})},
  rq:()=>{const e=S.R.e;stopTTS();S.R=null;S.L=mk('cu',CQ,{e});render()},
  svd:()=>{const g=i=>(document.getElementById(i)||{value:''}).value.trim(),u=U(),L=S.L;if(g('dr'))u.diario.push({t:Date.now(),e:L.e,txt:g('dr').slice(0,2000)});if(g('rs'))u.diario.push({t:Date.now(),e:L.e,resumen:g('rs').slice(0,1000),rubrica:document.querySelectorAll('.rb:checked').length});save();S.L=null;render()}});
 
@@ -2087,6 +2094,7 @@ const P={
  'flecha-der':'<path d="M4.5 12h14"/><path d="M13 6.5l5.5 5.5-5.5 5.5"/>',
  'flecha-izq':'<path d="M19.5 12h-14"/><path d="M11 6.5 5.5 12l5.5 5.5"/>',
  moneda:'<circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="4.6"/>',
+ tienda:'<path d="M4.5 9.5h15l-1.1 9.7a1.9 1.9 0 0 1-1.9 1.7H7.5a1.9 1.9 0 0 1-1.9-1.7L4.5 9.5z"/><path d="M3.8 9.5l1.4-4.3a1.6 1.6 0 0 1 1.5-1.1h12.6a1.6 1.6 0 0 1 1.5 1.1l1.4 4.3"/><path d="M9.5 9.5v-1a2.5 2.5 0 0 1 5 0v1"/>',
  forma:'<rect x="5" y="5" width="14" height="14" rx="5"/>',
  paleta:'<path d="M12 3.5a8.5 8.5 0 1 0 .6 17c1.7 0 2.3-1 1.6-2.3-.7-1.5.3-2.7 2-2.7h1.6A3.3 3.3 0 0 0 20.5 12C20 7.2 16.6 3.5 12 3.5z"/><circle cx="8.3" cy="9.3" r="1.2"/><circle cx="13" cy="7.2" r="1.2"/><circle cx="16.6" cy="10.6" r="1.2"/>',
  boca:'<path d="M5.5 10.5q6.5 7.5 13 0"/><circle cx="5.5" cy="10.5" r="1"/><circle cx="18.5" cy="10.5" r="1"/>',
@@ -2110,6 +2118,7 @@ const MAP={
   '💎':'gema','📱':'movil','🌸':'cuentos','👁':'ojo','🗨':'duelo',
   '\u23F1':'reloj','\u23F3':'relojarena','\u23F8':'pausa','\u2691':'bandera',
   '\uD83E\uDE99':'moneda','\u2192':'flecha-der','\u2190':'flecha-izq','\uD83D\uDCD2':'cuaderno','\uD83D\uDD58':'reloj',
+  '\uD83D\uDED2':'tienda','\uD83C\uDFEA':'tienda',
   '\u2713':'check','\u2714':'check','\u2715':'cerrar','\u2716':'cerrar','\u25B6':'reproducir','\u2B1C':'casilla',
   '🍀':'trebol','🎲':'dado','👉':'dedo','💾':'disquete','📊':'grafica','📲':'movil','🔐':'candado','🔑':'llave','🖨':'impresora','🛡':'escudo','🧭':'brujula','🕘':'reloj'
 };
@@ -3237,6 +3246,26 @@ try{
 /* API para pruebas */
 try{window.RS42={monedas:monedas,PRECIO:PRECIO,tengo:function(k){return tengo(k)},inyectar:inyectar,ventana:ventana}}catch(e){}
 
+})();
+</script>
+<script>
+/* ---- v43: cuentos dentro del mapa del camino + dan color propio al nodo Cuento ----
+   a) El nodo del Cuento vive en la fila de puntos del Camino (clase .dot.cun).
+   b) El pintar() de v35 colorea cada .dot por hash de area; aqui el color del
+      cuento se fuerza con !important para que siempre sea distinto a los niveles.
+   c) Expone window.RS43 con el helper vozPesos (definido en el demo base). */
+(function(){
+function css(){
+ var st=document.createElement('style');st.id='rs43css';
+ st.textContent='.dot.cun{background:#d9627c!important;border-color:#b64a64!important;color:#fff!important;box-shadow:0 3px 0 #a03c55!important}.dot.cun svg.rsic{stroke:#fff!important}';
+ document.head.appendChild(st);
+}
+function inyectar(){try{css()}catch(e){}}
+inyectar();
+var _r43=render;
+render=function(){var r=_r43.apply(this,arguments);try{inyectar()}catch(e){}return r};
+setTimeout(inyectar,0);
+window.RS43={vozPesos:(typeof vozPesos==='function')?vozPesos:null};
 })();
 </script>
 </body>

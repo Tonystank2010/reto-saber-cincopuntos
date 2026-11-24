@@ -357,3 +357,12 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 **Módulos:** parche base (topbar, monedas en textos, `touch` con protector, contraseña) + `demo-html/modulos/v42-tienda.js` (nuevo) + icono «moneda» en v35 + artículos premium en v37. Caché PWA a `rscp-v28` / `reto-saber-v26`.
 
 **Corrección (v42.1)**: la ventana emergente ahora es **singleton**: se elimina cualquier capa previa antes de dibujarse (nada de ventanas superpuestas tras un doble toque), se cierra sola al entrar a una lección o cuento, la tarjeta de la tienda se refresca en cada render (la cartera y los precios deshabilitados nunca quedan viejos) y un seguro adicional deja una sola capa al primer click del usuario. Caché PWA a `rscp-v29` / `reto-saber-v27`.
+
+### v43 — Cuentos dentro del mapa del Camino, pestaña Tienda y narración con pesos colombianos
+
+- **Cuentos hace parte del Camino**: la tarjeta de Cuentos (madurez lectora + 4 etapas) ahora se muestra dentro del Camino, y el mapa de puntos termina con un **nodo Cuento** propio — un punto rojo coral con el libro (SVG propio), que abre directamente la etapa actual del lector. Un solo mapa para todo el estudio diario.
+- **La pestaña Cuentos ahora es Tienda**: en la barra inferior donde estaba Cuentos vive ahora el botón Tienda (icono de escaparate SVG propio). No es una pestaña: abre la ventana de la tienda v42 sobre la vista actual y se marca como activa mientras está abierta. Los Cuentos seguían accesibles desde la tarjeta y el nodo del mapa.
+- **Narración con pesos colombianos**: al escuchar un cuento, todo lo que en la voz suene a dinero se dice en pesos colombianos — `$5.000` se lee «cinco mil pesos colombianos», «moneda(s)» y «COP» se leen «peso(s) colombiano(s)», y los «pesos» ya dichos no se duplican. El texto en pantalla no cambia; es solo el audio. Vía `window.RS43.vozPesos`.
+- Botón nuevo de icono «tienda» en v35.
+
+**Módulos:** parche base (nav Tienda, nodo Cuento en el mapa, tarjeta en el Camino, `vozPesos` + su uso en el audio) + `demo-html/modulos/v43-camino-cuentos.js` (color del nodo, API RS43) + sprite «tienda» en v35. Caché PWA a `rscp-v30` / `reto-saber-v28`.
