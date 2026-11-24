@@ -8,7 +8,6 @@
       llama) respeta prefers-reduced-motion. */
 (function(){
 'use strict';
-if(window.self!==window.parent)return;
 
 /* ---------- 1) sprite de iconos (24x24) ---------- */
 const P={
@@ -42,9 +41,25 @@ const P={
  gema:'<path d="M7 4h10l3 5-8 11-8-11z"/><path d="M4 9h16M12 20 8.5 9l3.5-5 3.5 5z"/>',
  movil:'<rect x="7" y="3.5" width="10" height="17" rx="2"/><path d="M10.5 17.5h3"/>',
  ojo:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>',
- ocox:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><path d="M9 9.5l6 5M15 9.5l-6 5"/>'
+ ocox:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><path d="M9 9.5l6 5M15 9.5l-6 5"/>',
+ reloj:'<circle cx="12" cy="13" r="7.5"/><path d="M12 9.8V13l2.6 2"/><path d="M9.5 3.5h5"/>',
+ relojarena:'<path d="M7 3.5h10M7 20.5h10"/><path d="M8.3 3.5v2.8L12 10.6l3.7-4.3V3.5M8.3 20.5v-2.8l3.7-4.3 3.7 4.3v2.8"/>',
+ pausa:'<path d="M9.5 6v12M14.5 6v12"/>',
+ bandera:'<path d="M6.5 21V3.5"/><path d="M6.5 4.5c3.2-1.8 5.8 1.5 11-.2V13c-5.2 1.7-7.8-1.6-11 .2"/>',
+ cerrar:'<path d="M6.5 6.5l11 11M17.5 6.5l-11 11"/>',
+ casilla:'<rect x="4.5" y="4.5" width="15" height="15" rx="3.5"/>',
+ trebol:'<circle cx="12" cy="7.2" r="3.3"/><circle cx="7.2" cy="13" r="3.3"/><circle cx="16.8" cy="13" r="3.3"/><path d="M12 11.5V20"/>',
+ dado:'<rect x="4" y="4" width="16" height="16" rx="3.5"/><circle cx="8.7" cy="8.7" r="1.1"/><circle cx="15.3" cy="8.7" r="1.1"/><circle cx="8.7" cy="15.3" r="1.1"/><circle cx="15.3" cy="15.3" r="1.1"/><circle cx="12" cy="12" r="1.1"/>',
+ dedo:'<path d="M9 11.5V6a1.7 1.7 0 0 1 3.4 0v5"/><path d="M12.4 11.2l4.1.8a2 2 0 0 1 1.6 2.3l-.5 3.1a3 3 0 0 1-3 2.6h-3.3a3 3 0 0 1-2.5-1.4l-2.6-4 1.3-1.5c.8-.9 2.3-1 3.1-.1"/>',
+ disquete:'<path d="M4.5 4.5h11.6l3.4 3.4v11.6H4.5z"/><path d="M8 4.5V10h7V4.5"/><rect x="8" y="13.5" width="8" height="6"/>',
+ grafica:'<path d="M4.5 4v15.5H20"/><path d="M8.5 16v-4.5M12.5 16V7.5M16.5 16v-6"/>',
+ llave:'<circle cx="8.5" cy="12" r="3.7"/><path d="M12.2 12H20M17.2 12v3.2M20 12v2.4"/>',
+ impresora:'<path d="M7.5 8V3.5h9V8"/><rect x="4" y="8" width="16" height="8.5" rx="2"/><path d="M7.5 14h9v6.5h-9z"/><path d="M10 17.5h4"/>',
+ escudo:'<path d="M12 3.5 5.2 6.3v5.2c0 4.4 2.9 8 6.8 9.5 3.9-1.5 6.8-5.1 6.8-9.5V6.3z"/><path d="M9.3 12.2l2 2 3.4-4"/>',
+ brujula:'<circle cx="12" cy="12" r="8.5"/><path d="M15 9l-1.9 4.6L8.5 15.5l1.9-4.6z"/>',
+ reproducir:'<path d="M9 6.2v11.6L18.6 12z"/>'
 };
-const LLENOS=',corazon,fuego,estrella,gema,medalla,corazonroto,estrella0,';
+const LLENOS=',corazon,fuego,estrella,gema,medalla,corazonroto,estrella0,reproducir,';
 
 function ico(n){
   const llen=LLENOS.indexOf(','+n+',')>=0;
@@ -59,7 +74,10 @@ const MAP={
   '🎯':'diana','📌':'pin','📍':'pin','\uD83C\uDCCD':'pin','📋':'plan','📓':'cuaderno','📘':'cuaderno','📗':'cuaderno',
   '💡':'idea','🔒':'candado','🔓':'candado','🔊':'altavoz','🔇':'silencio','☁':'nube',
   '📅':'calendario','🗓':'calendario','⚠':'alerta','✅':'check','⚔':'duelo','🏅':'medalla',
-  '💎':'gema','📱':'movil','🌸':'cuentos','👁':'ojo','🗨':'duelo'
+  '💎':'gema','📱':'movil','🌸':'cuentos','👁':'ojo','🗨':'duelo',
+  '\u23F1':'reloj','\u23F3':'relojarena','\u23F8':'pausa','\u2691':'bandera',
+  '\u2713':'check','\u2714':'check','\u2715':'cerrar','\u2716':'cerrar','\u25B6':'reproducir','\u2B1C':'casilla',
+  '🍀':'trebol','🎲':'dado','👉':'dedo','💾':'disquete','📊':'grafica','📲':'movil','🔐':'candado','🔑':'llave','🖨':'impresora','🛡':'escudo','🧭':'brujula','🕘':'reloj'
 };
 const CLAVES=Object.keys(MAP).sort((a,b)=>b.length-a.length);
 const RX=new RegExp('('+CLAVES.map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\uFE0F?','g');
