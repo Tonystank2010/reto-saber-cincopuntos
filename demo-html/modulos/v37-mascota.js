@@ -219,13 +219,16 @@ function escena(happy){
    +`<g class="rs37sp"><circle cx="14" cy="30" r="3.2" style="fill:${st}"/><circle cx="86" cy="26" r="2.6" style="fill:${pk}"/><circle cx="10" cy="58" r="2.2" style="fill:${az}"/><circle cx="90" cy="55" r="3" style="fill:${st}"/></g>`;
 }
 
-/* mood: neutro | happy | animo */
+/* mood: neutro | happy | animo
+   al final, la capa de evolucion (v45): destellos, cometa, insignia y
+   constelacion segun el XP total; si v45 no esta, el avatar queda igual */
 function avatarSVG(c,mood){
   const f=FORMAS.includes(c.f)?c.f:'punto';
   const ojoT=(mood==='happy')?3:c.o;
   const bocT=(mood==='animo')?1:(mood==='happy'?0:c.b);
   const col2='rgba(0,0,0,.72)';
-  return`<svg viewBox="0 0 100 96" role="img" aria-label="Tu avatar Cinco Puntos"><g>${escena(mood==='happy')}${baseForma(f,c)}<g class="rs37blink">${ojos(f,ojoT,col2)}${boca(f,bocT)}</g>${accesorio(c.a,f,c.c)}</g></svg>`;
+  let evo='';try{if(window.RS45&&RS45.capa)evo=window.RS45.capa(c,mood)}catch(e){}
+  return`<svg viewBox="0 0 100 96" role="img" aria-label="Tu avatar Cinco Puntos"><g>${escena(mood==='happy')}${baseForma(f,c)}<g class="rs37blink">${ojos(f,ojoT,col2)}${boca(f,bocT)}</g>${accesorio(c.a,f,c.c)}${evo}</g></svg>`;
 }
 function miniAvatar(){return avatarSVG(cfg(),'neutro')}
 
