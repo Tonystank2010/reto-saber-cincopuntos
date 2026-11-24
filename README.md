@@ -366,3 +366,5 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 - Botón nuevo de icono «tienda» en v35.
 
 **Módulos:** parche base (nav Tienda, nodo Cuento en el mapa, tarjeta en el Camino, `vozPesos` + su uso en el audio) + `demo-html/modulos/v43-camino-cuentos.js` (color del nodo, API RS43) + sprite «tienda» en v35. Caché PWA a `rscp-v30` / `reto-saber-v28`.
+
+**Corrección (v43.1) — contraste e identidad de ventanas**: la ventana emergente usaba `background:var(--cv)`, una variable **que nunca fue definida** — el fondo quedaba transparente y todo se mezclaba con la app detrás. Ahora: fondo real de tarjeta (`--cd`), franja superior e icono de color **distinto por ventana** (Vidas rosa carmín, Racha naranja ámbar, Tienda con el acento de tu paleta), telón más oscuro detrás, sombra más profunda y filas de tienda diferenciadas. Además se crea la variable `--ac-tx`: el texto sobre botones de acento es blanco en tema claro y **navy oscuro en tema oscuro** (antes era blanco sobre acentos claros como el índigo, azul cielo o esmeralda claro — por eso todo se veía «lavado»). El nodo Cuento sube su coral para legibilidad en ambos temas.
