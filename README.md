@@ -332,3 +332,12 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 - **Verificado con pruebas automáticas**: cero emojis y cero flechas en login, registro, app sembrada y Perfil (texto visible y atributos); navegación Cuentos/Repaso/Carreras/Perfil/Camino y flujo de pregunta sin errores de runtime.
 
 **Módulo:** `demo-html/modulos/v35-area-iconos.js` (catálogo 64 iconos). Caché PWA a `rscp-v25` / `reto-saber-v23`.
+
+### v41 — Perfil por pestañas, texto que encaja, auriculares y ligas con personas reales
+
+- **Pestañas internas del Perfil**: la vista Perfil se divide en tres pestañas con chips propios: **Personalizar** (solo el editor de mascota), **Progreso** (resumen, dominio, metas, evolución, ideas, historial de sesiones y marcadores) y **Ajustes** (voz, ficha imprimible, piloto, panel de acompañamiento, copia de seguridad, banco de preguntas, accesibilidad y tiempo por pregunta). La pestaña se recuerda durante la sesión (`S.ptab`), el editor de mascota solo aparece en Personalizar y la navegación sigue siendo accesible por teclado (`aria-pressed`).
+- **Auriculares de la mascota rediseñados**: diadema acolchada con línea de brillo, copas ovaladas con interior, brillo lateral y horquilla hacia la cabeza, ancladas a la línea de ojos de cada forma. Se ve en la galería de `preview-mascota.html` (accesorio 6).
+- **El texto encaja en su caja en móvil vertical**: reglas de encaje para botones, chips, filas `.lg`, opciones y el editor (`min-width:0`, `overflow-wrap:anywhere`, elipsis/ajuste), más una capa de compactación bajo 480 px (chips y filas más pequeños, tiles del editor a 56 px). Nada se sale de los cuadros en pantallas estrechas.
+- **Ligas y duelos con personas reales**: nueva vista pública `liga_publica` en Supabase (`supabase/ligas.sql` — ejecútala en el SQL Editor) que expone solo nombre, liga, semana y XP/aciertos agregados. Mientras la nube esté activa, el tablero de liga mezcla tus cuentas locales con **cuentas reales sincronizadas** (marcadas con «nube»), y cada fila tiene el botón **Duelar** para retarla en un duelo de 10 preguntas donde el rival responde según su precisión real registrada. Sin nube configurada, todo funciona como antes (cuentas del dispositivo). La lectura anónima expone únicamente el nombre visible y métricas de juego; los correos y los datos privados nunca salen de la fila propia.
+
+**Módulos:** parche base (`perfil`, `liga`, duelos) + `demo-html/modulos/v41-ligas.js`. SQL nuevo `supabase/ligas.sql`. Caché PWA a `rscp-v27` / `reto-saber-v25`.
