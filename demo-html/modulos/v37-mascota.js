@@ -304,6 +304,8 @@ function inyectarLiga(){
 }
 function inyectarTodo(){
   try{css();inyectarPerfil();inyectarTop();inyectarLiga()}catch(e){}
+  /* el DOM inyectado tras el pase de v35 puede traer emojis (ej. el dado de Sorprendeme): repaso */
+  try{window.RS35&&RS35.pase&&RS35.pase()}catch(e){}
 }
 function inyectarFBp(){
   try{css();inyectarFB()}catch(e){}
