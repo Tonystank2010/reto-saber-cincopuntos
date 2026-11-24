@@ -368,3 +368,13 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 **Módulos:** parche base (nav Tienda, nodo Cuento en el mapa, tarjeta en el Camino, `vozPesos` + su uso en el audio) + `demo-html/modulos/v43-camino-cuentos.js` (color del nodo, API RS43) + sprite «tienda» en v35. Caché PWA a `rscp-v30` / `reto-saber-v28`.
 
 **Corrección (v43.1) — contraste e identidad de ventanas**: la ventana emergente usaba `background:var(--cv)`, una variable **que nunca fue definida** — el fondo quedaba transparente y todo se mezclaba con la app detrás. Ahora: fondo real de tarjeta (`--cd`), franja superior e icono de color **distinto por ventana** (Vidas rosa carmín, Racha naranja ámbar, Tienda con el acento de tu paleta), telón más oscuro detrás, sombra más profunda y filas de tienda diferenciadas. Además se crea la variable `--ac-tx`: el texto sobre botones de acento es blanco en tema claro y **navy oscuro en tema oscuro** (antes era blanco sobre acentos claros como el índigo, azul cielo o esmeralda claro — por eso todo se veía «lavado»). El nodo Cuento sube su coral para legibilidad en ambos temas.
+
+### v44 — Plan nocturno: el estudio del día siguiente, listo desde la noche
+
+- **Se prepara de noche**: al abrir la app después de las 19:00, la app arma tu **Plan nocturno para mañana** (aparece al tope del Camino, en tarjeta propia con barra de avance). Si abres de día, el plan se arma para ese mismo día. Cuando cambia la fecha, se rehace con tus datos más recientes.
+- **Todas las áreas, siempre**: 7 bloques — Repaso de tus errores, una lección por **cada área del examen** (5) y un cuento de lectura crítica. Nadie se queda fuera.
+- **Énfasis en lo débil**: tus 2 áreas más débiles —según tu evaluación de admisión y los errores guardados en Repaso— van primero y marcadas con la etiqueta **Profundizar**; el resto, con **Reforzar**. El nivel recomendado de cada lección sale de tu puntaje por área. Las áreas sin diagnóstico cuentan como "por medir", no como débiles.
+- **Todo es tachable**: cada bloque se marca listo con un toque (el Repaso se marca solo cuando no tienes errores pendientes). Al completar el plan del día ganas **60 monedas** (una sola vez por plan). Botón «Rehacer el plan con lo último» si cambian tus datos.
+- Sin emojis: iconos propios (reloj, bandera, cuaderno, libro) del catálogo v35.
+
+**Módulos:** `demo-html/modulos/v44-plan-nocturno.js` (nuevo; plan, CSS y recompensa; `window.RS44` para pruebas, `window.RS44HORA` para fijar la hora en tests). Caché PWA a `rscp-v31` / `reto-saber-v29`.
