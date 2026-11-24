@@ -270,3 +270,17 @@ Adiós a los emoji genéricos del sistema, que se ven distintos en cada teléfon
 - Los `::before` con ✓/✗ de aciertos y errores se conservan (gauges semánticos, no decoración).
 
 **Módulo fuente:** `demo-html/modulos/v35-area-iconos.js` — bloque `<script>` (patrón v20+) con CSS inyectado por el propio módulo (`#rs35css`). Caché PWA a `rscp-v22` / `reto-saber-v20`.
+
+### v36 — Avatar personalizable (ecosistema Cinco Puntos)
+
+Después de reemplazar los emojis genéricos por iconos SVG propios (v35), comienza el ecosistema de mascota de la marca: un **avatar editable** que representa al estudiante en toda la app.
+
+- **4 formas propias en SVG**: Punto (la clásica bola del demo), **Chigüiro**, **Zorro** y **Robot**, todas dibujadas a mano en la app (nada de imágenes externas).
+- **Personalización completa**: 10 colores de cuerpo (Automático usa el acento de la paleta elegida en v34.1), 4 estilos de ojos, 4 bocas y 5 accesorios (gorra, gafas, moño, corona) — miles de combinaciones.
+- **Botón «Sorpréndeme»**: elige una combinación al azar para descubrir opciones.
+- **Está en toda la app**: en la barra superior (junto al nombre), cuando entregas retroalimentación aparece tu avatar celebrando (contento) o motivándote (ánimo), en la Liga (tu fila) y una tarjeta de editor en **Perfil → Tu avatar**. Todo con `aria-label` y columna reutilizada del CSS existente.
+- **Validación robusta**: cualquier dato viejo o corrupto (forma desconocida, color inválido, índices fuera de rango) cae silenciosamente a los valores de fábrica en `RS36.cfg()`.
+- **Persistencia**: se guarda en `DB.pref.av` y viaja con la nube porque `DB.pref` se sincroniza completo (v27) — el avatar te acompaña a cualquier dispositivo.
+- Interfaz accesible (chips como botones reales con `data-a`, hover que escala el avatar, todo dentro de `prefers-reduced-motion: no-preference`).
+
+**Módulo fuente:** `demo-html/modulos/v36-avatar.js` — bloque `<script>` (patrón v20+) con CSS propio (`#rs36css`). API interna expuesta como `window.RS36` (contenido para pruebas). Caché PWA a `rscp-v23` / `reto-saber-v21`.
