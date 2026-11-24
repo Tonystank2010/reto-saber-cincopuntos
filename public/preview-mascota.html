@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vista previa de la mascota · Cinco Puntos</title>
+<style>
+body{margin:0;padding:24px;font-family:system-ui,Segoe UI,Roboto,sans-serif;background:#f8fafc;color:#1f2430}
+h1{font-size:20px;margin:0 0 4px} p{margin:0 0 18px;color:#64748b;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px}
+.item{background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:14px;text-align:center;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+.item svg{width:150px;height:142px}
+.item b{display:block;margin-top:6px;font-size:14px}
+.acc{margin-top:4px;font-size:12px;color:#64748b}
+</style></head><body>
+<h1>Vista previa de la mascota · v37</h1>
+<p>Las 8 formas de la mascota con acento, gorra y ojos con brillo. El color Automático usa el acento de la app.</p>
+<div class="grid" id="g"></div>
+<script>/* stubs minimos para el modulo fuera del juego */
+var DB={pref:{}},S={view:'app'},A={},save=function(){},render=function(){};
+var esc=function(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+/* ---- v37: renace del ecosistema de mascota Cinco Puntos ----
+   Rediseño integral: 8 formas con volumen (luz, sombra y contorno),
+   13 colores, 4 ojos, 4 bocas y 6 accesorios. Animaciones suaves
+   (respiración, saludo, parpadeo) que se desactivan con
+   prefers-reduced-motion. Editor grande en el Perfil, y presencia en la
+   barra superior, la Liga y la retroalimentación (celebra   /
+   ánimo). Config en DB.pref.av — viaja con la nube porque DB.pref
+   se sincroniza completo (v27). Datos de v36 siguen siendo válidos.
+   Dibujado a mano, sin imágenes externas. */
+(function(){
+'use strict';
+
+const FORMAS=['punto','chiguiro','zorro','robot','tucan','perezoso','gato','buho'];
+const OJOS=4,BOCAS=4,ACCS=7;
+const COLORES=['','#f59e0b','#ef4444','#8b5cf6','#3b82f6','#10b981','#ec4899','#14b8a6','#f97316','#64748b','#0ea5e9','#84cc16','#a855f7'];
+
+/* anclas por forma: altura de ojos (ey), tope de la cabeza (ty),
+   ancho de la cabeza en la línea de ojos (cw) y centro (x siempre 50) */
+const FINFO={
+ punto   :{ey:47,ty:22,cw:58},
+ chiguiro:{ey:55,ty:46,cw:52},
+ zorro   :{ey:49,ty:30,cw:46},
+ robot   :{ey:46,ty:26,cw:52},
+ tucan   :{ey:42,ty:24,cw:44},
+ perezoso:{ey:45,ty:28,cw:48},
+ gato    :{ey:49,ty:30,cw:46},
+ buho    :{ey:45,ty:28,cw:50}
+};
+const NOMF={punto:'Punto',chiguiro:'Chigüiro',zorro:'Zorro',robot:'Robot',tucan:'Tucán',perezoso:'Perezoso',gato:'Gato',buho:'Búho'};
+const NOMC=['Automático','Miel','Coral rojo','Violeta','Azul cielo','Esmeralda','Rosa fucsia','Turquesa','Naranja','Gris pizarra','Celeste','Lima','Orquídea'];
+const NOMO=['Normales','Brillo de estrellas','Guiño','Felices (∧)'];
+const NOMB=['Sonrisa','Asombro (o)','Lengua fuera','Seria'];
+const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares'];
+
+
+function cfg(){
+  let a;
+  try{a=DB.pref&&DB.pref.av}catch(e){}
+  const c={f:'punto',c:'',o:0,b:0,a:0};
+  if(a&&typeof a==='object'){
+    if(FORMAS.includes(a.f))c.f=a.f;
+    else{const x=+a.f;if(x>=1&&x<FORMAS.length)c.f=FORMAS[x]}
+    if(typeof a.c==='string'&&(a.c===''||/^#[0-9a-fA-F]{6}$/.test(a.c)))c.c=a.c;
+    const nv=x=>Number.isInteger(x)&&x>=0;
+    if(nv(a.o)&&a.o<OJOS)c.o=a.o;
+    if(nv(a.b)&&a.b<BOCAS)c.b=a.b;
+    if(nv(a.a)&&a.a<ACCS)c.a=a.a;
+  }
+  return c;
+}
+function delta(k,v){
+  try{
+    const c=cfg();
+    if(k==='f'){
+      if(FORMAS.includes(v))c.f=v;
+      else{const x=+v;if(x>=0&&x<FORMAS.length)c.f=FORMAS[x]}
+    }
+    else if(k==='c'&&(v===''||/^#[0-9a-fA-F]{6}$/.test(v)))c.c=v;
+    else{
+      const n=+v;
+      if(k==='o'&&n>=0&&n<OJOS)c.o=n;
+      else if(k==='b'&&n>=0&&n<BOCAS)c.b=n;
+      else if(k==='a'&&n>=0&&n<ACCS)c.a=n;
+    }
+    DB.pref=DB.pref||{};DB.pref.av=c;save();render();
+  }catch(e){}
+}
+function random(){
+  try{
+    DB.pref=DB.pref||{};
+    DB.pref.av={f:FORMAS[Math.random()*FORMAS.length|0],c:COLORES[Math.random()*COLORES.length|0],
+      o:(Math.random()*OJOS|0),b:(Math.random()*BOCAS|0),a:(Math.random()*ACCS|0)};
+    save();render();
+  }catch(e){}
+}
+
+
+function ojo(x,y,tipo,col){
+  if(tipo===2)return`<path d="M${x-4} ${y}q2 -3 4 0" style="fill:none;stroke:${col};stroke-width:2;stroke-linecap:round"/>`;
+  const gui=`<circle cx="${x+3}" cy="${y}" r="2" style="fill:${col}"/>`;
+  const bri=(tipo===1)?`<circle cx="${x+1.5}" cy="${y-1.5}" r="1.1" style="fill:#fff"/>`:('' );
+  return`<circle cx="${x}" cy="${y}" r="2.8" style="fill:#fff"/>${gui}${bri}`;
+}
+function ojos(f,tipo,col){
+  const g=FINFO[f]||FINFO.punto,d=Math.min(14,g.cw*0.24);
+  if(f==='robot'&&tipo!==2){
+    if(tipo===3)return`<path d="M${50-d-5} ${g.ey+2}q5 -7 10 0" style="fill:none;stroke:${col};stroke-width:2.2;stroke-linecap:round"/><path d="M${50+d-5} ${g.ey+2}q5 -7 10 0" style="fill:none;stroke:${col};stroke-width:2.2;stroke-linecap:round"/>`;
+    return`<rect x="${50-d-5}" y="${g.ey-4.5}" width="10" height="9" rx="2.5" style="fill:${col}"/><rect x="${50+d-5}" y="${g.ey-4.5}" width="10" height="9" rx="2.5" style="fill:${col}"/>`;
+  }
+  if(tipo===3)return`<path d="M${50-d-5} ${g.ey+1.5}q5 -6 10 0" style="fill:none;stroke:${col};stroke-width:2.2;stroke-linecap:round"/><path d="M${50+d-5} ${g.ey+1.5}q5 -6 10 0" style="fill:none;stroke:${col};stroke-width:2.2;stroke-linecap:round"/>`;
+  return ojo(50-d,g.ey,tipo,col)+ojo(50+d,g.ey,tipo,col);
+}
+function boca(f,tipo){
+  const g=FINFO[f]||FINFO.punto,y=g.ey+9.5,s='fill:none;stroke:rgba(0,0,0,.6);stroke-width:2;stroke-linecap:round';
+  if(tipo===1)return`<circle cx="50" cy="${y+1}" r="2.8" style="fill:rgba(0,0,0,.6)"/>`;
+  if(tipo===2)return`<path d="M46 ${y}q4 5.5 8 0" style="${s}"/><path d="M49.2 ${y+3.4}q2.4 3.4 4.8 .2l-1.1 3.8z" style="fill:#e75480"/>`;
+  if(tipo===3)return`<path d="M46 ${y+1.5}h8" style="${s}"/>`;
+  return`<path d="M45.5 ${y-1}q4.5 5.5 9 0" style="${s}"/>`;
+}
+
+/* accesorios anclados a la cabeza de cada forma */
+function accesorio(tipo,f,colBase){
+  if(!tipo)return'';
+  const g=FINFO[f]||FINFO.punto,ty=g.ty,cw=g.cw,x0=50-cw/2;
+  if(tipo===1){ /* gorra: cúpula + visera + botón */
+    const dom=`<path d="M${x0+3} ${ty+5}q3 -14 ${cw-6} 0z" style="fill:#dc2626"/>`;
+    const vis=`<rect x="${x0+2}" y="${ty+1}" width="${cw-4}" height="6" rx="3" style="fill:#b91c1c"/>`;
+    const bot=`<circle cx="50" cy="${ty-6}" r="3" style="fill:#fca5a5"/>`;
+    return dom+vis+bot;
+  }
+  if(tipo===2||tipo===5){ /* gafas (2) o lentes de sol (5) */
+    const h=11,gw=cw*0.29,gap=cw*0.18;
+    const xL=50-gap/2-gw,boton=xL+gw-8,t='fill:'+(tipo===5?'rgba(30,41,59,.88)':'rgba(15,23,42,.18)')+';stroke:#1f2430;stroke-width:2';
+    return`<rect x="${xL}" y="${g.ey-5}" width="${gw}" height="${h}" rx="4" style="${t}"/>`
+     +`<rect x="${50+gap/2}" y="${g.ey-5}" width="${gw}" height="${h}" rx="4" style="${t}"/>`
+     +`<path d="M${50-gap/2-2} ${g.ey+1}h${gap+4}M${xL} ${g.ey+1}l-8 2M${50+gap/2+2} ${g.ey+1}l8 1" style="fill:none;stroke:#1f2430;stroke-width:2;stroke-linecap:round"/>`
+     +(tipo===5?`<path d="M${xL+5} ${g.ey-3}l6 4" style="stroke:rgba(255,255,255,.35);stroke-width:2;stroke-linecap:round"/>`:'' );
+  }
+  if(tipo===3){ /* moño lateral */
+    return`<path d="M${x0-2} ${ty+6}c-7-7-16-2-12 4 2 5 10 5 14 2l-3.5 7.5 9-5.5z" style="fill:#e75480"/><circle cx="${x0+2}" cy="${ty+11}" r="2" style="fill:#f9a8d4"/>`;
+  }
+  if(tipo===4){ /* corona */
+    const w=cw*0.62,l=50-w/2;
+    return`<path d="M${l} ${ty+2}l3.5-10 6.5 7 6-10 7 10 6.5-7 3.5 10z" style="fill:#fbbf24"/><path d="M${l} ${ty+2}h${w}v3.5h-${w}z" style="fill:#f59e0b"/><circle cx="${50}" cy="${ty-1}" r="1.8" style="fill:#fde68a"/>`;
+  }
+  if(tipo===6){ /* auriculares: diadema + almohadillas */
+    const p=cw/2+5;
+    return`<path d="M${50-p} ${g.ey-2}q0 -${g.ey-ty+16} ${p*2} 0" style="fill:none;stroke:#334155;stroke-width:4;stroke-linecap:round"/>`
+     +`<rect x="${50-p-4.5}" y="${g.ey-4}" width="9" height="13" rx="4" style="fill:#475569"/><rect x="${50+p-4.5}" y="${g.ey-4}" width="9" height="13" rx="4" style="fill:#475569"/>`;
+  }
+  return'';
+}
+
+/* bases con volumen: color -> sombra inferior -> brillo superior -> contorno */
+function baseForma(f,c){
+  const col=(c.c&&/^#[0-9a-fA-F]{6}$/.test(c.c))?c.c:'var(--ac)';
+  const sombra='rgba(0,0,0,.16)',luz='rgba(255,255,255,.30)',edge='rgba(0,0,0,.18)';
+  let p='',s='',l='';
+  if(f==='punto'){
+    p=`<circle cx="50" cy="52" r="31" style="fill:${col};stroke:${edge};stroke-width:2"/>`
+     +`<circle cx="50" cy="17" r="5" style="fill:${col}"/><path d="M50 23v-3" style="stroke:${col};stroke-width:4;stroke-linecap:round"/>`;
+    s=`<path d="M24 62a31 31 0 0 0 52 0 31 23 0 0 1-52 0z" style="fill:${sombra}"/>`;
+    l=`<circle cx="40" cy="40" r="9" style="fill:${luz}"/>`;
+  }else if(f==='chiguiro'){
+    p=`<path d="M20 84q-3-32 30-34t33 34q-14 4-32 4t-31-4z" style="fill:${col}"/>`
+     +`<path d="M33 52q-2-9 5-9t7 9M60 52q0-9 7-9t6 9" style="fill:${col}"/>`
+     +`<ellipse cx="50" cy="70" rx="13" ry="8" style="fill:rgba(255,255,255,.34)"/>`;
+    s=`<path d="M24 80q26 6 55 0-1 5-27 5t-28-5z" style="fill:${sombra}"/>`;
+    l=`<circle cx="38" cy="58" r="5" style="fill:${luz}"/>`;
+  }else if(f==='zorro'){
+    p=`<path d="M27 44 15 18l19 8q16-8 32 0l19-8-12 26q7 26-23 36-30-10-23-36z" style="fill:${col}"/>`
+     +`<path d="M39 68q11 9 22 0q-11 13-22 0z" style="fill:rgba(255,255,255,.4)"/>`
+     +`<path d="M36 62q14 7 28 0-2 4-4 5-10 5-20 0-2-1-4-5z" style="fill:rgba(255,255,255,.55)"/>`;
+    s=`<path d="M36 74q14 10 28 0-2 7-14 7t-14-7z" style="fill:${sombra}"/>`;
+    l=`<circle cx="36" cy="46" r="6" style="fill:${luz}"/>`;
+  }else if(f==='robot'){
+    p=`<rect x="23" y="26" width="54" height="50" rx="13" style="fill:${col}"/>`
+     +`<path d="M50 28V14" style="stroke:${col};stroke-width:4;stroke-linecap:round"/><circle cx="50" cy="10" r="4.5" style="fill:${col}"/>`
+     +`<rect x="32" y="42" width="36" height="17" rx="7" style="fill:rgba(255,255,255,.28)"/>`
+     +`<circle cx="42" cy="62" r="2.2" style="fill:rgba(0,0,0,.35)"/><circle cx="58" cy="62" r="2.2" style="fill:rgba(0,0,0,.35)"/>`;
+    s=`<path d="M26 68h48a13 13 0 0 1-13 8H39a13 13 0 0 1-13-8z" style="fill:${sombra}"/>`;
+    l=`<rect x="30" y="33" width="12" height="6" rx="3" style="fill:${luz}"/>`;
+  }else if(f==='tucan'){
+    p=`<path d="M50 16q22 0 22 26 0 22-12 32-10 8-20 1-12-10-12-33 0-26 22-26z" style="fill:#1f2430"/>`
+     +`<path d="M36 48q-14-2-24 4t-2 14q10 6 22 2t4-20z" style="fill:#f59e0b"/>`
+     +`<path d="M36 48q-11 0-18 5" style="fill:none;stroke:#d97706;stroke-width:3;stroke-linecap:round"/>`
+     +`<path d="M12 66q4 6 12 3" style="fill:none;stroke:#1f2430;stroke-width:2.6;stroke-linecap:round"/>`
+     +`<path d="M44 62q8 2 12-2l4 14q-9 6-16-2z" style="fill:${col};opacity:.92"/>`
+     +`<path d="M48 60q4 3 8 0" style="fill:none;stroke:rgba(0,0,0,.4);stroke-width:2;stroke-linecap:round"/>`;
+    s=`<path d="M30 66q20 8 40 0-2 8-20 9t-20-9z" style="fill:rgba(255,255,255,.08)"/>`;
+    l=`<circle cx="42" cy="26" r="5" style="fill:rgba(255,255,255,.22)"/>`;
+  }else if(f==='perezoso'){
+    p=`<ellipse cx="50" cy="54" rx="27" ry="30" style="fill:${col}"/>`
+     +`<circle cx="38" cy="${FINFO.perezoso.ey}" r="8.5" style="fill:rgba(109,72,42,.45)"/><circle cx="62" cy="${FINFO.perezoso.ey}" r="8.5" style="fill:rgba(109,72,42,.45)"/>`
+     +`<path d="M36 79q14 7 28 0" style="fill:none;stroke:rgba(120,78,40,.5);stroke-width:3.5;stroke-linecap:round"/>`;
+    s=`<path d="M27 68q23 14 46 0-4 15-23 15t-23-15z" style="fill:${sombra}"/>`;
+    l=`<circle cx="35" cy="40" r="6.5" style="fill:${luz}"/>`;
+  }else if(f==='gato'){
+    p=`<path d="M28 40 24 20l16 10q10-4 20 0l16-10-4 20q6 8 6 18 0 26-28 26t-28-26q0-10 6-18z" style="fill:${col}"/>`
+     +`<path d="M30 38 27 25l12 8zM70 38l3-13-12 8z" style="fill:rgba(0,0,0,.18)"/>`;
+    s=`<path d="M30 72q20 12 40 0-3 9-20 9t-20-9z" style="fill:${sombra}"/>`;
+    l=`<circle cx="38" cy="46" r="6" style="fill:${luz}"/>`;
+    return p+s+l+`<circle cx="50" cy="62" r="2.4" style="fill:rgba(0,0,0,.35)"/>`;
+  }else if(f==='buho'){
+    p=`<path d="M24 46q0-22 26-22t26 22q0 26-14 36-12 8-24 0-14-10-14-36z" style="fill:${col}"/>`
+     +`<path d="M22 40q-2-14 8-18l4 14zM78 40q2-14-8-18l-4 14z" style="fill:${col};stroke:rgba(0,0,0,.15);stroke-width:1.5"/>`
+     +`<path d="M36 58q14 8 28 0-2 14-14 16-12-2-14-16z" style="fill:rgba(255,255,255,.34)"/>`
+     +`<path d="M36 58q14 8 28 0" style="fill:none;stroke:rgba(255,255,255,.55);stroke-width:2"/>`
+     +`<path d="M24 70q8 4 12 12M76 70q-8 4-12 12" style="fill:none;stroke:rgba(0,0,0,.18);stroke-width:2.6;stroke-linecap:round"/>`;
+    s=`<path d="M28 70q22 10 44 0-4 12-22 12t-22-12z" style="fill:${sombra}"/>`;
+    l=`<circle cx="38" cy="38" r="6" style="fill:${luz}"/>`;
+  }else{p=`<circle cx="50" cy="52" r="31" style="fill:${col}"/>`}
+  return p+s+l;
+}
+
+/* escena: linea de piso y destellos para celebrar */
+function escena(happy){
+  const sombra=`<ellipse cx="50" cy="89" rx="26" ry="4.5" style="fill:rgba(15,23,42,.10)"/>`;
+  if(!happy)return sombra;
+  const st='#fbbf24',pk='#ec4899',az='#38bdf8';
+  return sombra
+   +`<g class="rs37sp"><circle cx="14" cy="30" r="3.2" style="fill:${st}"/><circle cx="86" cy="26" r="2.6" style="fill:${pk}"/><circle cx="10" cy="58" r="2.2" style="fill:${az}"/><circle cx="90" cy="55" r="3" style="fill:${st}"/></g>`;
+}
+
+/* mood: neutro | happy | animo */
+function avatarSVG(c,mood){
+  const f=FORMAS.includes(c.f)?c.f:'punto';
+  const ojoT=(mood==='happy')?3:c.o;
+  const bocT=(mood==='animo')?1:(mood==='happy'?0:c.b);
+  const col2='rgba(0,0,0,.72)';
+  return`<svg viewBox="0 0 100 96" role="img" aria-label="Tu avatar Cinco Puntos"><g>${escena(mood==='happy')}${baseForma(f,c)}<g class="rs37blink">${ojos(f,ojoT,col2)}${boca(f,bocT)}</g>${accesorio(c.a,f,c.c)}</g></svg>`;
+}
+function miniAvatar(){return avatarSVG(cfg(),'neutro')}
+
+
+/* ---------- CSS ---------- */
+function css(){
+  let est=document.getElementById('rs37css');
+  if(est)return;
+  est=document.createElement('style');est.id='rs37css';
+  est.textContent=[
+   '.rs37reac{display:flex;justify-content:flex-end;margin-top:2px}',
+   '.rs37reac svg{width:88px;height:84px}',
+   '.chip[data-a=rs37v] svg,.chip[data-a=rs37v] span{pointer-events:none}',
+   '.rs37hero{display:flex;flex-direction:column;align-items:center;gap:6px}',
+   '.rs37escena{width:170px;height:150px;border-radius:20px;display:flex;align-items:flex-end;justify-content:center;',
+   ' background:radial-gradient(85% 70% at 50% 30%,rgba(99,102,241,.16),rgba(99,102,241,0) 72%),var(--cd,rgba(255,255,255,.6));overflow:hidden}',
+   '.rs37escena svg{width:150px;height:142px}',
+   '@media(prefers-reduced-motion:no-preference){',
+   ' @keyframes rs37flot{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}',
+   ' @keyframes rs37pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.14)}100%{transform:scale(1);opacity:1}}',
+   ' @keyframes rs37blink{0%,91%,100%{transform:scaleY(1)}94%{transform:scaleY(.12)}}',
+   ' @keyframes rs37tw{0%,100%{opacity:1;transform:translateY(0)}50%{opacity:.25;transform:translateY(-3px)}}',
+   ' .rs37reac svg{animation:rs37pop .45s ease,rs37flot 2.6s ease-in-out .5s infinite}',
+   ' .rs37reac .rs37sp{animation:rs37tw 1.5s ease-in-out infinite;transform-box:fill-box;transform-origin:center}',
+   ' .rs37blink{animation:rs37blink 5.2s steps(1) infinite;transform-box:fill-box;transform-origin:center}',
+   ' .top [data-v37m]{transition:transform .2s ease}',
+   ' .top [data-v37m]:hover{transform:scale(1.12) rotate(-5deg)}',
+   ' .rs37escena svg{animation:rs37flot 3.4s ease-in-out infinite}',
+   '}',
+  ].join('');
+  document.head.appendChild(est);
+}
+
+/* ---------- editor ---------- */
+function chips(k,vals,nombres,actual,swatch){
+  return'<div class="row">'+vals.map((v,i)=>{
+    const valor=(swatch||(k==='f'))?v:String(i);
+    const on=String(valor)===String(actual)?' on':'';
+    let inner=swatch&&v?`<span aria-hidden="true" style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${v};vertical-align:-2px;margin-right:5px"></span>${nombres[i]}`:nombres[i];
+    return`<button class="chip${on}" data-a="rs37v" data-v="${k}:${valor}">${inner}</button>`;
+  }).join('')+'</div>';
+}
+function cardAvatar(){
+  const c=cfg();
+  return`<div class="card" data-v37="1">`
+   +`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">`
+   +`<div class="rs37hero"><div class="rs37escena" data-v37v="1">${miniAvatar()}</div>`
+   +`<button class="g" data-a="rs37r">🎲 Sorpréndeme</button></div>`
+   +`<div style="flex:1;min-width:220px"><b>Tu mascota</b>`
+   +`<p class="mu">Tu compañero de estudio del ecosistema Cinco Puntos: ${NOMF[c.f]||'Punto'} con ${NOMA[c.a]||'nada'}. Se guarda contigo y viaja con la nube.</p></div></div>`
+   +`<div class="mu" style="margin-top:10px">Forma</div>`+chips('f',FORMAS,FORMAS.map(x=>NOMF[x]),c.f,false)
+   +`<div class="mu" style="margin-top:8px">Color</div>`+chips('c',COLORES,NOMC,c.c,true)
+   +`<div class="mu" style="margin-top:8px">Ojos</div>`+chips('o',[0,1,2,3],NOMO,c.o,false)
+   +`<div class="mu" style="margin-top:8px">Boca</div>`+chips('b',[0,1,2,3],NOMB,c.b,false)
+   +`<div class="mu" style="margin-top:8px">Accesorio</div>`+chips('a',[0,1,2,3,4,5,6],NOMA,c.a,false)
+   +`</div>`;
+}
+
+/* ---------- inyecciones ---------- */
+function inyectarPerfil(){
+  try{
+    if(!(S&&S.view==='app'&&S.tab==='perfil'))return;
+    if(document.querySelector('[data-v37]'))return;
+    const main=document.querySelector('main');if(!main)return;
+    main.insertAdjacentHTML('afterbegin',cardAvatar());
+  }catch(e){}
+}
+function inyectarTop(){
+  try{
+    if(!(S&&S.view==='app'))return;
+    const tb=document.querySelector('.top b');if(!tb)return;
+    if(tb.querySelector('[data-v37m]'))return;
+    tb.insertAdjacentHTML('afterbegin',`<span data-v37m="1" aria-hidden="true" style="display:inline-block;width:30px;height:29px;vertical-align:-9px;margin-right:3px">${miniAvatar()}</span>`);
+  }catch(e){}
+}
+function inyectarFB(){
+  try{
+    if(!(S&&S.view==='app'))return;
+    const fbs=document.querySelectorAll('.fb.ok:not([data-v37]), .fb.no:not([data-v37])');
+    fbs.forEach(fb=>{
+      if(fb.querySelector('[data-v37m2]'))return;
+      const happy=fb.classList.contains('ok');
+      fb.insertAdjacentHTML('beforeend',`<div data-v37m2="1" class="rs37reac" title="${happy?'¡Bien hecho!':'Ánimo, tú puedes'}">${avatarSVG(cfg(),happy?'happy':'animo')}</div>`);
+    });
+  }catch(e){}
+}
+function inyectarLiga(){
+  try{
+    if(!(S&&S.view==='app'&&S.tab==='liga'))return;
+    const me=document.querySelector('.lg.me');if(!me||me.querySelector('[data-v37m3]'))return;
+    me.insertAdjacentHTML('beforeend',`<span data-v37m3="1" style="display:inline-block;width:24px;height:23px;flex:none">${miniAvatar()}</span>`);
+  }catch(e){}
+}
+function inyectarTodo(){
+  try{css();inyectarPerfil();inyectarTop();inyectarLiga()}catch(e){}
+}
+function inyectarFBp(){
+  try{css();inyectarFB()}catch(e){}
+}
+
+
+try{
+  if(typeof render==='function'){const _r37=render;
+  render=function(){const r=_r37.apply(this,arguments);
+    try{inyectarTodo()}catch(e){}
+    try{(S&&S.view==='app')&&setTimeout(inyectarFBp,0)}catch(e){}
+    return r}};
+}catch(e){}
+
+try{setTimeout(function(){try{inyectarTodo();inyectarFBp()}catch(e){}},0)}catch(e){}
+window.addEventListener&&window.addEventListener('message',function(e){
+  try{
+    const m=e&&e.data;
+    if(m&&m.origen==='rs-iframe')return;
+    if(m&&m.origen==='rs-app'){ setTimeout(function(){try{inyectarFBp()}catch(x){}},0) }
+  }catch(x){}
+});
+
+
+try{Object.assign(A,{rs37v:function(v){const p=String(v).split(':');delta(p[0],p.slice(1).join(':'))},rs37r:function(){random()}})}catch(e){}
+
+/* API para pruebas (RS36 se mantiene como alias) */
+window.RS37={cfg:cfg,random:random,svg:avatarSVG,mini:miniAvatar,inyectar:inyectarTodo,inyectarFB:inyectarFBp,FORMAS:FORMAS,COLORES:COLORES};
+window.RS36=window.RS37;
+})();
+</script>
+<script>
+var col='#4f46e5';
+['punto','chiguiro','zorro','robot','tucan','perezoso','gato','buho'].forEach(function(f){
+  var d=document.createElement('div');d.className='item';
+  d.innerHTML=RS37.svg({f:f,c:col,o:1,b:0,a:0},'neutro')+'<b>'+f+'</b>';
+  document.getElementById('g').appendChild(d);
+  var d2=document.createElement('div');d2.className='item';
+  d2.innerHTML=RS37.svg({f:f,c:'',o:3,b:1,a:4},'happy')+'<b>'+f+' feliz</b><div class="acc">con corona</div>';
+  document.getElementById('g').appendChild(d2);
+});
+</script></body></html>
