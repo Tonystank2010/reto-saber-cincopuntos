@@ -271,16 +271,24 @@ Adiós a los emoji genéricos del sistema, que se ven distintos en cada teléfon
 
 **Módulo fuente:** `demo-html/modulos/v35-area-iconos.js` — bloque `<script>` (patrón v20+) con CSS inyectado por el propio módulo (`#rs35css`). Caché PWA a `rscp-v22` / `reto-saber-v20`.
 
-### v36 — Avatar personalizable (ecosistema Cinco Puntos)
+### v36 — Avatar personalizable (primera versión)
 
-Después de reemplazar los emojis genéricos por iconos SVG propios (v35), comienza el ecosistema de mascota de la marca: un **avatar editable** que representa al estudiante en toda la app.
+Primera mascota editable: 4 formas (Punto, Chigüiro, Zorro, Robot), color, ojos, boca y accesorios, con botón «Sorpréndeme», reacciones en la retroalimentación y persistencia en `DB.pref.av`.
 
-- **4 formas propias en SVG**: Punto (la clásica bola del demo), **Chigüiro**, **Zorro** y **Robot**, todas dibujadas a mano en la app (nada de imágenes externas).
-- **Personalización completa**: 10 colores de cuerpo (Automático usa el acento de la paleta elegida en v34.1), 4 estilos de ojos, 4 bocas y 5 accesorios (gorra, gafas, moño, corona) — miles de combinaciones.
-- **Botón «Sorpréndeme»**: elige una combinación al azar para descubrir opciones.
-- **Está en toda la app**: en la barra superior (junto al nombre), cuando entregas retroalimentación aparece tu avatar celebrando (contento) o motivándote (ánimo), en la Liga (tu fila) y una tarjeta de editor en **Perfil → Tu avatar**. Todo con `aria-label` y columna reutilizada del CSS existente.
-- **Validación robusta**: cualquier dato viejo o corrupto (forma desconocida, color inválido, índices fuera de rango) cae silenciosamente a los valores de fábrica en `RS36.cfg()`.
-- **Persistencia**: se guarda en `DB.pref.av` y viaja con la nube porque `DB.pref` se sincroniza completo (v27) — el avatar te acompaña a cualquier dispositivo.
-- Interfaz accesible (chips como botones reales con `data-a`, hover que escala el avatar, todo dentro de `prefers-reduced-motion: no-preference`).
+**Módulo:** `demo-html/modulos/v36-avatar.js` (bloque `<script>`, patrón v20+). Caché PWA `rscp-v23` / `reto-saber-v21`.
 
-**Módulo fuente:** `demo-html/modulos/v36-avatar.js` — bloque `<script>` (patrón v20+) con CSS propio (`#rs36css`). API interna expuesta como `window.RS36` (contenido para pruebas). Caché PWA a `rscp-v23` / `reto-saber-v21`.
+> Sustituido en v37: menos opciones, arte plano y un bug que desactivaba el avatar fuera de un iframe (en GitHub Pages standalone no aparecía). Conservado aquí solo como hito; el módulo ya no está en el repo.
+
+### v37 — Mascota rediseñada: arte con volumen, 8 formas y movimiento
+
+Rediseño integral del ecosistema de mascota, por las 4 líneas a la vez:
+
+- **Arte pulido en SVG**: cada forma tiene sombra inferior, brillo superior, contorno suave y una **escena propia** (sombra de piso; destello de confeti al acertar). Nada de formas planas pegadas.
+- **8 formas**: Punto, **Chigüiro**, Zorro, Robot, **Tucán**, **Perezoso**, Gato y **Búho** — todas dibujadas a mano, cada una con su silueta y detalles (pico naranja del tucán, parches alrededor de los ojos del perezoso, orejas del gato, alas del búho…).
+- **Más personalización**: 13 colores + 4 ojos + 4 bocas + 6 accesorios (gorra, gafas, moño, corona, lentes de sol y auriculares), anclados a la cabeza de cada forma.
+- **Vida y movimiento**: la mascota **respira y saluda** en la vista previa, **parpadea** cada pocos segundos y **celebra en grande** cuando aciertas (aparece con rebote y confeti). Todo dentro de `prefers-reduced-motion: no-preference`.
+- **Editor nuevo en Perfil**: vista previa grande con escena (170 px), chips agrupados y descripción viva («tu Chigüiro con gorra»), más «Sorpréndeme» destacado.
+- **Corrección clave**: v36 tenía un guard que apagaba todo el avatar cuando el demo se abre **fuera de un iframe** (o sea, en GitHub Pages standalone). Eliminado: la mascota funciona en cualquier contexto.
+- **Compatibilidad**: los datos guardados de v36 (y de versiones indexadas numéricamente) se leen igual; los datos corruptos caen a valores de fábrica.
+
+**Módulo:** `demo-html/modulos/v37-mascota.js` — bloque `<script>` (patrón v20+) con CSS propio (`#rs37css`) y API `window.RS37`. Caché PWA a `rscp-v24` / `reto-saber-v22`.
