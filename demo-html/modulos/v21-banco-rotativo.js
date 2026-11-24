@@ -1,16 +1,15 @@
 /* v21: banco rotativo de 10.000 preguntas sin repetici\uFFFDon (IIFE \u00FAnica para no colisionar con globales del demo) */
 (function(){
 /* ---- v21: banco rotativo de 10.000 preguntas ---- */
-/* Espacio por área (total 10.000): Matemáticas 2200 · Razonamiento Cuantitativo 2200 ·
-   Ciencias Naturales 2164 · Sociales y Ciudadanas 1000 · Lectura Crítica 900 ·
-   Inglés 936 · Comunicación Escrita 600.
+/* Espacio por área: 1.429 preguntas en cada una de las 7 áreas (total 10.003),
+   misma cantidad por área para los tres exámenes (Saber 11, TyT y Pro).
    Cada usuario tiene un ciclo sembrado por área: al entrar a una lección, simulacro o
    diagnóstico recibe preguntas nuevas del ciclo, SIN repetirse hasta agotarlo; al
    agotar se vuelve a sembrar (mezcla nueva). Las preguntas fijas del banco original
    se reparten dentro del ciclo para que tampoco se repitan seguido.
    Las preguntas generadas son de práctica (no oficiales) y van marcadas como tales. */
 
-const CUOTA={'Matemáticas':2200,'Razonamiento Cuantitativo':2200,'Ciencias Naturales':2164,'Sociales y Ciudadanas':1000,'Lectura Crítica':900,'Inglés':936,'Comunicación Escrita':600};
+const CUOTA={'Matemáticas':1429,'Razonamiento Cuantitativo':1429,'Ciencias Naturales':1429,'Sociales y Ciudadanas':1429,'Lectura Crítica':1429,'Inglés':1429,'Comunicación Escrita':1429};
 const NIVL=['Básico','Intermedio','Avanzado'];
 const NIVX=(typeof NIV!=='undefined'&&Array.isArray(NIV)&&NIV.length>=3)?NIV:NIVL;
 const f2=x=>Math.round(x*100)/100;
@@ -160,8 +159,8 @@ const FAM_CN=[
   return out;}
 ];
 
-/* ====== Sociales y Ciudadanas: 10 escenarios × 10 personas × 10 lugares = 1000 ====== */
-const SOC_P=['Ana','Camilo','Daniela','Esteban','Fernanda','Julián','Laura','Mateo','Nicolás','Valentina'];
+/* ====== Sociales y Ciudadanas: 10 escenarios × 20 personas × 10 lugares = 2000 >= cuota 1429 ====== */
+const SOC_P=['Ana','Camilo','Daniela','Esteban','Fernanda','Julián','Laura','Mateo','Nicolás','Valentina','Katherin','Yulian','Marcela','Andrés','Paola','Cristian','Diana','Sebastián','Luz','Hernán'];
 const SOC_L=['en la esquina de su barrio','en el aula de clase','en la fila del banco','en el parque vecinal','en la terminal de transporte','en la tienda escolar','en la biblioteca pública','en una reunión comunitaria','en el servicio de urgencias','en la oficina de tránsito'];
 const SOC=[
  {s:'encuentra una billetera con documentos y dinero',ok:'Intentar entregarla a su dueño o a las autoridades',m:['Guardarla hasta que alguien la reclame','Vender lo que hay dentro','Botarla a la basura'],x:'La honradez y el respeto por los bienes ajenos implican devolver lo encontrado.'},
@@ -182,9 +181,9 @@ const socFam=i=>{
  return{en:per+' '+esc.s+' '+lug+'. ¿Cuál es la actuación más adecuada?',r:esc.ok,dis:esc.m,exp:esc.x};
 };
 
-/* ====== Lectura Crítica: 15 pares × 6 personas × 10 tiempos = 900 ====== */
-const LEC_P=['Marta','Óscar','Paula','Ricardo','Sofía','Tomás'];
-const LEC_T=['Ayer','La semana pasada','El lunes','Hace un mes','El viernes','El miércoles','En la mañana','Hace poco','El otro día','Recientemente'];
+/* ====== Lectura Crítica: 15 pares × 12 personas × 12 tiempos = 2160 >= cuota 1429 ====== */
+const LEC_P=['Marta','Óscar','Paula','Ricardo','Sofía','Tomás','Elena','Jorge','Clara','Andés','Vera','Simón'];
+const LEC_T=['Ayer','La semana pasada','El lunes','Hace un mes','El viernes','El miércoles','En la mañana','Hace poco','El otro día','Recientemente','A principios de año','Durante el recreo'];
 const LEC=[
  {a:'estudió toda la noche',b:'aprobó el examen',con:'de modo que',mal:['aunque','sin embargo','mientras que'],x:'La segunda oración es consecuencia de la primera: conector consecutivo.'},
  {a:'estaba agotado',b:'terminó el partido',con:'aunque',mal:['porque','de modo que','por lo tanto'],x:'Concesión: algo contrario no impidió que sucediera.'},
@@ -209,9 +208,9 @@ const lecFam=i=>{
  return{en:t+', '+per+' '+p.a+' ___ '+p.b+'. ¿Qué conector completa correctamente?',r:p.con,dis:p.mal,exp:p.x};
 };
 
-/* ====== Inglés: 26 plantillas × 3 tiempos × 12 sujetos = 936 ≥ cuota 900 ====== */
-const ING_3SG=['She','He','My cousin','That student','Maria','Laura'];
-const ING_PL=['My friends','They','The students','We','Carlos and Teo','The teachers'];
+/* ====== Inglés: 26 plantillas × 3 tiempos × 2 numeros × 12 sujetos = 1872 >= cuota 1429 ====== */
+const ING_3SG=['She','He','My cousin','That student','Maria','Laura','The engineer','Daniel','My neighbor','Cristina','The teacher','Andrés'];
+const ING_PL=['My friends','They','The students','We','Carlos and Teo','The teachers','The workers','My parents','The tourists','Laura and Sara','The kids','Daniela and I'];
 const ING=[
  {v:'go',s3:'goes',pp:'went',rs:'to the market every day',ps:'to the market yesterday',fs:'to the market next week'},
  {v:'study',s3:'studies',pp:'studied',rs:'English at school',ps:'for the test last night',fs:'at the university next year'},
@@ -244,7 +243,7 @@ const ingFam=i=>{
  const item=ING[i%ING.length];
  const per=Math.floor(i/ING.length)%3;              /* 0 presente · 1 pasado · 2 futuro */
  const plural=per===0?Math.floor(i/ING.length/3)%2===1:Math.floor(i/ING.length/3)%2===1;
- const tok=Math.floor(i/(ING.length*6))%6;
+ const tok=Math.floor(i/(ING.length*6))%12;
  const suj=plural?ING_PL[tok]:ING_3SG[tok];
  const correct=per===0?(plural?item.v:item.s3):(per===1?item.pp:'will '+item.v);
  const rest=per===0?item.rs:(per===1?item.ps:item.fs);
@@ -255,9 +254,9 @@ const ingFam=i=>{
  return{en:suj+' ___ '+rest+'.',r:correct,dis:dis,exp:per===0?(plural?'Presente simple con sujeto plural: se usa el verbo base.':'Presente simple: tercera persona singular añade -s.'):(per===1?'Pasado simple: forma del verbo en pasado.':'Futuro con will: will + verbo base.')};
 };
 
-/* ====== Comunicación Escrita: 12 plantillas × 10 temas × 5 adverbiales = 600 ====== */
-const CE_T=['informe','artículo','comunicado','ensayo','reglamento','anexo','boletín','folleto','resumen','borrador'];
-const CE_A=['a tiempo','con anticipación','en la fecha indicada','sin demoras','antes del viernes'];
+/* ====== Comunicación Escrita: 16 plantillas × 12 temas × 8 adverbiales = 1536 >= cuota 1429 ====== */
+const CE_T=['informe','artículo','comunicado','ensayo','reglamento','anexo','boletín','folleto','resumen','borrador','acta','memoria'];
+const CE_A=['a tiempo','con anticipación','en la fecha indicada','sin demoras','antes del viernes','despues de la reunion','al final del mes','con copia al coordinador'];
 const CE=[
  {tpl:'El {t} se envió {a}; ___, no obtuvo respuesta.',c:'sin embargo',m:['por lo tanto','de modo que','porque'],x:'Contraste entre el envío y la falta de respuesta: conector adversativo.'},
  {tpl:'No se aprobó el {t} que llegó {a}, ___ faltaba la firma.',c:'porque',m:['sin embargo','de modo que','mientras que'],x:'La falta de firma es la causa: conector causal.'},
@@ -270,7 +269,11 @@ const CE=[
  {tpl:'El {t} avanzó más rápido ___ lo previsto y llegó {a}.',c:'de lo que',m:['de que','a lo que','por lo que'],x:'Comparación apropiada: «más rápido de lo previsto».'},
  {tpl:'___ se terminó el {t}, entregado {a}, se abrió una nueva fase.',c:'Cuando',m:['Porque','Sin embargo','Aunque'],x:'Temporalidad entre dos eventos.'},
  {tpl:'A pesar de la entrega {a}, el {t} quedó incompleto, ___ decidieron extender el plazo.',c:'de modo que',m:['sin embargo','porque','aunque'],x:'Consecuencia del retraso: conector consecutivo.'},
- {tpl:'Cuide el formato, ___ el contenido del {t}, y preséntelo {a}.',c:'así como',m:['pero','porque','además de que'],x:'Añade un elemento con igual relevancia: «así como».'}
+ {tpl:'Cuide el formato, ___ el contenido del {t}, y preséntelo {a}.',c:'así como',m:['pero','porque','además de que'],x:'Añade un elemento con igual relevancia: «así como».'},
+ {tpl:'El {t} se revisó dos veces {a}; ___, quedó un error menor en la página tres.',c:'no obstante',m:['de modo que','además','porque'],x:'Contraste entre la revisión y el error restante: conector adversativo.'},
+ {tpl:'El formato del {t} se actualizó {a}, y ___ se aclaró cada punto.',c:'también',m:['aunque','por lo tanto','sin embargo'],x:'Suma un elemento de igual peso: conector aditivo.'},
+ {tpl:'El {t} permanecerá archivado en el archivo {a}, ___ alguien solicite formalmente su consulta.',c:'hasta que',m:['porque','aunque','de lo que'],x:'Temporalidad con punto final: conector temporal.'},
+ {tpl:'El {t}, repartido {a}, se redactó ___ el equipo pudiera entenderlo sin explicaciones adicionales.',c:'de modo que',m:['sin embargo','aunque','antes de que'],x:'Introduce el fin buscado: conector final (de modo que).'}
 ];
 const ceFam=i=>{
  const p=CE[i%CE.length];

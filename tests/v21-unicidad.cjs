@@ -1,4 +1,4 @@
-/* Test de unicidad e integridad del módulo v21 (banco de 10.000) */
+/* Test de unicidad e integridad del módulo v21 (banco rotativo: 1.429 × 7 áreas = 10.003) */
 const fs = require('fs');
 const path = require('path');
 
@@ -22,7 +22,7 @@ const TOT = Object.values(CU).reduce((a, b) => a + b, 0);
 let fails = 0;
 const F = m => { fails++; console.error('FAIL:', m); };
 
-if (TOT !== 10000) F('cuota total = ' + TOT);
+if (TOT !== 10003) F('cuota total = ' + TOT + ' (se esperaba 10.003 = 1.429 × 7 áreas)');
 for (const a of Object.keys(CU)) {
   const fabrica = RS.fabrica[a];
   if (!fabrica) { F('sin fábrica para ' + a); continue; }
