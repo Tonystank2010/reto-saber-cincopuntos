@@ -171,7 +171,7 @@ function hash(s){let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))%100003;return
 function board(w,l,fr,me){return BOTS.map(n=>({n,xp:Math.round((120+hash(n+w+l)%380)*fr)})).concat(me).sort((a,b)=>b.xp-a.xp)}
 function roll(u){for(const[k,v]of Object.entries(mkU('','')))if(!(k in u))u[k]=v;if(u.wk===wk())return;const k=board(u.wk,u.liga,1,[{n:u.name,xp:u.wxp,me:1}]).findIndex(x=>x.me);
  if(k<3&&u.liga<2)u.liga++;else if(k>=7&&u.liga>0)u.liga--;u.wk=wk();u.wxp=0;save()}
-function touch(u){if(u.last!==day()){u.streak=u.last===day()-1?u.streak+1:1;u.last=day()}}
+function touch(u){if(u.last!==day()){const g=day()-u.last;if(u.streak&&g===2&&(u.pr||0)>0){u.pr--;u.streak++}else{u.streak=u.last===day()-1?u.streak+1:1}u.last=day()}}
 const tleft=u=>{const m=Math.max(0,Math.ceil((u.vt+864e5-Date.now())/6e4));return Math.floor(m/60)+' h '+m%60+' min'};
 function vidas(u){if(u.vt&&Date.now()>=u.vt+864e5){u.v=5;u.vt=0;u.vr=0;save()}}
 function canPlay(u){vidas(u);if(u.v>0)return 1;S.tab='camino';S.L=null;render();alert('Te quedaste sin vidas. '+(u.vr<3?'Haz una evaluación para recuperar una vida o espera ':'Espera ')+tleft(u)+' para recuperarlas todas.')}
@@ -224,15 +224,15 @@ function camino0(u){const ex=CAT.examenes.map(e=>`<button class="chip ${e.id===S
 function repaso0(u){const d=u.rev.filter(x=>x.due<=Date.now()).length;
  return`<div class="card"><b>Repaso</b><p>${u.rev.length?`Tienes <b>${u.rev.length}</b> pregunta(s) para repasar, <b>${d}</b> lista(s) hoy. Aquí no hay tiempo límite ni se gastan vidas, y te explico cada error.`:'No tienes errores por repasar. Las preguntas que falles aparecerán aquí.'}</p><button data-a="rev" ${u.rev.length?'':'disabled'}>${d||!u.rev.length?'Repasar ahora':'Adelantar repaso'}</button></div>`}
 function liga(u){const rows=Object.values(DB.users).filter(x=>x!==u&&x.liga===u.liga&&x.wk===wk()).map(x=>({n:x.name,xp:x.wxp})).concat([{n:u.name,xp:u.wxp,me:1}]),b=board(wk(),u.liga,(dow()+1)/7,rows);
- return`<div class="card"><b>🏆 Liga ${LG[u.liga]}</b><p class="mu">Los 3 primeros suben y los 3 últimos bajan al cerrar la semana. Con la nube activa compites contra cuentas reales sincronizadas (marca nube); las demás son cuentas de este dispositivo o rivales de ejemplo.</p>${b.map((x,i)=>`<div class="lg ${x.me?'me':''} ${i<3?'up':i>=b.length-3?'dn':''}"><b>${i+1}</b><span>${esc(x.n)}${x.me?' (tú)':x.rs?' · nube':''}</span>${x.xp} XP${x.me?'':` <button class="g rs41d" data-a="rs41d" data-v="${encodeURIComponent(x.n)}" aria-label="Duelar contra ${esc(x.n)}">Duelar</button>`}</div>`).join('')}</div>`}
-function perfil0(u){return`<div class="card"><b>${esc(u.name)}</b> <span class="mu">${esc(u.email)} ${esc(u.grado)}</span><p>⭐ ${u.xp} XP · 🔥 racha ${u.streak} · ❤️ ${u.v}/5 · 🏅 ${LG[u.liga]}<br>Aciertos: ${u.ok} de ${u.tot}${u.tot?` (${Math.round(u.ok/u.tot*100)}%)`:''}</p></div>
+ return`<div class="card"><b>🏆 Liga ${LG[u.liga]}</b><p class="mu">Los 3 primeros suben y los 3 últimos bajan al cerrar la semana. Con la nube activa compites contra cuentas reales sincronizadas (marca nube); las demás son cuentas de este dispositivo o rivales de ejemplo.</p>${b.map((x,i)=>`<div class="lg ${x.me?'me':''} ${i<3?'up':i>=b.length-3?'dn':''}"><b>${i+1}</b><span>${esc(x.n)}${x.me?' (tú)':x.rs?' · nube':''}</span>${x.xp} XP${x.me?'':` <button class="g rs41d" data-a="rs41d" data-v="${encodeURIComponent(x.n)}" aria-label="Duelo contra ${esc(x.n)}">Duelo</button>`}</div>`).join('')}</div>`}
+function perfil0(u){return`<div class="card"><b>${esc(u.name)}</b> <span class="mu">${esc(u.email)} ${esc(u.grado)}</span><p>⭐ ${Math.max(0,(u.xp|0)-(u.gasto||0))} monedas · 🔥 racha ${u.streak} (${u.pr||0} protector(es)) · ❤️ ${u.v}/5 · 🏅 ${LG[u.liga]}<br>Aciertos: ${u.ok} de ${u.tot}${u.tot?` (${Math.round(u.ok/u.tot*100)}%)`:''}</p></div>
 ${ST(u).diag?`<div class="card"><b>Evaluación de admisión · ${S.exam}</b>${diagRes(ST(u).diag,ST(u).hist)}<button class="g" data-a="diag">Repetir evaluación</button></div>`:''}
 <div class="card"><div class="row"><button class="g" data-a="out">Cerrar sesión</button><button class="g" data-a="del">Eliminar cuenta</button></div><p class="mu">Las cuentas viven solo en este navegador.${mem?' ⚠️ Tu navegador bloqueó el guardado: el progreso se perderá al cerrar.':''}</p></div>`}
 function fb(q,sel,to){if(sel===q.respuesta)return`<div class="fb ok"><b>¡Correcto!</b><br>${esc(q.explicacion)}</div>`;
  const p=q.opciones.find(o=>o.id===sel),c=q.opciones.find(o=>o.id===q.respuesta);
  return`<div class="fb no"><b>${to?'⏱️ Se acabó el tiempo.':'Tu error:'}</b> ${p?`elegiste «${esc(p.texto)}». ${esc(p.why||'Esa opción no responde a lo que se pregunta.')}`:''}<br><b>Correcta: ${c.id}. ${esc(c.texto)}</b><br>${esc(q.explicacion)}</div>`}
 function lesson(){const L=S.L,q=L.qs[L.i],u=U();
- if(L.intro)return introView(L);if(L.kind==='sim')return simView(L);if(L.blk)return blk();if(L.end&&L.kind==='cu')return cuEnd(L);if(L.end&&L.kind==='vid')return vEnd(L);if(L.end&&L.kind==='ds')return dsEnd(L);if(L.end){const t=L.kind==='diag'?`<h2>Evaluación lista</h2>${diagRes(ST(u).diag,ST(u).hist)}`:`<h2>${L.kind==='rev'?'Repaso terminado':L.dead?'Te quedaste sin vidas':L.ok>=3?'¡Lección superada!':'Sigue practicando'}</h2><p>Aciertos: ${L.ok} de ${L.qs.length}${L.kind==='les'?' · '+'★'.repeat(L.end.st)+'☆'.repeat(3-L.end.st):''}<br>+${L.end.xp} XP${L.dead?'<br>Puedes recuperar vidas con una evaluación o esperar 24 horas.':''}</p>`;
+ if(L.intro)return introView(L);if(L.kind==='sim')return simView(L);if(L.blk)return blk();if(L.end&&L.kind==='cu')return cuEnd(L);if(L.end&&L.kind==='vid')return vEnd(L);if(L.end&&L.kind==='ds')return dsEnd(L);if(L.end){const t=L.kind==='diag'?`<h2>Evaluación lista</h2>${diagRes(ST(u).diag,ST(u).hist)}`:`<h2>${L.kind==='rev'?'Repaso terminado':L.dead?'Te quedaste sin vidas':L.ok>=3?'¡Lección superada!':'Sigue practicando'}</h2><p>Aciertos: ${L.ok} de ${L.qs.length}${L.kind==='les'?' · '+'★'.repeat(L.end.st)+'☆'.repeat(3-L.end.st):''}<br>+${L.end.xp} monedas${L.dead?'<br>Puedes recuperar vidas con una evaluación o esperar 24 horas.':''}</p>`;
   return`<div class="card">${t}<button data-a="home">Continuar</button></div>`}
  const o=q.opciones.map(p=>{let c=L.sel===p.id?'sel':'';if(L.chk)c=p.id===q.respuesta?'ok':L.sel===p.id?'no':'';return`<button class="opt ${c}" data-a="pick" data-v="${p.id}"><b>${p.id}.</b> ${esc(p.texto)}</button>`}).join('');
  const tm=L.t0&&!L.chk?`<div class="bar tm"><i id="tm" style="width:100%"></i></div><span id="ts" class="mu">${TL()} s</span>`:'';
@@ -242,7 +242,7 @@ function render0(){const app=document.getElementById('app'),u=U();
  vidas(u);
  const m=S.L?lesson():S.R?reader(u):S.tab==='camino'?camino(u):S.tab==='cuentos'?cuentos(u):S.tab==='carreras'?carreras(u):S.tab==='repaso'?repaso(u):S.tab==='liga'?liga(u):perfil(u);
  const tb=[['camino','🗺️','Camino'],['cuentos','📖','Cuentos'],['repaso','🔁','Repaso'],['carreras','🎓','Carreras']].concat([['liga','🏆','Liga']],[['perfil','👤','Perfil']]).map(t=>`<button class="${S.tab===t[0]?'on':''}" data-a="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('');
- app.innerHTML=`<main><div class="top"><b>👤 ${esc(u.name)}</b><span>❤️ ${u.v} · 🔥 ${u.streak} · ⭐ ${u.xp}</span></div>${m}${S.L?'':note}</main>${S.L?'':`<nav>${tb}</nav>`}`;const pa=document.querySelector('.path'),dd=pa&&[...pa.querySelectorAll('.dot')].find(d=>!d.disabled&&d.textContent!=='✓');if(dd)pa.scrollLeft=dd.offsetLeft-pa.clientWidth/2}
+ app.innerHTML=`<main><div class="top"><b>👤 ${esc(u.name)}</b><span class="rs42st"><button class="stb" data-a="rs42v" aria-label="Vidas: toca para ver tus vidas">❤️ ${u.v}</button><button class="stb" data-a="rs42r" aria-label="Racha de dias">🔥 ${u.streak}</button><button class="stb" data-a="rs42t" aria-label="Monedas y tienda">🪙 ${Math.max(0,(u.xp|0)-(u.gasto|0))}</button></span></div>${m}${S.L?'':note}</main>${S.L?'':`<nav>${tb}</nav>`}`;const pa=document.querySelector('.path'),dd=pa&&[...pa.querySelectorAll('.dot')].find(d=>!d.disabled&&d.textContent!=='✓');if(dd)pa.scrollLeft=dd.offsetLeft-pa.clientWidth/2}
 
 /* ---- v4: pentágono, modo estudio/reto, no lo sé, bloques, Cuentos ---- */
 const ET=[{n:'Lector Acompañado',nar:1,res:1,pis:1},{n:'Lector Guiado',nar:0,res:0,pis:1},{n:'Analista Crítico',nar:0,res:0,pis:2},{n:'Lector Autónomo',nar:0,res:0,pis:0}];
@@ -355,9 +355,9 @@ function aplicaBanco(d,persist){const a=d.saber11||[],b=d.saberPro||[],m=a.filte
  del(BANK);del(XQ);BANK.push(...a.map(fx));XQ.push(...b.map(fx));S.cus=1;S.bm='Cargadas '+a.length+' preguntas de Saber 11 y '+b.length+' de Saber Pro y TyT.';
  if(persist){try{localStorage.setItem('retosaber.bank',JSON.stringify(d))}catch(e){S.bm+=' Aviso: no cabe en el almacenamiento del navegador; se perderá al cerrar.'}}return''}
 function bancoCard(){return`<div class="card"><b>Banco de preguntas</b><p class="mu">En el juego: ${BANK.length} de Saber 11 y ${XQ.length} de Saber Pro y TyT. ${S.cus?'Estás usando un banco cargado por ti.':'Estás usando el banco incluido.'}</p><div class="row"><button class="g" data-a="ib">Cargar banco (.json)</button>${S.cus?'<button class="g" data-a="rb">Volver al incluido</button>':''}</div><input id="fb" type="file" accept=".json,application/json" hidden>${S.bm?`<p class="${S.bm.startsWith('Cargadas')?'mu':'err'}">${esc(S.bm)}</p>`:''}<p class="mu">El archivo se genera con exportar_json.py a partir de la base de datos. Se guarda en este navegador.</p></div>`}
-function ds(u){if(u.rs&&u.rs.w===wk())return`<p class="mu">✅ Completaste el desafío de esta semana (${u.rs.ok} de 5).</p>`;return`<div class="card">📅 <b>Desafío de la semana</b> <span class="mu">(opcional)</span><p class="mu">5 preguntas mezcladas, sin tiempo ni vidas. Si aciertas 3 o más, ganas 50 XP.</p><button class="g" data-a="ds">Hacer el desafío</button></div>`}
+function ds(u){if(u.rs&&u.rs.w===wk())return`<p class="mu">✅ Completaste el desafío de esta semana (${u.rs.ok} de 5).</p>`;return`<div class="card">📅 <b>Desafío de la semana</b> <span class="mu">(opcional)</span><p class="mu">5 preguntas mezcladas, sin tiempo ni vidas. Si aciertas 3 o más, ganas 50 monedas.</p><button class="g" data-a="ds">Hacer el desafío</button></div>`}
 function finDs(){const u=U(),L=S.L;touch(u);const xp=L.ok>=3?50:10;u.xp+=xp;u.wxp+=xp;u.rs={w:wk(),ok:L.ok};L.bad.forEach(b=>{if(!u.rev.some(x=>x.q.id===b.q.id))u.rev.push({q:b.q,pk:b.pick,cf:b.cf,box:0,due:Date.now()})});L.end={xp,st:L.ok>=3?1:0};save()}
-function dsEnd(L){return`<div class="card"><h2>Desafío de la semana completado</h2><p>Aciertos: ${L.ok} de ${L.qs.length}. +${L.end.xp} XP<br><span class="mu">Es opcional y no afecta tus vidas.</span></p><button data-a="home">Continuar</button></div>`}
+function dsEnd(L){return`<div class="card"><h2>Desafío de la semana completado</h2><p>Aciertos: ${L.ok} de ${L.qs.length}. +${L.end.xp} monedas<br><span class="mu">Es opcional y no afecta tus vidas.</span></p><button data-a="home">Continuar</button></div>`}
 function banner(u){vidas(u);let h='';
  if(u.v<=0)h+=`<div class="card">💔 <b>Te quedaste sin vidas</b><p>${u.vr<3?`Haz una evaluación de 5 preguntas (3 aciertos para aprobar) y recupera 1 vida. Recuperadas: ${u.vr} de 3.`:'Ya recuperaste 3 vidas con evaluaciones.'} Si no la haces, todas tus vidas vuelven en ${tleft(u)}.</p>${u.vr<3?'<button data-a="vid">Evaluación para recuperar una vida</button>':''}</div>`;else if(u.vt&&u.v<5)h+=`<p class="mu">❤️ Tus vidas se completan en ${tleft(u)}.</p>`;
  const s=ST(u);if(s.dg)h+=`<div class="card">⏸️ <b>Evaluación en pausa</b><p>Vas por la pregunta ${s.dg.i+1} de ${s.dg.qs.length}.</p><button data-a="dgr">Continuar</button></div>`;
@@ -416,7 +416,7 @@ function onbView(){const i=S.ob||0,c=OB[i];document.getElementById('app').innerH
 function render(){const u=U();if(S.view==='app'&&u){if(!u.onb&&u.tot>0){u.onb=1;save()}if(!u.onb){onbView();return}}render0()}
 function simView(L){if(L.end)return simEnd(L);const q=L.qs[L.i],a=L.ans[L.i],left=Math.max(0,L.dur-(Date.now()-L.tt)),na=Object.keys(L.ans).length;
  return`<div class="top"><button class="g" data-a="home" aria-label="Salir">✕</button><b>Simulacro · ${L.i+1}/${L.qs.length}</b><b id="sct">${Math.floor(left/6e4)}:${String(Math.floor(left/1e3)%60).padStart(2,'0')}</b></div><div class="bar"><i style="width:${na/L.qs.length*100}%"></i></div><div class="card"><p class="mu">${esc(q.area)}</p><p>${esc(q.enunciado)}</p>${q.graf?barras(q.graf):''}${q.audio?audioUi(q):''}${q.audio?'':leer()}${q.opciones.map(o=>`<button class="opt ${a===o.id?'sel':''}" data-a="ss" data-v="${o.id}"><b>${o.id}.</b> ${esc(o.texto)}</button>`).join('')}<div class="row"><button class="g" data-a="sb" ${L.i?'':'disabled'}>Anterior</button>${L.i<L.qs.length-1?'<button data-a="sn">Siguiente</button>':'<button data-a="sx">Terminar simulacro</button>'}</div><p class="mu">Sin respuestas hasta el final; puedes volver atrás. Respondidas: ${na}</p></div>`}
-function simEnd(L){return`<div class="card"><h2>Simulacro terminado</h2><p>Aciertos: ${L.ok} de ${L.qs.length}${L.sin?' · sin responder: '+L.sin:''}. +${L.xp} XP</p>${diagRes(L.res,[])}<button data-a="home">Continuar</button><p class="mu">Resultado provisional. Los errores pasaron a tu Repaso.</p></div>`}
+function simEnd(L){return`<div class="card"><h2>Simulacro terminado</h2><p>Aciertos: ${L.ok} de ${L.qs.length}${L.sin?' · sin responder: '+L.sin:''}. +${L.xp} monedas</p>${diagRes(L.res,[])}<button data-a="home">Continuar</button><p class="mu">Resultado provisional. Los errores pasaron a tu Repaso.</p></div>`}
 setInterval(()=>{const L=S.L;if(!L||L.kind!=='sim'||L.end)return;const left=L.dur-(Date.now()-L.tt);if(left<=0){A.sx();return}const e=document.getElementById('sct');if(e)e.textContent=Math.floor(left/6e4)+':'+String(Math.floor(left/1e3)%60).padStart(2,'0')},1000);
 function rep(q){return S.rpd===q.id?'<p class="mu">Gracias: reporte guardado.</p>':`<details style="margin:8px 0"><summary class="mu">⚑ Reportar esta pregunta</summary><div class="row" style="margin-top:6px">${['Confusa','Respuesta incorrecta','Error de ortografía','Otro'].map(m=>`<button class="chip" data-a="rpt" data-v="${m}">${m}</button>`).join('')}</div></details>`}
 function est(q,ok){if(String(q.id)[0]==='g')return;const e=(DB.est=DB.est||{})[q.id]||(DB.est[q.id]=[0,0]);e[0]++;if(ok)e[1]++}
@@ -509,12 +509,12 @@ function sinAudio(a,k){let o=draw(a,null,k).filter(q=>!q.audio),t=0;while(o.leng
 function markBtn(q){const on=!!(U().mrk&&U().mrk[q.id]);return`<div style="text-align:right"><button class="chip ${on?'on':''}" data-a="mark" aria-pressed="${on}">${on?'★ Marcada':'☆ Marcar'}</button></div>`}
 function paso(q){const ss=String(q.explicacion||'').replace(/([.!?])\s+/g,'$1\u0001').split('\u0001').filter(Boolean),c=q.opciones.find(o=>o.id===q.respuesta);return`<details style="margin:8px 0"><summary>Solución paso a paso</summary><ol>${ss.map(x=>`<li>${esc(x)}</li>`).join('')}</ol><p><b>Respuesta final:</b> ${c.id}. ${esc(c.texto)}</p></details>`}
 function flashView(L){const q=L.qs[L.i],c=q.opciones.find(o=>o.id===q.respuesta),g=glosFor(q);const f=U().flk||{n:0,ok:0};
- return`<div class="top"><button class="g" data-a="home" aria-label="Salir">✕</button><b>🃍 Tarjetas · ${L.i+1}/${L.qs.length}</b><span class="mu">Sabía ${L.ok} · Repasar ${L.rp}</span></div><div class="bar"><i style="width:${L.i/L.qs.length*100}%"></i></div><div class="card">${markBtn(q)}<p class="mu">${esc(q.area)} · ${esc(q.competencia)}</p><p>${esc(q.enunciado)}</p>${q.graf?barras(q.graf):''}${q.opciones.map(o=>`<div class="opt" style="cursor:default"><b>${o.id}.</b> ${esc(o.texto)}</div>`).join('')}${L.rv?`<div class="fb ok"><b>Respuesta: ${c.id}. ${esc(c.texto)}</b><br>${esc(q.explicacion)}${g?`<br><span class="mu">Concepto — ${esc(g[0])}: ${esc(g[1])}</span>`:''}</div>${paso(q)}<div class="row"><button data-a="fk" data-v="s">La sabía (+2 XP)</button><button class="g" data-a="fk" data-v="r">Repasar luego</button></div>`:'<button data-a="frv">Ver respuesta</button>'}<p class="mu">Acumulado: ${f.n} tarjetas · ${f.ok} que sabías. Sin vidas ni tiempo.</p></div>`}
+ return`<div class="top"><button class="g" data-a="home" aria-label="Salir">✕</button><b>🃍 Tarjetas · ${L.i+1}/${L.qs.length}</b><span class="mu">Sabía ${L.ok} · Repasar ${L.rp}</span></div><div class="bar"><i style="width:${L.i/L.qs.length*100}%"></i></div><div class="card">${markBtn(q)}<p class="mu">${esc(q.area)} · ${esc(q.competencia)}</p><p>${esc(q.enunciado)}</p>${q.graf?barras(q.graf):''}${q.opciones.map(o=>`<div class="opt" style="cursor:default"><b>${o.id}.</b> ${esc(o.texto)}</div>`).join('')}${L.rv?`<div class="fb ok"><b>Respuesta: ${c.id}. ${esc(c.texto)}</b><br>${esc(q.explicacion)}${g?`<br><span class="mu">Concepto — ${esc(g[0])}: ${esc(g[1])}</span>`:''}</div>${paso(q)}<div class="row"><button data-a="fk" data-v="s">La sabía (+2 monedas)</button><button class="g" data-a="fk" data-v="r">Repasar luego</button></div>`:'<button data-a="frv">Ver respuesta</button>'}<p class="mu">Acumulado: ${f.n} tarjetas · ${f.ok} que sabías. Sin vidas ni tiempo.</p></div>`}
 function conView(L){const q=L.qs[L.i],left=Math.max(0,L.dur-(Date.now()-L.t));return`<div class="top"><button class="g" data-a="home" aria-label="Salir">✕</button><b>⏱️ Contrarreloj</b><b id="cts">${Math.ceil(left/1000)} s</b></div><div class="bar"><i id="cbar" style="width:${left/L.dur*100}%"></i></div><div class="card"><p class="mu">${esc(q.area)} · Aciertos ${L.ok} · Racha ${L.rs}</p><p>${esc(q.enunciado)}</p>${q.graf?barras(q.graf):''}${q.opciones.map(o=>`<button class="opt" data-a="cq" data-v="${o.id}"><b>${o.id}.</b> ${esc(o.texto)}</button>`).join('')}<p class="mu">Responde rápido: sin feedback hasta el final. No gasta vidas.</p></div>`}
 function endNew(L){const u=U();let t;
- if(L.kind==='duel')t=`<h2>${L.res==='w'?'¡Ganaste el duelo!':L.res==='e'?'Empate':'Perdiste el duelo'}</h2><p>Tú ${L.su} · ${esc(L.bn)} ${L.bs}<br>+${L.end.xp} XP. Tus errores pasaron al Repaso.<br><span class="mu">Duelos ganados: ${u.duel.w} de ${u.duel.n}</span></p>`;
- else if(L.kind==='flash')t=`<h2>Ronda de tarjetas terminada</h2><p>Sabías ${L.ok} · Repasar luego ${L.rp}<br>+${L.xp} XP<br><span class="mu">Acumulado: ${u.flk.n} tarjetas, ${u.flk.ok} que sabías.</span></p>`;
- else t=`<h2>Contrarreloj terminada</h2><p>Aciertos: ${L.ok} de ${L.tot} · Mejor racha: ${L.mrs}<br>+${L.xp} XP<br><span class="mu">Tu mejor marca: ${u.con.best} aciertos en ${u.con.n} intento(s).</span></p>`;
+ if(L.kind==='duel')t=`<h2>${L.res==='w'?'¡Ganaste el duelo!':L.res==='e'?'Empate':'Perdiste el duelo'}</h2><p>Tú ${L.su} · ${esc(L.bn)} ${L.bs}<br>+${L.end.xp} monedas. Tus errores pasaron al Repaso.<br><span class="mu">Duelos ganados: ${u.duel.w} de ${u.duel.n}</span></p>`;
+ else if(L.kind==='flash')t=`<h2>Ronda de tarjetas terminada</h2><p>Sabías ${L.ok} · Repasar luego ${L.rp}<br>+${L.xp} monedas<br><span class="mu">Acumulado: ${u.flk.n} tarjetas, ${u.flk.ok} que sabías.</span></p>`;
+ else t=`<h2>Contrarreloj terminada</h2><p>Aciertos: ${L.ok} de ${L.tot} · Mejor racha: ${L.mrs}<br>+${L.xp} monedas<br><span class="mu">Tu mejor marca: ${u.con.best} aciertos en ${u.con.n} intento(s).</span></p>`;
  return`<div class="card">${t}<button data-a="home">Continuar</button></div>`}
 function finDuel(L){const u=U();touch(u);const w=L.su>L.bs?'w':L.su<L.bs?'l':'e',xp={w:30,e:15,l:5}[w];u.xp+=xp;u.wxp+=xp;u.duel=isO(u.duel)?u.duel:{w:0,n:0};u.duel.n++;if(w==='w')u.duel.w++;pushRev(L.bad);L.end={xp,st:w==='w'?1:0};L.res=w;ses('Duelo',L.su,L.qs.length,xp);misAdd('duelo',1)}
 function finCon(){const L=S.L;if(!L||L.end)return;const u=U();touch(u);const xp=L.ok*5+Math.min(50,L.mrs*10);u.xp+=xp;u.wxp+=xp;u.con=isO(u.con)?u.con:{best:0,n:0};u.con.n++;u.con.best=Math.max(u.con.best,L.ok);pushRev(L.bad);L.end=1;L.xp=xp;ses('Contrarreloj',L.ok,L.tot,xp);misAdd('con',1);render()}
@@ -540,7 +540,7 @@ const _imp=impCuenta;impCuenta=function(d){const r=_imp(d);if(String(r).startsWi
 KP.push('mis','ses','mrk','pst','pstc','duel','con','flk','tmp','bd2','fl');
 /* tarjetas de la interfaz */
 window.misionesCard=function(u){if(!u.onb)return'';misInit(u);const m=u.mis,sz=[8,15,25];
- const rows=m.m.map(id=>{const d=MIS.find(x=>x.id===id),p=Math.min(m.p[id]||0,d.n),ok=m.ok.includes(id);return`<div class="lg" style="padding:4px 0"><span>${ok?'✅':'⬜'} ${esc(d.t)}</span>${p}/${d.n}${ok?' · +15 XP':''}</div><div class="bar"><i style="width:${p/d.n*100}%"></i></div>`}).join('');
+ const rows=m.m.map(id=>{const d=MIS.find(x=>x.id===id),p=Math.min(m.p[id]||0,d.n),ok=m.ok.includes(id);return`<div class="lg" style="padding:4px 0"><span>${ok?'✅':'⬜'} ${esc(d.t)}</span>${p}/${d.n}${ok?' · +15 monedas':''}</div><div class="bar"><i style="width:${p/d.n*100}%"></i></div>`}).join('');
  return`<div class="card">🎯 <b>Misiones de hoy</b>${rows}<div class="row" style="margin-top:10px"><button data-a="duel">⚔️ Duelo</button><button data-a="con">⏱️ Contrarreloj</button><button data-a="flash">🃍 Tarjetas</button></div><div class="row" style="margin-top:10px;align-items:center"><span class="mu">Simulacro a medida, preguntas por área:</span>${sz.map(x=>`<button class="chip ${(S.ssz||8)===x?'on':''}" data-a="ssz" data-v="${x}">${x}</button>`).join('')}<button class="g" data-a="simc">Simulacro a medida</button></div><p class="mu">Duelo: 10 preguntas; desde la Liga puedes desafiar a rivales reales. Contrarreloj: 90 segundos. Los modos nuevos no gastan vidas.</p></div>`};
 function cuadCard(u){const n=u.rev.length;return`<div class="card"><b>📒 Cuadernillo de errores</b><p>Fallos registrados: <b>${u.fl||0}</b> · Sin dominar: <b>${n}</b></p><button data-a="cuad" ${n?'':'disabled'}>Practicar ${Math.min(15,n)} errores</button></div>`}
 function tarjCard(u){const f=isO(u.flk)?u.flk:{n:0,ok:0};return`<div class="card"><b>🃍 Tarjetas</b><p class="mu">Ronda de 15 preguntas: mira la pregunta, revela la respuesta y califícate. Sin vidas ni tiempo. Acumulado: ${f.n} tarjetas, ${f.ok} que sabías.</p><button class="g" data-a="flash">Empezar ronda</button></div>`}
@@ -548,12 +548,12 @@ window.dominioCard=function(u){const p=isO(u.pst)?u.pst:{},c=isO(u.pstc)?u.pstc:
  if(!ar.length)return'<div class="card"><b>📊 Dominio de práctica</b><p class="mu">Aún no hay respuestas. Practica en cualquier modo y aquí verás tu porcentaje de acierto por área y por competencia.</p></div>';
  const cc=Object.entries(c).filter(e=>e[1][1]>=3).map(e=>[e[0],e[1][0]/e[1][1],e[1][1],e[1][2],e[1][1]-e[1][0]]).sort((x,y)=>y[4]-x[4]).slice(0,5),w=ar[0],wc=Object.entries(c).filter(e=>e[1][2]===w[0]&&e[1][1]>=3).sort((x,y)=>x[1][0]/x[1][1]-y[1][0]/y[1][1])[0];
  return`<div class="card"><b>📊 Dominio de práctica</b><p class="mu">Porcentaje de acierto con las respuestas de todos los modos, de más débil a más fuerte.</p>${ar.map(a=>`<div style="margin:8px 0"><div class="lg" style="padding:2px 0"><span>${esc(a[0])}</span>${Math.round(a[1]*100)} % · ${a[2]} resp.</div><div class="bar"><i style="width:${a[1]*100}%"></i></div></div>`).join('')}<p>👉 <b>Recomendación:</b> practica <b>${esc(w[0])}</b>${wc?', sobre todo «'+esc(wc[0])+'»':''}.</p>${cc.length?`<b>Competencias con más fallos</b>${cc.map(x=>`<div class="lg"><span>${esc(x[0])} <span class="mu">· ${esc(x[3])}</span></span>${x[4]} fallo(s) · ${Math.round(x[1]*100)} %</div>`).join('')}`:''}</div>`};
-window.histCard=function(u){const s=Array.isArray(u.ses)?u.ses:[];return`<div class="card"><b>🕘 Historial de sesiones</b>${s.length?s.slice(0,15).map(x=>`<div class="lg"><span>${new Date(x.t).toLocaleDateString('es-CO',{day:'numeric',month:'short'})} · ${esc(x.m)}</span>${x.ok}/${x.tot} · +${x.xp} XP</div>`).join('')+`<p class="mu">Se guardan las últimas 40 sesiones.</p>`:'<p class="mu">Aún no hay sesiones registradas.</p>'}</div>`};
+window.histCard=function(u){const s=Array.isArray(u.ses)?u.ses:[];return`<div class="card"><b>🕘 Historial de sesiones</b>${s.length?s.slice(0,15).map(x=>`<div class="lg"><span>${new Date(x.t).toLocaleDateString('es-CO',{day:'numeric',month:'short'})} · ${esc(x.m)}</span>${x.ok}/${x.tot} · +${x.xp} monedas</div>`).join('')+`<p class="mu">Se guardan las últimas 40 sesiones.</p>`:'<p class="mu">Aún no hay sesiones registradas.</p>'}</div>`};
 window.marcCard=function(u){const k=Object.keys(isO(u.mrk)?u.mrk:{});if(!k.length)return'<div class="card"><b>★ Preguntas marcadas</b><p class="mu">Marca preguntas con «☆ Marcar» mientras practicas y aparecerán aquí con tus notas.</p></div>';
  return`<div class="card"><b>★ Preguntas marcadas (${k.length})</b><div class="row" style="margin:8px 0"><button data-a="pmk">Practicar marcadas</button></div>${k.map((id,i)=>{const m=u.mrk[id],en=String(m.q.enunciado);return`<div class="fb" style="margin-top:10px"><span class="mu">${esc(m.q.area)} · ${esc(m.q.competencia||'')}</span><br>${esc(en.slice(0,110))}${en.length>110?'…':''}<label>Mi nota<textarea id="nt${i}" rows="2" maxlength="400">${esc(m.n||'')}</textarea></label><div class="row"><button class="g" data-a="nota" data-v="${i}">Guardar nota</button><button class="g" data-a="qmk" data-v="${i}">Quitar</button></div></div>`}).join('')}</div>`};
 window.fichaCard=function(){return`<div class="card"><b>🖨️ Ficha de práctica imprimible</b><p class="mu">Genera un archivo con 20 preguntas (4 por área) de ${esc(S.exam)} y una hoja de respuestas. Ábrelo y usa «Imprimir → Guardar como PDF».</p><button class="g" data-a="ficha">Descargar ficha</button></div>`};
 window.vozCard=function(){const p=DB.pref||{},rt=p.rate||1;return`<div class="card"><b>🔊 Voz</b><p class="mu">Velocidad de lectura y lectura automática de las explicaciones. Usa la voz de tu navegador.</p><div class="row">${[[.8,'Lenta ×0.8'],[1,'Normal ×1'],[1.3,'Rápida ×1.3']].map(x=>`<button class="chip ${rt===x[0]?'on':''}" data-a="rate" data-v="${x[0]}">${x[1]}</button>`).join('')}</div><div class="row" style="margin-top:8px"><button class="chip ${p.tts?'on':''}" data-a="tts">${p.tts?'✓ ':''}Leer la explicación al responder</button></div></div>`};
-function insX(u){u.bd2=isO(u.bd2)?u.bd2:{};const L=[['⚔️','Duelo ganado',u.duel&&u.duel.w>=1],['⚔️','3 duelos ganados',u.duel&&u.duel.w>=3],['⏱️','Contrarreloj: 8 aciertos',u.con&&u.con.best>=8],['🃍','50 tarjetas',u.flk&&u.flk.n>=50],['🔥','Racha de 14 días',u.streak>=14],['🎯','10 misiones',u.mis&&u.mis.tot>=10],['💎','1000 XP',u.xp>=1000]];let n=0;L.forEach(x=>{if(x[2]&&!u.bd2[x[1]]){u.bd2[x[1]]=1;n=1}});if(n)save();
+function insX(u){u.bd2=isO(u.bd2)?u.bd2:{};const L=[['⚔️','Duelo ganado',u.duel&&u.duel.w>=1],['⚔️','3 duelos ganados',u.duel&&u.duel.w>=3],['⏱️','Contrarreloj: 8 aciertos',u.con&&u.con.best>=8],['🃍','50 tarjetas',u.flk&&u.flk.n>=50],['🔥','Racha de 14 días',u.streak>=14],['🎯','10 misiones',u.mis&&u.mis.tot>=10],['💎','1000 monedas',u.xp>=1000]];let n=0;L.forEach(x=>{if(x[2]&&!u.bd2[x[1]]){u.bd2[x[1]]=1;n=1}});if(n)save();
  return`<div class="card"><b>Insignias extra</b><div class="row" style="margin-top:8px">${L.map(x=>`<span class="chip ${u.bd2[x[1]]?'on':''}" style="${u.bd2[x[1]]?'':'opacity:.5'}">${x[0]} ${x[1]}</span>`).join('')}</div></div>`}
 function temporadaCard(u){const fin=((wk()+1)*7-3)*864e5,left=Math.max(0,fin-Date.now()),d=Math.floor(left/864e5),h=Math.floor(left%864e5/36e5),b=board(wk(),u.liga,(dow()+1)/7,[{n:u.name,xp:u.wxp,me:1}]),pu=b.findIndex(x=>x.me)+1,tm=Array.isArray(u.tmp)?u.tmp:[];
  return`<div class="card"><b>🗓️ Temporada</b><p>La semana cierra en <b>${d} d ${h} h</b>.<br>Tu XP esta semana: <b>${u.wxp}</b> · Puesto: <b>${pu}</b> de ${b.length}.</p><p class="mu">El cierre es el domingo a las 00:00 UTC (7:00 p. m. en Colombia).</p>${tm.length?'<b>Últimas temporadas</b>'+tm.map(t=>`<div class="lg"><span>Semana del ${new Date((t.w*7-3)*864e5).toLocaleDateString('es-CO',{day:'numeric',month:'short',timeZone:'UTC'})} · ${LG[t.liga]}</span>${t.xp} XP · puesto ${t.puesto}</div>`).join(''):'<p class="mu">Cuando cierre la semana, aquí se archivará tu temporada.</p>'}</div>`}
@@ -1739,7 +1739,7 @@ function inyectaPerfil(){
     if(document.querySelector('[data-v31]'))return;
     var sv=null;try{sv=S}catch(e){}
     var u=null;try{u=U()}catch(e){}
-    if(!sv||sv.view!=='app'||sv.tab!=='perfil'||sv.L||!u)return;
+    if(!sv||sv.view!=='app'||sv.tab!=='perfil'||sv.L||!u||sv.ptab!=='ajus')return;
     var main=document.querySelector('main');if(!main)return;
     main.insertAdjacentHTML('beforeend',perfilLegal(u));
   }catch(e){}
@@ -1801,7 +1801,7 @@ function inyectar(){
     if(document.querySelector('[data-v32]'))return;
     var sv=null;try{sv=S}catch(e){}
     var u=null;try{u=U()}catch(e){}
-    if(!sv||sv.view!=='app'||sv.tab!=='perfil'||sv.L||!u)return;
+    if(!sv||sv.view!=='app'||sv.tab!=='perfil'||sv.L||!u||sv.ptab!=='ajus')return;
     var main=document.querySelector('main');if(!main)return;
     var legal=main.querySelector('[data-v31]');
     var env=document.createElement('div');env.innerHTML=card();
@@ -2086,6 +2086,7 @@ const P={
  reproducir:'<path d="M9 6.2v11.6L18.6 12z"/>',
  'flecha-der':'<path d="M4.5 12h14"/><path d="M13 6.5l5.5 5.5-5.5 5.5"/>',
  'flecha-izq':'<path d="M19.5 12h-14"/><path d="M11 6.5 5.5 12l5.5 5.5"/>',
+ moneda:'<circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="4.6"/>',
  forma:'<rect x="5" y="5" width="14" height="14" rx="5"/>',
  paleta:'<path d="M12 3.5a8.5 8.5 0 1 0 .6 17c1.7 0 2.3-1 1.6-2.3-.7-1.5.3-2.7 2-2.7h1.6A3.3 3.3 0 0 0 20.5 12C20 7.2 16.6 3.5 12 3.5z"/><circle cx="8.3" cy="9.3" r="1.2"/><circle cx="13" cy="7.2" r="1.2"/><circle cx="16.6" cy="10.6" r="1.2"/>',
  boca:'<path d="M5.5 10.5q6.5 7.5 13 0"/><circle cx="5.5" cy="10.5" r="1"/><circle cx="18.5" cy="10.5" r="1"/>',
@@ -2108,7 +2109,7 @@ const MAP={
   '📅':'calendario','🗓':'calendario','⚠':'alerta','✅':'check','⚔':'duelo','🏅':'medalla',
   '💎':'gema','📱':'movil','🌸':'cuentos','👁':'ojo','🗨':'duelo',
   '\u23F1':'reloj','\u23F3':'relojarena','\u23F8':'pausa','\u2691':'bandera',
-  '\u2192':'flecha-der','\u2190':'flecha-izq','\uD83D\uDCD2':'cuaderno','\uD83D\uDD58':'reloj',
+  '\uD83E\uDE99':'moneda','\u2192':'flecha-der','\u2190':'flecha-izq','\uD83D\uDCD2':'cuaderno','\uD83D\uDD58':'reloj',
   '\u2713':'check','\u2714':'check','\u2715':'cerrar','\u2716':'cerrar','\u25B6':'reproducir','\u2B1C':'casilla',
   '🍀':'trebol','🎲':'dado','👉':'dedo','💾':'disquete','📊':'grafica','📲':'movil','🔐':'candado','🔑':'llave','🖨':'impresora','🛡':'escudo','🧭':'brujula','🕘':'reloj'
 };
@@ -2270,7 +2271,7 @@ window.RS35={ico:ico,colorDe:colorDe,pase:paseFull,iconificar:iconificar,pintar:
 'use strict';
 
 const FORMAS=['punto','chiguiro','zorro','robot','tucan','perezoso','gato','buho'];
-const OJOS=4,BOCAS=4,ACCS=7;
+const OJOS=4,BOCAS=4,ACCS=9;/* 7=bigote, 8=diadema de estrella (articulos de la tienda) */
 const COLORES=['','#f59e0b','#ef4444','#8b5cf6','#3b82f6','#10b981','#ec4899','#14b8a6','#f97316','#64748b','#0ea5e9','#84cc16','#a855f7'];
 
 /* anclas por forma: altura de ojos (ey), tope de la cabeza (ty),
@@ -2289,7 +2290,7 @@ const NOMF={punto:'Punto',chiguiro:'Chigüiro',zorro:'Zorro',robot:'Robot',tucan
 const NOMC=['Automático','Miel','Coral rojo','Violeta','Azul cielo','Esmeralda','Rosa fucsia','Turquesa','Naranja','Gris pizarra','Celeste','Lima','Orquídea'];
 const NOMO=['Normales','Brillo de estrellas','Guiño','Felices (∧)'];
 const NOMB=['Sonrisa','Asombro (o)','Lengua fuera','Seria'];
-const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares'];
+const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella'];const PREMC=['#f5c542','#22d3ee','#e879f9'];const PREMN=['Oro real','Cian hielo','Lila neon'];
 
 
 function cfg(){
@@ -2314,12 +2315,12 @@ function delta(k,v){
       if(FORMAS.includes(v))c.f=v;
       else{const x=+v;if(x>=0&&x<FORMAS.length)c.f=FORMAS[x]}
     }
-    else if(k==='c'&&(v===''||/^#[0-9a-fA-F]{6}$/.test(v)))c.c=v;
+    else if(k==='c'&&(v===''||/^#[0-9a-fA-F]{6}$/.test(v))){if(esPremium('c',v)&&!tengo('c'+v))return;c.c=v}
     else{
       const n=+v;
       if(k==='o'&&n>=0&&n<OJOS)c.o=n;
       else if(k==='b'&&n>=0&&n<BOCAS)c.b=n;
-      else if(k==='a'&&n>=0&&n<ACCS)c.a=n;
+      else if(k==='a'&&n>=0&&n<ACCS){if(esPremium('a',n)&&!tengo(esPremium('a',n)))return;c.a=n}
     }
     DB.pref=DB.pref||{};DB.pref.av=c;save();render();
   }catch(e){}
@@ -2328,7 +2329,7 @@ function random(){
   try{
     DB.pref=DB.pref||{};
     DB.pref.av={f:FORMAS[Math.random()*FORMAS.length|0],c:COLORES[Math.random()*COLORES.length|0],
-      o:(Math.random()*OJOS|0),b:(Math.random()*BOCAS|0),a:(Math.random()*ACCS|0)};
+      o:(Math.random()*OJOS|0),b:(Math.random()*BOCAS|0),a:(Math.random()*7|0)};
     save();render();
   }catch(e){}
 }
@@ -2392,6 +2393,17 @@ function accesorio(tipo,f,colBase){
     return`<path d="M${50-p-3} ${yb} C ${50-p-3} ${tp} ${50+p+3} ${tp} ${50+p+3} ${yb}" style="fill:none;stroke:${cpcb};stroke-width:5.5;stroke-linecap:round"/>`
       +`<path d="M${50-p-3} ${yb-1.5} C ${50-p-3} ${tp+4} ${50+p+3} ${tp+4} ${50+p+3} ${yb-1.5}" style="fill:none;stroke:rgba(255,255,255,.30);stroke-width:1.6;stroke-linecap:round"/>`
       +copa(-1)+copa(1);
+  }
+  if(tipo===7){ /* bigote: dos alas curvas sobre la boca */
+    const y=g.ey+13.5;
+    return`<path d="M50 ${y}q-7 -6 -13.5 -1.5q2.5 6.5 13.5 3" style="fill:rgba(0,0,0,.72)"/>`
+      +`<path d="M50 ${y}q7 -6 13.5 -1.5q-2.5 6.5 -13.5 3" style="fill:rgba(0,0,0,.72)"/>`
+      +`<path d="M41.5 ${y-2.5}q5 -1.5 8.5 1" style="fill:none;stroke:rgba(255,255,255,.22);stroke-width:1.4;stroke-linecap:round"/>`;
+  }
+  if(tipo===8){ /* diadema de estrella: banda + destello de 4 puntas */
+    const tp=g.ty-9;
+    return`<path d="M${50-g.cw/2-2} ${tp+9}q${g.cw/2+2} -13 ${g.cw+4} 0" style="fill:none;stroke:#0ea5e9;stroke-width:4;stroke-linecap:round"/>`
+      +`<path d="M50 ${tp}l3 6.2 6.5 1-4.7 4.7 1.1 6.6-5.9-3.1-5.9 3.1 1.1-6.6-4.7-4.7 6.5-1z" style="fill:#f5c542;stroke:rgba(0,0,0,.18);stroke-width:1"/>`;
   }
   return'';
 }
@@ -2515,10 +2527,10 @@ function nombreCat(k){for(var i=0;i<CATS.length;i++)if(CATS[i][0]===k)return CAT
 function tilesDe(k,actual){
   var vals,nombres;
   if(k==='f'){vals=FORMAS;nombres=FORMAS.map(function(x){return NOMF[x]})}
-  else if(k==='c'){vals=COLORES;nombres=NOMC}
+  else if(k==='c'){return tilesColor(actual)}
   else if(k==='o'){vals=[0,1,2,3];nombres=NOMO}
   else if(k==='b'){vals=[0,1,2,3];nombres=NOMB}
-  else{vals=[0,1,2,3,4,5,6];nombres=NOMA}
+  else{vals=[0,1,2,3,4,5,6,7,8];nombres=NOMA}
   return vals.map(function(v,i){
     var valor=String(v);
     var on=valor===String(actual)?' on':'';
@@ -2528,8 +2540,36 @@ function tilesDe(k,actual){
       return`<button class="rs40sw${on}" data-a="rs37v" data-v="c:${valor}" title="${nm}" aria-label="Color ${nm}" aria-pressed="${on?'true':'false'}" style="--sw:${col}"></button>`;
     }
     var c2=Object.assign({},cfg());c2[k]=(k==='f')?v:v;
+    if(k==='a'){var pl=esPremium('a',v);
+      if(pl&&!tengo(pl))return`<button class="rs40t lb" data-a="rs40buy" data-v="a:${valor}" title="${nm} · articulo de la tienda" aria-label="${nm} (compralo en la tienda)"><span class="rs40mv" aria-hidden="true">${avatarSVG(c2,'neutro')}</span><span class="rs40lb" aria-hidden="true">${ic40('candado')}</span></button>`;
+    }
     return`<button class="rs40t${on}" data-a="rs37v" data-v="${k}:${valor}" title="${nm}" aria-label="${nombreCat(k)}: ${nm}" aria-pressed="${on?'true':'false'}"><span class="rs40mv" aria-hidden="true">${avatarSVG(c2,'neutro')}</span></button>`;
   }).join('');
+}
+function esPremium(k,v){
+  if(k==='a'&&+v===7)return'm';
+  if(k==='a'&&+v===8)return'd';
+  if(k==='c'&&(v==='#f5c542'||v==='#22d3ee'||v==='#e879f9'))return'c'+v;
+  return null;
+}
+function tengo(llave){
+  try{var it=DB.pref&&DB.pref.avit;return !!(it&&it[llave])}catch(e){return false}
+}
+function tilesColor(actual){
+  var out=COLORES.map(function(v,i){
+    var valor=String(v),on=valor===String(actual)?' on':'';
+    var col=v||'var(--ac)';
+    return`<button class="rs40sw${on}" data-a="rs37v" data-v="c:${valor}" title="${NOMC[i]}" aria-label="Color ${NOMC[i]}" aria-pressed="${on?'true':'false'}" style="--sw:${col}"></button>`;
+  });
+  PREMC.forEach(function(v,i){
+    var on=v===String(actual)?' on':'',ll=esPremium('c',v);
+    if(tengo(ll)){
+      out.push(`<button class="rs40sw${on}" data-a="rs37v" data-v="c:${v}" title="${PREMN[i]}" aria-label="Color ${PREMN[i]}" aria-pressed="${on?'true':'false'}" style="--sw:${v}"></button>`);
+    }else{
+      out.push(`<button class="rs40sw lb" data-a="rs40buy" title="${PREMN[i]} · de la tienda" aria-label="Color ${PREMN[i]}, compralo en la tienda" style="--sw:${v}"><span class="rs40lk" aria-hidden="true">${ic40('candado')}</span></button>`);
+    }
+  });
+  return out.join('');
 }
 function css40(){
   if(document.getElementById('rs40css'))return;
@@ -2560,6 +2600,12 @@ function css40(){
    '.rs40ttl{margin:0 0 8px;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tx)}',
    '.rs40ay{margin:10px 0 0}',
    '@media(max-width:640px){.rs40{grid-template-columns:1fr}.rs40sel{flex-direction:column}}',
+   '.rs40t.lb{position:relative}',
+   '.rs40lb{position:absolute;inset:auto 4px 4px auto;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--cd);color:var(--mu);box-shadow:0 0 0 2px var(--br)}',
+   '.rs40lb svg{width:11px;height:11px}',
+   '.rs40sw.lb{position:relative;display:grid;place-items:center}',
+   '.rs40lk{display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--cd);color:var(--mu);box-shadow:0 0 0 2px var(--br)}',
+   '.rs40lk svg{width:9px;height:9px}',
    '@media(prefers-reduced-motion:no-preference){.rs40t{transition:transform .16s ease}}'
   ].join('');
   document.head.appendChild(est);
@@ -2968,6 +3014,221 @@ window.RS41={
 })();
 
 
+</script>
+<script>
+/* ---- v42: monedas, tienda y topbar interactivo (estilo kit de aprendizaje) ----
+   Aqui vive:
+   - las monedas: cada punto de XP que ganas te da una moneda; la cartera es
+     XP menos gastos (u.gasto), asi la liga y la temporada siguen midiendo XP,
+   - la tienda: protectores de racha, cargar vidas y articulos de avatar,
+   - el topbar: Vidas / Racha / Monedas tocables, con ventanas propias,
+   - la compra desde los candados del editor (rs40buy ahora compra de verdad). */
+(function(){
+'use strict';
+if(typeof window==='undefined')return;
+
+/* ---------- 1) estilo propio ---------- */
+function css(){
+  if(document.getElementById('rs42css'))return;
+  var est=document.createElement('style');est.id='rs42css';
+  est.textContent=[
+    /* botones de estadistica del topbar */
+    '.rs42st{display:inline-flex;gap:8px;align-items:center;flex:0 0 auto}',
+    '.stb{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--br);background:var(--cv);color:var(--tx);',
+      'border-radius:999px;padding:6px 12px;font-weight:800;font-size:14px;cursor:pointer;min-height:36px}',
+    '.stb:active{transform:scale(.96)}',
+    '.stb svg.rsic{width:17px;height:17px}',
+    /* ventana emergente (vidas / racha / tienda) */
+    '.rs42bk{position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:90;display:flex;align-items:center;justify-content:center;padding:16px}',
+    '.rs42m{background:var(--cv);color:var(--tx);border:1px solid var(--br);border-radius:18px;box-shadow:0 18px 50px rgba(15,23,42,.25);',
+      'width:100%;max-width:380px;padding:18px;display:flex;flex-direction:column;gap:12px;max-height:86vh;overflow:auto}',
+    '.rs42m h3{margin:0;display:flex;align-items:center;gap:8px;font-size:17px}',
+    '.rs42x{margin-left:auto;border:1px solid var(--br);background:transparent;color:inherit;border-radius:10px;',
+      'padding:4px 10px;font-weight:800;cursor:pointer}',
+
+    /* fila de tienda */
+    '.rs42it{display:flex;align-items:center;gap:10px;border:1px solid var(--br);border-radius:14px;padding:10px 12px;min-width:0}',
+    '.rs42ic{flex:0 0 auto;width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;',
+      'background:var(--ac);color:#fff;opacity:.95}',
+    '.rs42ic svg.rsic{width:20px;height:20px}',
+    '.rs42tx{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}',
+    '.rs42tx b{font-size:14.5px;overflow-wrap:anywhere}',
+    '.rs42tx span{font-size:12.5px;opacity:.75;overflow-wrap:anywhere}',
+    '.rs42pr{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;border:0;background:var(--ac);color:#fff;',
+      'border-radius:999px;padding:8px 13px;font-weight:800;font-size:13.5px;cursor:pointer}',
+    '.rs42pr[disabled]{opacity:.5;cursor:default}',
+    '.rs42pr svg.rsic{width:14px;height:14px}',
+    '.rs42ok{flex:0 0 auto;font-size:12.5px;font-weight:800;border:1px solid var(--br);border-radius:999px;padding:6px 10px;opacity:.7}',
+    '.rs42sw{width:26px;height:26px;border-radius:8px;flex:0 0 auto;border:1px solid rgba(0,0,0,.18)}',
+
+    /* corazones y racha dentro de las ventanas */
+    '.rs42vs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}',
+    '.rs42vs .rs42c svg.rsic{width:34px;height:34px}',
+    '.rs42vs .rs42c:not(.si){opacity:.25}',
+    '.rs42cen{text-align:center}',
+    '.rs42cen>p{margin:4px 0}',
+    '.rs42big{font-size:44px;font-weight:900;line-height:1.1}',
+    /* barra semanal de dias activos */
+    '.rs42wk{display:flex;gap:8px;justify-content:center}',
+    '.rs42wd{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:34px}',
+    '.rs42wd span{font-size:11.5px;font-weight:800;opacity:.75}',
+    '.rs42wd i{width:30px;height:30px;border-radius:50%;border:2px solid var(--br);display:block}',
+    '.rs42wd.si i{background:var(--ac);border-color:var(--ac)}',
+    '@media(max-width:480px){',
+    ' .stb{padding:5px 10px;font-size:13px}',
+    ' .rs42it{flex-wrap:wrap}}',
+
+    /* tarjeta tienda del camino */
+    '.rs42shop .card{display:flex;flex-direction:column;gap:10px}',
+    '.rs42shop .card b{font-size:16px}'
+  ].join('');
+  document.head.appendChild(est);
+}
+
+/* ---------- 2) helpers de monedas ---------- */
+function monedas(u){return Math.max(0,(u.xp|0)-(u.gasto|0))}
+function I(n){try{return(window.RS35&&RS35.ico(n))||''}catch(e){return''}}
+function pool(){if(!DB.pref)DB.pref={};if(!DB.pref.avit)DB.pref.avit={};return DB.pref.avit}
+function tengo(llave){return !!(DB.pref&&DB.pref.avit&&DB.pref.avit[llave])}
+
+var PRECIO={'pr':500,'vi':800,'a:7':1200,'a:8':1000,'c:#f5c542':900,'c:#22d3ee':900,'c:#e879f9':900};
+var DOW=['L','Ma','Mi','J','V','S','D'];/* dow() 0 = lunes */
+var NCOLOR={'#f5c542':'Oro real','#22d3ee':'Cian hielo','#e879f9':'Lila neon'};
+
+/* catalogo de la tienda, segun el usuario actual */
+function items(u){
+  var lista=[
+    {k:'pr',ico:'fuego',n:'Protector de racha',d:'Conerva tu racha si fallas un dia. Tienes '+(u.pr|0)+' de 3.',p:PRECIO.pr,on:true},
+    {k:'vi',ico:'corazon',n:'Recuperar todas las vidas',d:'Vuelve a 5 corazones al instante.',p:PRECIO.vi,on:!(u.v>=5&&!u.vt)}
+  ];
+  Object.keys(NCOLOR).forEach(function(v){
+    lista.push({k:'c:'+v,sw:v,n:'Color '+NCOLOR[v],d:'Color de avatar premium de la tienda.',p:PRECIO['c:'+v],on:!tengo('c'+v)});
+  });
+  lista.push({k:'a:7',ico:'ojo',n:'Bigote',d:'Articulo de avatar premium.',p:PRECIO['a:7'],on:!tengo('m')});
+  lista.push({k:'a:8',ico:'estrella',n:'Diadema de estrella',d:'Articulo de avatar premium.',p:PRECIO['a:8'],on:!tengo('d')});
+  return lista;
+}
+
+/* ---------- 3) tarjeta de la tienda en el camino ---------- */
+function tiendaCard(u){
+  var filas=items(u).map(function(x){
+    var ic=x.sw?('<span class="rs42sw" style="--sw:'+x.sw+'"></span>'):('<span class="rs42ic">'+I(x.ico)+'</span>');
+    var der=x.on
+      ?('<button class="rs42pr" data-a="rs42buy" data-v="'+x.k+'" '+(monedas(u)<x.p?'disabled':'')+' title="Comprar '+x.n+'">'+x.p+' monedas</button>')
+      :('<span class="rs42ok">Comprado</span>');
+    return '<div class="rs42it">'+ic+'<span class="rs42tx"><b>'+x.n+'</b><span>'+x.d+'</span></span>'+der+'</div>';
+  }).join('');
+  return '<section class="rs42shop" data-rs42="1"><div class="card"><b>Tienda de monedas</b>'+
+    '<span class="mu">Cambia tus monedas por ayudas o articulos para el avatar. Tienes '+monedas(u)+' monedas.</span>'+
+    filas+'</div></section>';
+}
+window.tiendaCard=tiendaCard;
+
+/* ---------- 4) ventanas: vidas, racha y tienda ---------- */
+function cor(u){
+  var s='';for(var i=1;i<=5;i++)s+='<span class="rs42c'+(i<=u.v?' si':'')+'">'+I('corazon')+'</span>';
+  return '<span class="rs42vs">'+s+'</span>';
+}
+function semana(u){
+  var last=u.last|0,hoy=day(),st=Math.max(0,u.streak|0),out='';
+  for(var i=6;i>=0;i--){
+    var d=hoy-i,dw=(d+3)%7;
+    var si=st>0&&d<=last&&d>last-st;
+    out+='<span class="rs42wd'+(si?' si':'')+(i===0?' ho':'')+'"><i></i><span>'+DOW[dw]+'</span></span>';
+  }
+  return '<span class="rs42wk">'+out+'</span>';
+}
+function ventana(u){
+  var c='';
+  if(S.rs42==='vidas'){
+    c='<h3>'+I('corazon')+' Vidas</h3>'+cor(u)+'<div class="rs42cen">'+
+      (u.v>=5&&!u.vt?'<p>Tus corazones estan llenos. A por ello.</p>':'<p>Siguiente vida en '+tleft(u)+'</p>')+
+      '<button class="rs42pr" data-a="rs42buy" data-v="vi" '+(monedas(u)<PRECIO.vi||u.v>=5?'disabled':'')+'>Recuperar todas por '+PRECIO.vi+' monedas</button>'+
+      (u.v>0?'':'<button data-a="vid">Modo practica (no gasta vidas)</button>')+'</div>';
+  }else if(S.rs42==='racha'){
+    c='<h3>'+I('fuego')+' Racha</h3><div class="rs42cen"><div class="rs42big">'+(u.streak|0)+'</div><p>'+((u.streak|0)===1?'dia de racha':'dias de racha')+'</p>'+
+      semana(u)+
+      '<p class="mu">Protecciones disponibles: '+(u.pr|0)+'</p>'+
+      '<button class="rs42pr" data-a="rs42buy" data-v="pr" '+(monedas(u)<PRECIO.pr||(u.pr|0)>=3?'disabled':'')+'>Comprar protector, '+PRECIO.pr+' monedas</button>'+
+      '<p class="mu">Con un protector, fallar un dia no rompe tu racha.</p></div>';
+  }else{
+    c='<h3>'+I('moneda')+' Tienda</h3>'+items(u).map(function(x){
+      var ic=x.sw?('<span class="rs42sw" style="--sw:'+x.sw+'"></span>'):('<span class="rs42ic">'+I(x.ico)+'</span>');
+      var der=x.on
+        ?('<button class="rs42pr" data-a="rs42buy" data-v="'+x.k+'" '+(monedas(u)<x.p?'disabled':'')+'>'+x.p+'</button>')
+        :'<span class="rs42ok">Comprado</span>';
+      return '<div class="rs42it">'+ic+'<span class="rs42tx"><b>'+x.n+'</b><span>'+x.d+'</span></span>'+der+'</div>';
+    }).join('');
+  }
+  return '<div class="rs42bk" data-rs42m="1" data-a="rs42x"><div class="rs42m" role="dialog" aria-label="Ventana de '+
+    (S.rs42==='racha'?'racha':S.rs42==='vidas'?'vidas':'tienda')+'">'+
+    '<button class="rs42x" data-a="rs42x" aria-label="Cerrar ventana">✕</button>'+c+'</div></div>';
+}
+
+/* ---------- 5) acciones ---------- */
+function comprar(k){
+  var u=U();k=String(k||'');
+  if(!k){S.rs42='tienda';render();return}
+  var p=PRECIO[k];
+  if(p==null)return;
+  if(monedas(u)<p){S.rs42='tienda';say('Te faltan monedas para ese articulo.');render();return}
+  u.gasto=(u.gasto|0)+p;
+  if(k==='pr'){u.pr=Math.min(3,(u.pr|0)+1);say('Protector de racha listo. Se usa solo cuando lo necesitas.')}
+  else if(k==='vi'){u.v=5;u.vt=0;u.vr=0;say('Corazones recuperados.')}
+  else if(k==='a:7'){pool().m=1;say('Bigote comprado. Ponlo en Perfil, Personalizar.')}
+  else if(k==='a:8'){pool().d=1;say('Diadema de estrella comprada. Ponla en Perfil, Personalizar.')}
+  else if(k.indexOf('c:')===0){pool()['c'+k.slice(2)]=1;say('Color premium comprado. Usalo en Perfil, Personalizar.')}
+  save();S.rs42='tienda';render();
+}
+try{
+  Object.assign(A,{
+    rs42v:function(){S.rs42='vidas';render()},
+    rs42r:function(){S.rs42='racha';render()},
+    rs42t:function(){S.rs42='tienda';render()},
+    rs42x:function(){S.rs42=null;render()},
+    rs42buy:comprar,
+    rs40buy:comprar
+  });
+}catch(e){}
+
+/* ---------- 6) inyeccion en el render ---------- */
+function inyectar(){
+  try{
+    var main=document.querySelector('main');if(!main)return;
+    /* tarjeta de tienda, solo en el camino (va tras el banner de seccion) */
+    var enCamino=!!main.querySelector('.rs39ban[data-k="camino"]');
+    if(enCamino&&!main.querySelector('[data-rs42]')){
+      var ancla=main.querySelector('.rs39ban[data-k="camino"]')||main.querySelector(':scope>.top');
+      if(ancla)ancla.insertAdjacentHTML('afterend',tiendaCard(U()));
+    }else if(main.querySelector('[data-rs42]')&&!enCamino){
+      var vieja=main.querySelector('[data-rs42]');
+      if(vieja&&vieja.remove)vieja.remove();
+    }
+    /* ventana emergente a nivel de pagina */
+    var bk=document.querySelector('.rs42bk');
+    if(S.rs42){
+      var htm=ventana(U());
+      if(bk){bk.outerHTML=htm}
+      else{
+        var d=document.createElement('div');d.innerHTML=htm;
+        var nd=d.firstChild;if(nd)document.body.appendChild(nd);
+      }
+    }else if(bk&&bk.remove){bk.remove()}
+  }catch(e){}
+}
+try{
+  css();
+  if(typeof render==='function'){
+    var _r42=render;
+    render=function(){var r=_r42.apply(this,arguments);try{inyectar()}catch(e){}return r};
+  }
+  setTimeout(inyectar,0);
+}catch(e){}
+
+/* API para pruebas */
+try{window.RS42={monedas:monedas,PRECIO:PRECIO,tengo:function(k){return tengo(k)},inyectar:inyectar,ventana:ventana}}catch(e){}
+
+})();
 </script>
 </body>
 </html>

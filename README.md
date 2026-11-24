@@ -341,3 +341,17 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 - **Ligas y duelos con personas reales**: nueva vista pública `liga_publica` en Supabase (`supabase/ligas.sql` — ejecútala en el SQL Editor) que expone solo nombre, liga, semana y XP/aciertos agregados. Mientras la nube esté activa, el tablero de liga mezcla tus cuentas locales con **cuentas reales sincronizadas** (marcadas con «nube»), y cada fila tiene el botón **Duelar** para retarla en un duelo de 10 preguntas donde el rival responde según su precisión real registrada. Sin nube configurada, todo funciona como antes (cuentas del dispositivo). La lectura anónima expone únicamente el nombre visible y métricas de juego; los correos y los datos privados nunca salen de la fila propia.
 
 **Módulos:** parche base (`perfil`, `liga`, duelos) + `demo-html/modulos/v41-ligas.js`. SQL nuevo `supabase/ligas.sql`. Caché PWA a `rscp-v27` / `reto-saber-v25`.
+
+### v42 — Monedas, tienda y topbar interactivo (estilo kit de estudio)
+
+- **Monedas**: cada punto de XP que ganas te da una moneda. La cartera visible es XP menos gastos (`u.gasto`), así la liga y la temporada siguen midiendo XP puro: la cartera es de compras, el ranking es de competencia. Todo lo visible del bolsillo dice «monedas» (perfil, lección, desafío, simulacro, duelo, tarjetas, contrarreloj, historial y misiones).
+- **Topbar interactivo**: en el Camino, junto al nombre, hay tres pastillas tocables — **Vidas**, **Racha** y **Monedas** — que abren sus ventanas propias (estilo kit de estudio, con iconos SVG propios, sin emojis).
+  - *Vidas*: tus 5 corazones, «Siguiente vida en…» con cuenta real, recuperar todas por 800 monedas y acceso a modo práctica.
+  - *Racha*: número grande de días, barra semanal de los últimos 7 días con los activos marcados, protectores disponibles y compra de protector por 500 monedas.
+  - *Monedas*: abre la tienda.
+- **Tienda en el Camino**: tarjeta propia con seis artículos — Protector de racha (500, máximo 3), Recuperar todas las vidas (800, se oculta si estás lleno), colores premium Oro real / Cian hielo / Lila neón (900 c/u), Bigote (1200) y Diadema de estrella (1000). Los artículos comprados muestran la etiqueta «Comprado».
+- **Candados que compran de verdad**: los candados del editor de avatar (colores premium, bigote, diadema de estrella) ahora compran directamente con tus monedas; si no te alcanzan, abren la tienda con un aviso. Lo comprado viaja con tus preferencias en la nube.
+- **Botón «Duelo»**: el reto contra cualquier fila de la liga (bot o persona real) se llama ahora **Duelo**.
+- **Cambiar contraseña solo en Ajustes**: la tarjeta aparece únicamente en la pestaña Ajustes del Perfil, no en Progreso ni en Personalizar.
+
+**Módulos:** parche base (topbar, monedas en textos, `touch` con protector, contraseña) + `demo-html/modulos/v42-tienda.js` (nuevo) + icono «moneda» en v35 + artículos premium en v37. Caché PWA a `rscp-v28` / `reto-saber-v26`.

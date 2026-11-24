@@ -37,7 +37,7 @@ var esc=function(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&
 'use strict';
 
 const FORMAS=['punto','chiguiro','zorro','robot','tucan','perezoso','gato','buho'];
-const OJOS=4,BOCAS=4,ACCS=7;
+const OJOS=4,BOCAS=4,ACCS=9;/* 7=bigote, 8=diadema de estrella (articulos de la tienda) */
 const COLORES=['','#f59e0b','#ef4444','#8b5cf6','#3b82f6','#10b981','#ec4899','#14b8a6','#f97316','#64748b','#0ea5e9','#84cc16','#a855f7'];
 
 /* anclas por forma: altura de ojos (ey), tope de la cabeza (ty),
@@ -56,7 +56,7 @@ const NOMF={punto:'Punto',chiguiro:'Chigüiro',zorro:'Zorro',robot:'Robot',tucan
 const NOMC=['Automático','Miel','Coral rojo','Violeta','Azul cielo','Esmeralda','Rosa fucsia','Turquesa','Naranja','Gris pizarra','Celeste','Lima','Orquídea'];
 const NOMO=['Normales','Brillo de estrellas','Guiño','Felices (∧)'];
 const NOMB=['Sonrisa','Asombro (o)','Lengua fuera','Seria'];
-const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares'];
+const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella'];const PREMC=['#f5c542','#22d3ee','#e879f9'];const PREMN=['Oro real','Cian hielo','Lila neon'];
 
 
 function cfg(){
@@ -81,12 +81,12 @@ function delta(k,v){
       if(FORMAS.includes(v))c.f=v;
       else{const x=+v;if(x>=0&&x<FORMAS.length)c.f=FORMAS[x]}
     }
-    else if(k==='c'&&(v===''||/^#[0-9a-fA-F]{6}$/.test(v)))c.c=v;
+    else if(k==='c'&&(v===''||/^#[0-9a-fA-F]{6}$/.test(v))){if(esPremium('c',v)&&!tengo('c'+v))return;c.c=v}
     else{
       const n=+v;
       if(k==='o'&&n>=0&&n<OJOS)c.o=n;
       else if(k==='b'&&n>=0&&n<BOCAS)c.b=n;
-      else if(k==='a'&&n>=0&&n<ACCS)c.a=n;
+      else if(k==='a'&&n>=0&&n<ACCS){if(esPremium('a',n)&&!tengo(esPremium('a',n)))return;c.a=n}
     }
     DB.pref=DB.pref||{};DB.pref.av=c;save();render();
   }catch(e){}
@@ -95,7 +95,7 @@ function random(){
   try{
     DB.pref=DB.pref||{};
     DB.pref.av={f:FORMAS[Math.random()*FORMAS.length|0],c:COLORES[Math.random()*COLORES.length|0],
-      o:(Math.random()*OJOS|0),b:(Math.random()*BOCAS|0),a:(Math.random()*ACCS|0)};
+      o:(Math.random()*OJOS|0),b:(Math.random()*BOCAS|0),a:(Math.random()*7|0)};
     save();render();
   }catch(e){}
 }
@@ -159,6 +159,17 @@ function accesorio(tipo,f,colBase){
     return`<path d="M${50-p-3} ${yb} C ${50-p-3} ${tp} ${50+p+3} ${tp} ${50+p+3} ${yb}" style="fill:none;stroke:${cpcb};stroke-width:5.5;stroke-linecap:round"/>`
       +`<path d="M${50-p-3} ${yb-1.5} C ${50-p-3} ${tp+4} ${50+p+3} ${tp+4} ${50+p+3} ${yb-1.5}" style="fill:none;stroke:rgba(255,255,255,.30);stroke-width:1.6;stroke-linecap:round"/>`
       +copa(-1)+copa(1);
+  }
+  if(tipo===7){ /* bigote: dos alas curvas sobre la boca */
+    const y=g.ey+13.5;
+    return`<path d="M50 ${y}q-7 -6 -13.5 -1.5q2.5 6.5 13.5 3" style="fill:rgba(0,0,0,.72)"/>`
+      +`<path d="M50 ${y}q7 -6 13.5 -1.5q-2.5 6.5 -13.5 3" style="fill:rgba(0,0,0,.72)"/>`
+      +`<path d="M41.5 ${y-2.5}q5 -1.5 8.5 1" style="fill:none;stroke:rgba(255,255,255,.22);stroke-width:1.4;stroke-linecap:round"/>`;
+  }
+  if(tipo===8){ /* diadema de estrella: banda + destello de 4 puntas */
+    const tp=g.ty-9;
+    return`<path d="M${50-g.cw/2-2} ${tp+9}q${g.cw/2+2} -13 ${g.cw+4} 0" style="fill:none;stroke:#0ea5e9;stroke-width:4;stroke-linecap:round"/>`
+      +`<path d="M50 ${tp}l3 6.2 6.5 1-4.7 4.7 1.1 6.6-5.9-3.1-5.9 3.1 1.1-6.6-4.7-4.7 6.5-1z" style="fill:#f5c542;stroke:rgba(0,0,0,.18);stroke-width:1"/>`;
   }
   return'';
 }
@@ -282,10 +293,10 @@ function nombreCat(k){for(var i=0;i<CATS.length;i++)if(CATS[i][0]===k)return CAT
 function tilesDe(k,actual){
   var vals,nombres;
   if(k==='f'){vals=FORMAS;nombres=FORMAS.map(function(x){return NOMF[x]})}
-  else if(k==='c'){vals=COLORES;nombres=NOMC}
+  else if(k==='c'){return tilesColor(actual)}
   else if(k==='o'){vals=[0,1,2,3];nombres=NOMO}
   else if(k==='b'){vals=[0,1,2,3];nombres=NOMB}
-  else{vals=[0,1,2,3,4,5,6];nombres=NOMA}
+  else{vals=[0,1,2,3,4,5,6,7,8];nombres=NOMA}
   return vals.map(function(v,i){
     var valor=String(v);
     var on=valor===String(actual)?' on':'';
@@ -295,8 +306,36 @@ function tilesDe(k,actual){
       return`<button class="rs40sw${on}" data-a="rs37v" data-v="c:${valor}" title="${nm}" aria-label="Color ${nm}" aria-pressed="${on?'true':'false'}" style="--sw:${col}"></button>`;
     }
     var c2=Object.assign({},cfg());c2[k]=(k==='f')?v:v;
+    if(k==='a'){var pl=esPremium('a',v);
+      if(pl&&!tengo(pl))return`<button class="rs40t lb" data-a="rs40buy" data-v="a:${valor}" title="${nm} · articulo de la tienda" aria-label="${nm} (compralo en la tienda)"><span class="rs40mv" aria-hidden="true">${avatarSVG(c2,'neutro')}</span><span class="rs40lb" aria-hidden="true">${ic40('candado')}</span></button>`;
+    }
     return`<button class="rs40t${on}" data-a="rs37v" data-v="${k}:${valor}" title="${nm}" aria-label="${nombreCat(k)}: ${nm}" aria-pressed="${on?'true':'false'}"><span class="rs40mv" aria-hidden="true">${avatarSVG(c2,'neutro')}</span></button>`;
   }).join('');
+}
+function esPremium(k,v){
+  if(k==='a'&&+v===7)return'm';
+  if(k==='a'&&+v===8)return'd';
+  if(k==='c'&&(v==='#f5c542'||v==='#22d3ee'||v==='#e879f9'))return'c'+v;
+  return null;
+}
+function tengo(llave){
+  try{var it=DB.pref&&DB.pref.avit;return !!(it&&it[llave])}catch(e){return false}
+}
+function tilesColor(actual){
+  var out=COLORES.map(function(v,i){
+    var valor=String(v),on=valor===String(actual)?' on':'';
+    var col=v||'var(--ac)';
+    return`<button class="rs40sw${on}" data-a="rs37v" data-v="c:${valor}" title="${NOMC[i]}" aria-label="Color ${NOMC[i]}" aria-pressed="${on?'true':'false'}" style="--sw:${col}"></button>`;
+  });
+  PREMC.forEach(function(v,i){
+    var on=v===String(actual)?' on':'',ll=esPremium('c',v);
+    if(tengo(ll)){
+      out.push(`<button class="rs40sw${on}" data-a="rs37v" data-v="c:${v}" title="${PREMN[i]}" aria-label="Color ${PREMN[i]}" aria-pressed="${on?'true':'false'}" style="--sw:${v}"></button>`);
+    }else{
+      out.push(`<button class="rs40sw lb" data-a="rs40buy" title="${PREMN[i]} · de la tienda" aria-label="Color ${PREMN[i]}, compralo en la tienda" style="--sw:${v}"><span class="rs40lk" aria-hidden="true">${ic40('candado')}</span></button>`);
+    }
+  });
+  return out.join('');
 }
 function css40(){
   if(document.getElementById('rs40css'))return;
@@ -327,6 +366,12 @@ function css40(){
    '.rs40ttl{margin:0 0 8px;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tx)}',
    '.rs40ay{margin:10px 0 0}',
    '@media(max-width:640px){.rs40{grid-template-columns:1fr}.rs40sel{flex-direction:column}}',
+   '.rs40t.lb{position:relative}',
+   '.rs40lb{position:absolute;inset:auto 4px 4px auto;display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:var(--cd);color:var(--mu);box-shadow:0 0 0 2px var(--br)}',
+   '.rs40lb svg{width:11px;height:11px}',
+   '.rs40sw.lb{position:relative;display:grid;place-items:center}',
+   '.rs40lk{display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:var(--cd);color:var(--mu);box-shadow:0 0 0 2px var(--br)}',
+   '.rs40lk svg{width:9px;height:9px}',
    '@media(prefers-reduced-motion:no-preference){.rs40t{transition:transform .16s ease}}'
   ].join('');
   document.head.appendChild(est);
