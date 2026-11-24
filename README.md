@@ -290,5 +290,8 @@ Rediseño integral del ecosistema de mascota, por las 4 líneas a la vez:
 - **Editor nuevo en Perfil**: vista previa grande con escena (170 px), chips agrupados y descripción viva («tu Chigüiro con gorra»), más «Sorpréndeme» destacado.
 - **Corrección clave**: v36 tenía un guard que apagaba todo el avatar cuando el demo se abre **fuera de un iframe** (o sea, en GitHub Pages standalone). Eliminado: la mascota funciona en cualquier contexto.
 - **Compatibilidad**: los datos guardados de v36 (y de versiones indexadas numéricamente) se leen igual; los datos corruptos caen a valores de fábrica.
+- **Adiós al emoji restante**: el catálogo de iconos propios se amplía de 32 a **62 iconos SVG** (nuevos: reloj, reloj de arena, pausa, bandera de reporte, cerrar, casilla, trébol, dado, dedo, disquete, gráfica, llave, impresora, escudo, brújula y reproducir) y se mapean los 26 caracteres que aún se veían como emoji (⏱⏳⏸⚑✓✔✕✖▶⬜🍀🎲👉💾📊📲🔐🔑🕘🖨🛡🧭...). Verificado con prueba automática: **cero emojis visibles** en Perfil/Camino/Liga. Las únicas excepciones son los ✓/✗ semánticos de acierto/error (CSS `::before`) y las flechas → ← que son tipografía, no emoji.
+- **Guard eliminado en v35** también: los iconos y colores por área ya no dependen del contexto del documento.
+- **Preview del arte**: nueva página `preview-mascota.html` con las 16 tarjetas (8 formas × normal/celebrando) para evaluar el diseño de un vistazo.
 
-**Módulo:** `demo-html/modulos/v37-mascota.js` — bloque `<script>` (patrón v20+) con CSS propio (`#rs37css`) y API `window.RS37`. Caché PWA a `rscp-v24` / `reto-saber-v22`.
+**Módulo:** `demo-html/modulos/v37-mascota.js` — bloque `<script>` (patrón v20+) con CSS propio (`#rs37css`) y API `window.RS37`; catálogo extendido en `v35-area-iconos.js`. Caché PWA a `rscp-v24` / `reto-saber-v22`.
