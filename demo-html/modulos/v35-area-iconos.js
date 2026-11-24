@@ -61,6 +61,7 @@ const P={
  'flecha-der':'<path d="M4.5 12h14"/><path d="M13 6.5l5.5 5.5-5.5 5.5"/>',
  'flecha-izq':'<path d="M19.5 12h-14"/><path d="M11 6.5 5.5 12l5.5 5.5"/>',
  moneda:'<circle cx="12" cy="12" r="8.4"/><circle cx="12" cy="12" r="4.6"/>',
+ tienda:'<path d="M4.5 9.5h15l-1.1 9.7a1.9 1.9 0 0 1-1.9 1.7H7.5a1.9 1.9 0 0 1-1.9-1.7L4.5 9.5z"/><path d="M3.8 9.5l1.4-4.3a1.6 1.6 0 0 1 1.5-1.1h12.6a1.6 1.6 0 0 1 1.5 1.1l1.4 4.3"/><path d="M9.5 9.5v-1a2.5 2.5 0 0 1 5 0v1"/>',
  forma:'<rect x="5" y="5" width="14" height="14" rx="5"/>',
  paleta:'<path d="M12 3.5a8.5 8.5 0 1 0 .6 17c1.7 0 2.3-1 1.6-2.3-.7-1.5.3-2.7 2-2.7h1.6A3.3 3.3 0 0 0 20.5 12C20 7.2 16.6 3.5 12 3.5z"/><circle cx="8.3" cy="9.3" r="1.2"/><circle cx="13" cy="7.2" r="1.2"/><circle cx="16.6" cy="10.6" r="1.2"/>',
  boca:'<path d="M5.5 10.5q6.5 7.5 13 0"/><circle cx="5.5" cy="10.5" r="1"/><circle cx="18.5" cy="10.5" r="1"/>',
@@ -84,6 +85,7 @@ const MAP={
   '💎':'gema','📱':'movil','🌸':'cuentos','👁':'ojo','🗨':'duelo',
   '\u23F1':'reloj','\u23F3':'relojarena','\u23F8':'pausa','\u2691':'bandera',
   '\uD83E\uDE99':'moneda','\u2192':'flecha-der','\u2190':'flecha-izq','\uD83D\uDCD2':'cuaderno','\uD83D\uDD58':'reloj',
+  '\uD83D\uDED2':'tienda','\uD83C\uDFEA':'tienda',
   '\u2713':'check','\u2714':'check','\u2715':'cerrar','\u2716':'cerrar','\u25B6':'reproducir','\u2B1C':'casilla',
   '🍀':'trebol','🎲':'dado','👉':'dedo','💾':'disquete','📊':'grafica','📲':'movil','🔐':'candado','🔑':'llave','🖨':'impresora','🛡':'escudo','🧭':'brujula','🕘':'reloj'
 };
