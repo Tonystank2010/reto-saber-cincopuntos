@@ -605,7 +605,8 @@ const fusionar=(datos)=>{try{
  const loc=(()=>{try{return JSON.parse(localStorage.getItem(K||'null'))}catch(e){return null}})()||null;
  const out={users:{},cur:null};
  const us=(loc&&loc.users)||{};for(const k in us)out.users[k]=us[k];
- for(const k in rem.users){const a=out.users[k],b=rem.users[k];out.users[k]=(a&&b)?((b.xp||0)>=(a.xp||0)?b:a):b}
+ for(const k in rem.users){const a=out.users[k],b=rem.users[k];out.users[k]=(a&&b)?((b.xp||0)>(a.xp||0)?b:a):b
+    if(a&&b&&(b.xp||0)>(a.xp||0)&&a.pn&&(!b.pn||(a.pn.d|0)>=((b.pn&&b.pn.d)|0))){try{out.users[k].pn=a.pn}catch(e){}}}
  out.cur=loc&&loc.cur&&out.users[loc.cur]?loc.cur:(rem.cur&&out.users[rem.cur]?rem.cur:Object.keys(out.users)[0]);
  for(const k of ['pref','est','tm','dst','rep'])if(rem[k]!==undefined)out[k]=rem[k];
  localStorage.setItem(K,JSON.stringify(out));
@@ -1381,7 +1382,8 @@ function fusionar(rem){
     if(!rem||!rem.users||typeof rem.users!=='object')return null;
     var loc=leerLocal(),out={users:{}},us=(loc&&loc.users)||{},k,a,b,cur=null;
     for(k in us)out.users[k]=us[k];
-    for(k in rem.users){a=out.users[k];b=rem.users[k];out.users[k]=(a&&b)?((b.xp||0)>=(a.xp||0)?b:a):b}
+    for(k in rem.users){a=out.users[k];b=rem.users[k];out.users[k]=(a&&b)?((b.xp||0)>(a.xp||0)?b:a):b
+    if(a&&b&&(b.xp||0)>(a.xp||0)&&a.pn&&(!b.pn||(a.pn.d|0)>=((b.pn&&b.pn.d)|0))){try{out.users[k].pn=a.pn}catch(e){}}}
     if(loc&&loc.cur&&out.users[loc.cur])cur=loc.cur;
     else if(rem.cur&&out.users[rem.cur])cur=rem.cur;
     else cur=Object.keys(out.users)[0]||null;
