@@ -442,3 +442,31 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 - Ambos: premium (candado en el editor que compra directo), catálogo de la Tienda con icono SVG propio (`mochila` y `corbata` van al sprite v35) y dibujo en `v37` anclado a las guías de cada forma. El catálogo de accesorios del editor pasa de 11 a **13** opciones; Sorpréndeme sigue eligiendo solo entre los 7 gratuitos.
 
 **Módulos:** sprites «mochila» y «corbata» en `v35-area-iconos.js`; `ACCS=13`, nombres, `esPremium` (llaves `b` y `t`), tiles `0..12` y dibujo en `v37-mascota.js`; precios/catálogo/compra en `v42-tienda.js`.
+
+### v52 — Tutorial de bienvenida en 6 mini tarjetas
+
+- **Al registrarse** (tuto 0), el juego abre una guía de **6 mini tarjetas** que explica en texto breve cómo funciona todo al 100%: el Camino y los niveles, las **vidas**, las **monedas y la Tienda**, la **racha**, las **ligas y duelos**, y los **cuentos + el plan nocturno**. Cada tarjeta trae dos botones: **Siguiente** para avanzar y **Saltar** para salir y empezar a jugar (también hay «Empezar a jugar» en la última).
+- Cierra definitivamente al saltar o terminar (`tuto 1`, guardado) y **no vuelve a molestar**: ni dentro de lecciones ni repasos. Se puede **reabrir desde Perfil > Ajustes** con «Ver el tutorial de nuevo». Los usuarios antiguos la ven una sola vez y ya.
+- Ventana con puntos de progreso, aria-completa, iconos SVG propios del catálogo v35 y **cero emojis** verificado con el recorrido del DOM.
+
+**Módulos:** `demo-html/modulos/v52-tutorial.js` (nuevo; API `window.RS52`). 22/22 pruebas.
+
+### v53 — Banco rotativo ampliado: 10.003 preguntas, 1.429 exactas por área (Saber 11, TyT y Pro)
+
+- Verificación completa del banco rotativo y ampliación hasta **10.003 preguntas únicas**, con **la misma cantidad por área (1.429 × 7)**: Matemáticas, Razonamiento Cuantitativo, Ciencias Naturales, Sociales y Ciudadanas, Lectura Crítica, Inglés y Comunicación Escrita — **en los tres exámenes** (Saber 11, Saber TyT, Saber Pro).
+- Espacios combinatorios ampliados en los generadores para sostener la cuota sin repetir: personas y escenarios de Sociales y Ciudadanas (20 nuevos perfiles), pares persona/tiempo de Lectura Crítica (12 × 12), sujetos de Inglés (12) y 4 plantillas nuevas de Comunicación Escrita (no obstante, también, hasta que, de modo que).
+- Rotación verificada por usuario: 200 tomas de 5 preguntas sin repetición dentro de cada toma; 0 preguntas malformadas en las 7 áreas.
+
+**Módulos:** `demo-html/modulos/v21-banco-rotativo.js` (ampliado). Pruebas 14/14 + sonda del banco 10.003/10.003.
+
+### v54 — 15 cuentos con etapas, progreso por cuento y audio en inglés
+
+- La biblioteca de cuentos pasa de 1 a **15 historias originales** (biblioteca sin reloj, chigüiro del recreo, bicicleta naranja, mercado de las flores, Sal y luz en Manaure, silbo del cañón, alfombra de aserrín, buque de los atardeceres, fábrica de velas, buque de papel, cancha de los domingos, cartas del Pacífico, niña del acordeón, bus de las siete, campeona callada).
+- Cada cuento tiene **4 etapas** (de Lector Acompañado a Lector Autónomo, con cada vez menos ayudas) y **4 preguntas de comprensión**; el progreso se guarda **por cuento** (`cuf`) y la **Madurez lectora** es el total de etapas superadas sobre las 60 posibles.
+- Los usuarios viejos se migran solos (el avance de antes pasa al cuento 1). El nodo «Cuento» del mapa y la fila del plan nocturno abren siempre el **cuento actual**.
+- **Audio en inglés**: en el lector hay una casilla «Escuchar en inglés» que narra las 6 oraciones en en-US (visibles en la pantalla, con nota de modo bilingüe); en español sigue la voz con pesos colombianos.
+- La tarjeta de cuentas se integró al **Camino**: 15 bloques con progreso, etapas bloqueadas/desbloqueadas y accesos directos.
+
+**Módulos:** `demo-html/modulos/v54-cuentos.js` (nuevo; API `window.RS54`). Pruebas 26/26 + batería regresiva completa en verde; las 3 copias del demo idénticas.
+
+**Caché PWA** subida a `rscp-v38` / `reto-saber-v36`.

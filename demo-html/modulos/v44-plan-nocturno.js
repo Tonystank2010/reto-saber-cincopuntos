@@ -67,7 +67,7 @@ function construir(u){
   ar:fil.map(function(f){return f.a}),
   dp:fil.map(function(f,j){return j<2?1:0}),
   nv:fil.map(function(f){return f.prop==null?1:rec(f.prop)}),
-  cu:Math.min(((u.cu&&u.cu.e)|0)||0,3)};
+  cu:Math.min(((u.cuf&&(u.cuf[u.cun|0]|0))||((u.cu&&u.cu.e)|0))|0,3)};
 }
 function generar(u){
  u.pn=construir(u);save();
@@ -99,7 +99,7 @@ function tarjeta(u){
    pn.dp[j]?'Profundizar':'Reforzar')});
  box+=fila(total-1,'cuentos','Lectura critica · cuento',
   'Etapa '+(pn.cu+1)+' de 4: menos ayudas, mas atencion.',
-  '<button class="rs44btn" data-a="ro" data-v="'+pn.cu+'">Leer</button>');
+  '<button class="rs44btn" data-a="ro" data-v="'+pn.cu+'|'+((u.cun|0))+'">Leer</button>');
  var rot=rotulo(pn),ttl=rot==='para mañana'?('Plan nocturno para '+DIAS[(dow()+1)%7]):('Plan de hoy · '+DIAS[dow()%7]);
  return '<section class="card rs44" data-rs44="1">'+
   '<div class="rs44pi">'+I('reloj')+'<b>'+ttl+'</b></div>'+

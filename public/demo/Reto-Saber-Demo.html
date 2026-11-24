@@ -150,7 +150,7 @@ const r=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),f=x=>'$'+x.toLocaleString('es
 const S={view:'auth',at:'in',tab:'camino',exam:'Saber 11',area:AR[0],niv:null,L:null,err:''};
 async function H(p,s){if(window.crypto&&crypto.subtle){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
  let h=5381;for(const c of s+p)h=((h*33)^c.charCodeAt(0))>>>0;return'w'+h}
-const mkU=(name,email,grado)=>({name,email,grado:grado||'',salt:'',ph:'',xp:0,streak:0,last:0,done:{},rev:[],liga:0,wk:wk(),wxp:0,ok:0,tot:0,v:5,vt:0,diag:null,reto:0,vr:0,hist:[],dg:null,cu:{e:0},diario:[]});
+const mkU=(name,email,grado)=>({name,email,grado:grado||'',salt:'',ph:'',xp:0,streak:0,last:0,done:{},rev:[],liga:0,wk:wk(),wxp:0,ok:0,tot:0,v:5,vt:0,diag:null,reto:0,vr:0,hist:[],dg:null,cu:{e:0},cuf:{},cun:0,tuto:0,diario:[]});
 /* Matemáticas: preguntas generadas con números nuevos cada vez */
 const Q=(n,en,ok,bad,ex)=>{const o=shuf([[ok,'',1]].concat(bad)).map((p,i)=>({id:'ABCD'[i],texto:String(p[0]),why:p[1],c:p[2]}));
  return{id:'g'+Math.random().toString(36).slice(2,8),area:'Matemáticas',nivel:NIV[n],competencia:'Razonamiento cuantitativo',enunciado:en,opciones:o.map(({id,texto,why})=>({id,texto,why})),respuesta:o.find(x=>x.c).id,explicacion:ex,marcaContenido:'Pregunta de práctica, no oficial'}};
@@ -219,7 +219,7 @@ function camino0(u){const ex=CAT.examenes.map(e=>`<button class="chip ${e.id===S
  let b;if(S.niv==null){const x=ST(u).diag&&ST(u).diag[S.area],rc=x?rec(x.ok/x.tot):-1;
   b=`<b>${esc(S.area)}</b><p>Elige la dificultad:</p><div class="dif">${NIV.map((n,j)=>`<button class="${j===rc?'':'g'}" data-a="niv" data-v="${j}">${n}<small>${j===rc?'★ Recomendado':'50 niveles'}</small></button>`).join('')}</div>`}
  else{b=`<div class="top"><button class="g" data-a="back">← Dificultad</button><b>${esc(S.area)} · ${NIV[S.niv]}</b></div><div class="path">`+Array.from({length:50},(_,i)=>{const k=(S.exam==='Saber 11'?'':S.exam+'|')+S.area+'|'+S.niv+'|',lk=i>0&&!u.done[k+(i-1)],st=u.done[k+i]||0;
-   return`<div class="node" style="--x:${Math.round(Math.sin(i*.9)*52)}px"><button class="dot ${lk?'lk':''}" ${lk?'disabled':''} data-a="les" data-v="${esc(S.area+'|'+S.niv+'|'+i)}">${lk?'🔒':st?'✓':i+1}</button><span>${'★'.repeat(st)}${'☆'.repeat(3-st)}</span></div>`}).join('')+`<div class="node"><button class="dot cun" data-a="ro" data-v="${Math.min(u.cu.e|0,3)}" aria-label="Cuento: lectura critica, etapa ${Math.min(u.cu.e|0,3)+1} de 4">📖</button><span>Cuento</span></div>`+'</div>'}
+   return`<div class="node" style="--x:${Math.round(Math.sin(i*.9)*52)}px"><button class="dot ${lk?'lk':''}" ${lk?'disabled':''} data-a="les" data-v="${esc(S.area+'|'+S.niv+'|'+i)}">${lk?'🔒':st?'✓':i+1}</button><span>${'★'.repeat(st)}${'☆'.repeat(3-st)}</span></div>`}).join('')+`<div class="node"><button class="dot cun" data-a="ro" data-v="${Math.min((u.cuf&&(u.cuf[u.cun|0]|0))||(u.cu.e|0),3)}|${u.cun|0}" aria-label="Cuento: lectura critica, etapa ${Math.min((u.cuf&&(u.cuf[u.cun|0]|0))||(u.cu.e|0),3)+1} de 4">📖</button><span>Cuento</span></div>`+'</div>'}
  return`${dg}<div class="row sc">${ex}</div><div class="row sc" style="margin-top:8px">${as}</div><div class="card">${b}</div>`}
 function repaso0(u){const d=u.rev.filter(x=>x.due<=Date.now()).length;
  return`<div class="card"><b>Repaso</b><p>${u.rev.length?`Tienes <b>${u.rev.length}</b> pregunta(s) para repasar, <b>${d}</b> lista(s) hoy. Aquí no hay tiempo límite ni se gastan vidas, y te explico cada error.`:'No tienes errores por repasar. Las preguntas que falles aparecerán aquí.'}</p><button data-a="rev" ${u.rev.length?'':'disabled'}>${d||!u.rev.length?'Repasar ahora':'Adelantar repaso'}</button></div>`}
@@ -270,7 +270,7 @@ function answer(sel,to){const L=S.L,q=L.qs[L.i],u=U(),ok=sel===q.respuesta;L.chk
  if(L.kind==='diag')L.hist.push({a:q.area,ok:ok?1:0});if(L.kind==='rev')revUp(u,q.id,ok);save()}
 function fin(){const u=U(),L=S.L;touch(u);let xp=0,st=0;
  if(L.kind==='diag'){const d={};L.hist.forEach(h=>{d[h.a]=d[h.a]||{ok:0,tot:0};d[h.a].tot++;d[h.a].ok+=h.ok});ST(u).diag=d;ST(u).dg=null;ST(u).hist.push({t:Date.now(),s:sc(d)})}
- else if(L.kind==='vid'){st=L.ok>=3?1:0;if(st){u.v=Math.min(5,u.v+1);u.vr++}}else if(L.kind==='cu'){st=L.ok>=2?1:0;if(st&&u.cu.e<L.e+1)u.cu.e=L.e+1;xp=L.ok*10;u.xp+=xp;u.wxp+=xp}
+ else if(L.kind==='vid'){st=L.ok>=3?1:0;if(st){u.v=Math.min(5,u.v+1);u.vr++}}else if(L.kind==='cu'){st=L.ok>=2?1:0;if(st){u.cuf=u.cuf||{};const kk=L.c|0;if((u.cuf[kk]|0)<L.e+1)u.cuf[kk]=L.e+1}xp=L.ok*10;u.xp+=xp;u.wxp+=xp}
  else{if(L.kind==='les'){st=L.dead?0:L.ok===5?3:L.ok===4?2:L.ok>=3?1:0;xp=L.ok*10+(L.ok===5?10:0);if(st)u.done[L.k]=Math.max(u.done[L.k]||0,st)}else xp=L.ok*5;u.xp+=xp;u.wxp+=xp}
  L.bad.forEach(b=>{if(!u.rev.some(x=>x.q.id===b.q.id))u.rev.push({q:b.q,pk:b.pick,cf:b.cf,box:0,due:Date.now()})});L.end={xp,st};cuenta(L);save()}
 function pe(q){return S.L&&S.L.kind==='cu'&&ET[S.L.e].pis===2&&q.pista?`<br>💡 ${esc(q.pista)}`:''}
@@ -279,15 +279,15 @@ function fb(q,sel,to){if(sel===q.respuesta)return`<div class="fb ok"><b>¡Correc
  return`<div class="fb no"><b>${h}</b>${p?` elegiste «${esc(p.texto)}». ${esc(p.why||'Esa opción no responde a lo que se pregunta.')}`:''}<br><b>Correcta: ${c.id}. ${esc(c.texto)}</b><br>${esc(q.explicacion)}${pe(q)}${S.L&&S.L.kind==='rev'?'':'<br><span class="mu">🔁 Esta pregunta quedó en tu Repaso para practicarla más adelante.</span>'}</div>`}
 function idk(L,q){const p=L.kind==='cu'?ET[L.e].pis:0;return`<div class="row" style="margin:8px 0"><button class="g" data-a="idk">No lo sé</button>${p===1&&q.pista?'<button class="g" data-a="hint">💡 Pista</button>':''}</div>${L.hint&&q.pista?`<p class="mu">💡 ${esc(q.pista)}</p>`:''}`}
 function blk(){const L=S.L;return`<div class="card"><h2>Bloque ${(L.i+1)/10} de ${L.qs.length/10} completado</h2><p>Puedes pausar y continuar cuando quieras: tu avance se guarda.</p><div class="row"><button data-a="nb">Siguiente bloque</button><button class="g" data-a="pz">Pausar y guardar</button></div></div>`}
-function cuEnd(L){const ok=L.ok>=2;return`<div class="card"><h2>${ok?'¡Etapa superada!':'Sigue practicando'}</h2><p>Aciertos: ${L.ok} de ${L.qs.length}${ok?'':'. Necesitas 2 de 3 para avanzar.'}</p>${L.e>=2?'<label>Tu diario de lectura (privado: nadie lo evalúa ni lo ve)<textarea id="dr" rows="3"></textarea></label>':''}${L.e===3?'<p><b>Resumen con rúbrica</b></p><textarea id="rs" rows="3" placeholder="Resume el cuento en 2 o 3 frases"></textarea>'+['Dice la idea central','Incluye ideas de apoyo','Usa evidencia del texto','Se entiende con claridad'].map(x=>`<label><input type="checkbox" class="rb"> ${x}</label>`).join(''):''}<br><button data-a="svd">Continuar</button></div>`}
+function cuEnd(L){const ok=L.ok>=2;return`<div class="card"><h2>${ok?'¡Etapa superada!':'Sigue practicando'}</h2><p>Aciertos: ${L.ok} de ${L.qs.length}${ok?'':'. Necesitas 2 de '+L.qs.length+' para avanzar.'}</p>${L.e>=2?'<label>Tu diario de lectura (privado: nadie lo evalúa ni lo ve)<textarea id="dr" rows="3"></textarea></label>':''}${L.e===3?'<p><b>Resumen con rúbrica</b></p><textarea id="rs" rows="3" placeholder="Resume el cuento en 2 o 3 frases"></textarea>'+['Dice la idea central','Incluye ideas de apoyo','Usa evidencia del texto','Se entiende con claridad'].map(x=>`<label><input type="checkbox" class="rb"> ${x}</label>`).join(''):''}<br><button data-a="svd">Continuar</button></div>`}
 function banner(u){let h='';vidas(u);if(u.v<=0)h+=`<div class="card">💔 <b>Te quedaste sin vidas</b><p>${u.vr<3?`Haz una evaluación de 5 preguntas (3 aciertos para aprobar) y recupera 1 vida. Recuperadas: ${u.vr} de 3.`:'Ya recuperaste 3 vidas con evaluaciones.'} Si no la haces, todas tus vidas vuelven en ${tleft(u)}.</p>${u.vr<3?'<button data-a="vid">Evaluación para recuperar una vida</button>':''}</div>`;else if(u.vt&&u.v<5)h+=`<p class="mu">❤️ Tus vidas se completan en ${tleft(u)}.</p>`;if(ST(u).dg)h+=`<div class="card">⏸️ <b>Evaluación en pausa</b><p>Vas por la pregunta ${ST(u).dg.i+1} de ${ST(u).dg.qs.length}.</p><button data-a="dgr">Continuar</button></div>`;
  if(ST(u).diag&&!ST(u).dg){const c=sc(ST(u).diag),w=AR.slice().sort((a,b)=>c[a]-c[b])[0],x=ST(u).diag[w];h+=`<div class="card">🧭 <b>Tu siguiente paso (sugerido)</b><p>Tu área con más oportunidad es ${esc(w)} (${c[w]}/100). Empieza en nivel ${NIV[rec(x.ok/x.tot)]}. Puedes elegir otra ruta.</p><button class="g" data-a="sug" data-v="${esc(w+'|'+rec(x.ok/x.tot))}">Ir allí</button></div>`}return h}
-const camino=u=>misionesCard(u)+banner(u)+plan(u)+ds(u)+camino0(u)+cuentos(u)+(S.exam==='Saber 11'?'':'<p class="mu">Contenido inicial de muestra para Saber Pro y TyT: mezcla preguntas propias y de apoyo; faltan más preguntas originales de este nivel.</p>');
+const camino=u=>misionesCard(u)+banner(u)+plan(u)+ds(u)+camino0(u)+cuentos(u);
 const pctabs=()=>{const t=(S.ptab||'prog');return `<div class="row rs41pc" style="margin-bottom:6px">${[['perso','Personalizar'],['prog','Progreso'],['ajus','Ajustes']].map(x=>`<button class="chip${t===x[0]?' on':''}" data-a="ptab" data-v="${x[0]}" aria-pressed="${t===x[0]}">${x[1]}</button>`).join('')}</div>`};
 const perfil=u=>{if(!S.ptab)S.ptab='prog';const seg={perso:'',prog:perfil0(u)+dominioCard(u)+metaCard(u)+evo(u)+ins(u)+histCard(u)+marcCard(u),ajus:fichaCard()+vozCard()+pilotoCard(u)+panelCard(u)+copiaCard()+bancoCard()+acc()+`<div class="card"><b>Tiempo por pregunta</b><p class="mu">Cada pregunta de las lecciones y evaluaciones tiene 45 s; si se agota, cuenta como fallada y pierdes una vida. En el Repaso y en Cuentos no hay límite. Si necesitas más tiempo por accesibilidad, puedes duplicarlo.</p><button class="${u.reto?'':'g'}" data-a="reto">${u.reto?'Volver a 45 s':'Ampliar a 90 s'}</button><p class="mu">📓 Diario de lectura: ${u.diario.length} entrada(s), solo visibles para ti.</p></div>`}[S.ptab]||'';return pctabs()+seg};
 A.ptab=v=>{S.ptab=v;S.L=null;S.R=null;stopTTS();render()};
-function cuentos(u){const e=u.cu.e;return`<div class="card"><b>📖 Cuentos · Lectura crítica</b><p class="mu">Cuento de muestra. Cada etapa reduce las ayudas hasta leer sin asistencia.</p><div class="mu">Madurez lectora: ${Math.round(e/4*100)} % (solo sube al superar etapas con buena comprensión)</div><div class="bar"><i style="width:${e/4*100}%"></i></div><p>Nivel: <b>${ET[Math.min(e,3)].n}</b></p>${ET.map((x,i)=>`<button class="opt" data-a="ro" data-v="${i}" ${i>e?'disabled':''}>${i>e?'🔒':i<e?'✓':'▶'} Etapa ${i+1} · ${x.n}</button>`).join('')}</div>`}
-function reader(u){const R=S.R,a=ET[R.e];return`<div class="top"><button class="g" data-a="home" aria-label="Salir">✕</button><b>Etapa ${R.e+1} · ${a.n}</b></div><div class="card"><h3>${esc(CU.t)}</h3><p id="st">${CU.s.map((x,i)=>`<span class="${R.t.res&&R.i===i?'hl':''}">${esc(x)}</span>`).join(' ')}</p><div class="row"><label><input type="checkbox" data-a="tg" data-v="nar" ${R.t.nar?'checked':''}> Narración</label><label><input type="checkbox" data-a="tg" data-v="res" ${R.t.res?'checked':''}> Resaltado</label></div>${R.t.nar?'<div class="row"><button class="g" data-a="sp">▶ Escuchar</button><select id="vel"><option value="1">Velocidad normal</option><option value=".8">Pausada</option><option value="1.2">Rápida</option></select></div>':''}<p class="mu">${a.pis===1?'Tendrás pistas durante las preguntas.':a.pis===2?'Las pistas aparecen al terminar cada pregunta.':'Sin pistas en esta etapa.'}</p><button data-a="rq">Ir a las preguntas</button></div>`}
+function cuentos(u){const cf=u.cuf||{};const L=(window.RS54&&RS54.DATOS&&RS54.DATOS.length)?RS54.DATOS:[];const sup=L.map((_,i)=>Math.min((cf[i]|0),4));const tot=sup.reduce((a,b)=>a+b,0);const mx=Math.max(1,L.length*4);return`<div class="card"><b>📖 Cuentos · Lectura crítica</b><p class="mu">${L.length} cuentos con 4 etapas cada uno: cada etapa reduce las ayudas hasta leer sin asistencia. Puedes escucharlos en español o en inglés.</p><div class="mu">Madurez lectora: ${Math.round(tot/mx*100)} % (sube al superar etapas con buena comprensión)</div><div class="bar"><i style="width:${Math.min(100,Math.round(tot/mx*100))}%"></i></div>${L.map((o,i)=>{const e=sup[i],nv=Math.min(e,3);return`<div class="rs54st"><div class="rs54inf"><b>${esc(o.t)}</b><span class="mu">Cuento ${i+1} de ${L.length} · etapa ${Math.min(e+1,4)} de 4 · ${ET[nv].n}${o&&o.q&&o.q.length?'':' (en preparación)'}</span></div><div class="bar"><i style="width:${Math.round(e/4*100)}%"></i></div><div class="row">${ET.map((x,j)=>`<button class="opt" data-a="ro" data-v="${j}|${i}" ${j>e?'disabled':''}>${j>e?'🔒':j<e?'✓':'▶'} Etapa ${j+1} · ${x.n}</button>`).join('')}</div></div>`}).join('')}${L.length?'':'<p class="mu">Cargando los cuentos…</p>'}</div>`}
+function reader(u){const R=S.R,a=ET[R.e],c=(window.RS54&&RS54.DATOS&&RS54.DATOS[R.c|0])||CU,en=(R.t&&R.t.enu&&c.en)?c.en:c.s;return`<div class="top"><button class="g" data-a="home" aria-label="Salir">✕</button><b>Etapa ${R.e+1} · ${a.n}</b></div><div class="card"><h3>${esc(c.t)}</h3>${R.t&&R.t.enu?'<p class="mu">Modo inglés: lee y escucha el cuento en inglés (práctica bilingüe).</p>':''}<p id="st">${en.map((x,i)=>`<span class="${R.t.res&&R.i===i?'hl':''}">${esc(x)}</span>`).join(' ')}</p><div class="row"><label><input type="checkbox" data-a="tg" data-v="nar" ${R.t.nar?'checked':''}> Narración</label><label><input type="checkbox" data-a="tg" data-v="res" ${R.t.res?'checked':''}> Resaltado</label><label><input type="checkbox" data-a="tg" data-v="enu" ${R.t&&R.t.enu?'checked':''}> Escuchar en inglés</label></div>${R.t.nar?'<div class="row"><button class="g" data-a="sp">▶ Escuchar</button><select id="vel"><option value="1">Velocidad normal</option><option value=".8">Pausada</option><option value="1.2">Rápida</option></select></div>':''}<p class="mu">${a.pis===1?'Tendrás pistas durante las preguntas.':a.pis===2?'Las pistas aparecen al terminar cada pregunta.':'Sin pistas en esta etapa.'}</p><button data-a="rq">Ir a las preguntas</button></div>`}
 const stopTTS=()=>{if(window.speechSynthesis)speechSynthesis.cancel()},nx=L=>{L.i++;L.sel=null;L.chk=0;L.to=0;L.hint=0;L.tr=0;L.q0=Date.now();L.cf=null;L.t0=L.t0?Date.now():0};
 Object.assign(A,{
  go:()=>{const L=S.L;if(!L.chk)answer(L.sel,0);else if(L.dead||L.i>=L.qs.length-1)fin();else if(L.kind==='diag'&&(L.i+1)%10===0)L.blk=1;else nx(L);render()},
@@ -298,11 +298,10 @@ Object.assign(A,{
  vid:()=>{const u=U();vidas(u);if(u.v>0||u.vr>=3)return;S.L=mk('vid',AR.map(a=>draw(a,null,1)[0]),{});render()},
  sug:v=>{const p=v.split('|');S.area=p[0];S.niv=+p[1];render()},
  reto:()=>{const u=U();u.reto=u.reto?0:1;save();render()},
- ro:v=>{const e=+v,a=ET[e];S.R={e,t:{nar:a.nar,res:a.res},i:-1};render()},
+ ro:v=>{const p=String(v).split('|'),e=Math.max(0,Math.min(+p[0],3));const a=ET[e];const uu=U();const cc=(p[1]!=null&&p[1]!=='')?Math.max(0,+p[1]):Math.max(0,(typeof uu.cun==='number'?uu.cun:0));S.R={e,t:{nar:a.nar,res:a.res,enu:0},c:cc,i:-1};uu.cun=cc;save();render()},
  tg:v=>{S.R.t[v]=S.R.t[v]?0:1;if(!S.R.t.nar)stopTTS();render()},
- sp:()=>{const ss=window.speechSynthesis;if(!ss){alert('Tu navegador no ofrece narración.');return}ss.cancel();const v=+document.getElementById('vel').value;
-  CU.s.forEach((x,i)=>{const t=new SpeechSynthesisUtterance(vozPesos(x));t.lang='es-ES';t.rate=v;t.onstart=()=>{if(S.R)document.querySelectorAll('#st span').forEach((y,j)=>y.className=S.R.t.res&&j===i?'hl':'')};ss.speak(t)})},
- rq:()=>{const e=S.R.e;stopTTS();S.R=null;S.L=mk('cu',CQ,{e});render()},
+ sp:()=>{const ss=window.speechSynthesis;if(!ss){alert('Tu navegador no ofrece narración.');return}ss.cancel();const v=+(document.getElementById('vel')||{value:1}).value;const R=S.R,c=(window.RS54&&RS54.DATOS&&RS54.DATOS[R.c|0])||CU;const en=!!(R.t&&R.t.enu&&c.en);(en?c.en:c.s).forEach((x,i)=>{const t=new SpeechSynthesisUtterance(en?x:vozPesos(x));t.lang=en?'en-US':'es-ES';t.rate=v;t.onstart=()=>{if(S.R)document.querySelectorAll('#st span').forEach((y,j)=>y.className=S.R.t.res&&j===i?'hl':'')};ss.speak(t)})},
+ rq:()=>{const R=S.R;stopTTS();S.R=null;const cc=R.c|0;const o=(window.RS54&&RS54.DATOS&&RS54.DATOS[cc])||null;const qs=(o&&o.q&&o.q.length===4)?o.q:CQ;S.L=mk('cu',qs,{e:R.e,c:cc});render()},
  svd:()=>{const g=i=>(document.getElementById(i)||{value:''}).value.trim(),u=U(),L=S.L;if(g('dr'))u.diario.push({t:Date.now(),e:L.e,txt:g('dr').slice(0,2000)});if(g('rs'))u.diario.push({t:Date.now(),e:L.e,resumen:g('rs').slice(0,1000),rubrica:document.querySelectorAll('.rb:checked').length});save();S.L=null;render()}});
 
 /* ---- v6: tres exámenes, tiempo límite, diagnóstico por examen ---- */
@@ -377,7 +376,7 @@ function evo(u){const h=ST(u).hist||[],per=S.per===undefined?30:S.per,now=Date.n
  else{const a=w[0].s,z=w[w.length-1].s,ta=AR.reduce((x,k)=>x+a[k],0),tz=AR.reduce((x,k)=>x+z[k],0),sg=n=>(n>=0?'+':'')+n;
   b=`<div class="row" style="justify-content:center">${radar(z,a)}</div><p><b>${ta} → ${tz} / 500</b> (${sg(tz-ta)})</p>`+AR.map(k=>`<div class="lg"><span>${esc(k)}</span>${a[k]} → ${z[k]} (${sg(z[k]-a[k])})</div>`).join('')+'<p class="mu">Línea punteada: inicio del periodo. Cada evaluación mezcla preguntas distintas: fíjate en la tendencia, no en diferencias pequeñas.</p>'}
  return`<div class="card"><b>Mi evolución · ${S.exam}</b><div class="row" style="margin:8px 0">${bt}</div>${b}<button class="g" data-a="diag">Repetir evaluación</button></div>`}
-function ins(u){const dg=u.diag||Object.values(u.x||{}).some(e=>e&&e.diag),L=[['🧭','Primera evaluación',dg],['🔥','Racha de 3 días',u.streak>=3],['🔥','Racha de 7 días',u.streak>=7],['📅','Reto semanal',!!u.rs],['📖','Cuentos: primera etapa',u.cu&&u.cu.e>=1],['🎯','100 aciertos',u.ok>=100]];
+function ins(u){const dg=u.diag||Object.values(u.x||{}).some(e=>e&&e.diag),L=[['🧭','Primera evaluación',dg],['🔥','Racha de 3 días',u.streak>=3],['🔥','Racha de 7 días',u.streak>=7],['📅','Reto semanal',!!u.rs],['📖','Cuentos: primera etapa',u.cuf&&Object.keys(u.cuf).some(k=>(u.cuf[k]|0)>=1)],['🎯','100 aciertos',u.ok>=100]];
  u.bd=u.bd||{};let n=0;L.forEach(x=>{if(x[2]&&!u.bd[x[1]]){u.bd[x[1]]=1;n=1}});if(n)save();
  return`<div class="card"><b>Insignias</b><div class="row" style="margin-top:8px">${L.map(x=>`<span class="chip ${u.bd[x[1]]?'on':''}" style="${u.bd[x[1]]?'':'opacity:.5'}">${x[0]} ${x[1]}</span>`).join('')}</div><p class="mu">Se ganan por constancia y por demostrar lo aprendido. Una vez ganadas, no se pierden.</p></div>`}
 function carreras(u){const i=S.car||0,c=CAR[i],d=((u.x||{})['Saber Pro']||(u.x||{})['Saber TyT']||{}).diag,m=d?Math.round(Object.values(d).reduce((a,x)=>a+x.ok/x.tot*100,0)/Object.keys(d).length):null,TH=[0,50,65,80],cur=m==null?0:TH.reduce((a,t,j)=>m>=t?j:a,0);
@@ -644,16 +643,15 @@ try{
 /* v21: banco rotativo de 10.000 preguntas sin repetici\uFFFDon (IIFE \u00FAnica para no colisionar con globales del demo) */
 (function(){
 /* ---- v21: banco rotativo de 10.000 preguntas ---- */
-/* Espacio por área (total 10.000): Matemáticas 2200 · Razonamiento Cuantitativo 2200 ·
-   Ciencias Naturales 2164 · Sociales y Ciudadanas 1000 · Lectura Crítica 900 ·
-   Inglés 936 · Comunicación Escrita 600.
+/* Espacio por área: 1.429 preguntas en cada una de las 7 áreas (total 10.003),
+   misma cantidad por área para los tres exámenes (Saber 11, TyT y Pro).
    Cada usuario tiene un ciclo sembrado por área: al entrar a una lección, simulacro o
    diagnóstico recibe preguntas nuevas del ciclo, SIN repetirse hasta agotarlo; al
    agotar se vuelve a sembrar (mezcla nueva). Las preguntas fijas del banco original
    se reparten dentro del ciclo para que tampoco se repitan seguido.
    Las preguntas generadas son de práctica (no oficiales) y van marcadas como tales. */
 
-const CUOTA={'Matemáticas':2200,'Razonamiento Cuantitativo':2200,'Ciencias Naturales':2164,'Sociales y Ciudadanas':1000,'Lectura Crítica':900,'Inglés':936,'Comunicación Escrita':600};
+const CUOTA={'Matemáticas':1429,'Razonamiento Cuantitativo':1429,'Ciencias Naturales':1429,'Sociales y Ciudadanas':1429,'Lectura Crítica':1429,'Inglés':1429,'Comunicación Escrita':1429};
 const NIVL=['Básico','Intermedio','Avanzado'];
 const NIVX=(typeof NIV!=='undefined'&&Array.isArray(NIV)&&NIV.length>=3)?NIV:NIVL;
 const f2=x=>Math.round(x*100)/100;
@@ -803,8 +801,8 @@ const FAM_CN=[
   return out;}
 ];
 
-/* ====== Sociales y Ciudadanas: 10 escenarios × 10 personas × 10 lugares = 1000 ====== */
-const SOC_P=['Ana','Camilo','Daniela','Esteban','Fernanda','Julián','Laura','Mateo','Nicolás','Valentina'];
+/* ====== Sociales y Ciudadanas: 10 escenarios × 20 personas × 10 lugares = 2000 >= cuota 1429 ====== */
+const SOC_P=['Ana','Camilo','Daniela','Esteban','Fernanda','Julián','Laura','Mateo','Nicolás','Valentina','Katherin','Yulian','Marcela','Andrés','Paola','Cristian','Diana','Sebastián','Luz','Hernán'];
 const SOC_L=['en la esquina de su barrio','en el aula de clase','en la fila del banco','en el parque vecinal','en la terminal de transporte','en la tienda escolar','en la biblioteca pública','en una reunión comunitaria','en el servicio de urgencias','en la oficina de tránsito'];
 const SOC=[
  {s:'encuentra una billetera con documentos y dinero',ok:'Intentar entregarla a su dueño o a las autoridades',m:['Guardarla hasta que alguien la reclame','Vender lo que hay dentro','Botarla a la basura'],x:'La honradez y el respeto por los bienes ajenos implican devolver lo encontrado.'},
@@ -825,9 +823,9 @@ const socFam=i=>{
  return{en:per+' '+esc.s+' '+lug+'. ¿Cuál es la actuación más adecuada?',r:esc.ok,dis:esc.m,exp:esc.x};
 };
 
-/* ====== Lectura Crítica: 15 pares × 6 personas × 10 tiempos = 900 ====== */
-const LEC_P=['Marta','Óscar','Paula','Ricardo','Sofía','Tomás'];
-const LEC_T=['Ayer','La semana pasada','El lunes','Hace un mes','El viernes','El miércoles','En la mañana','Hace poco','El otro día','Recientemente'];
+/* ====== Lectura Crítica: 15 pares × 12 personas × 12 tiempos = 2160 >= cuota 1429 ====== */
+const LEC_P=['Marta','Óscar','Paula','Ricardo','Sofía','Tomás','Elena','Jorge','Clara','Andés','Vera','Simón'];
+const LEC_T=['Ayer','La semana pasada','El lunes','Hace un mes','El viernes','El miércoles','En la mañana','Hace poco','El otro día','Recientemente','A principios de año','Durante el recreo'];
 const LEC=[
  {a:'estudió toda la noche',b:'aprobó el examen',con:'de modo que',mal:['aunque','sin embargo','mientras que'],x:'La segunda oración es consecuencia de la primera: conector consecutivo.'},
  {a:'estaba agotado',b:'terminó el partido',con:'aunque',mal:['porque','de modo que','por lo tanto'],x:'Concesión: algo contrario no impidió que sucediera.'},
@@ -852,9 +850,9 @@ const lecFam=i=>{
  return{en:t+', '+per+' '+p.a+' ___ '+p.b+'. ¿Qué conector completa correctamente?',r:p.con,dis:p.mal,exp:p.x};
 };
 
-/* ====== Inglés: 26 plantillas × 3 tiempos × 12 sujetos = 936 ≥ cuota 900 ====== */
-const ING_3SG=['She','He','My cousin','That student','Maria','Laura'];
-const ING_PL=['My friends','They','The students','We','Carlos and Teo','The teachers'];
+/* ====== Inglés: 26 plantillas × 3 tiempos × 2 numeros × 12 sujetos = 1872 >= cuota 1429 ====== */
+const ING_3SG=['She','He','My cousin','That student','Maria','Laura','The engineer','Daniel','My neighbor','Cristina','The teacher','Andrés'];
+const ING_PL=['My friends','They','The students','We','Carlos and Teo','The teachers','The workers','My parents','The tourists','Laura and Sara','The kids','Daniela and I'];
 const ING=[
  {v:'go',s3:'goes',pp:'went',rs:'to the market every day',ps:'to the market yesterday',fs:'to the market next week'},
  {v:'study',s3:'studies',pp:'studied',rs:'English at school',ps:'for the test last night',fs:'at the university next year'},
@@ -887,7 +885,7 @@ const ingFam=i=>{
  const item=ING[i%ING.length];
  const per=Math.floor(i/ING.length)%3;              /* 0 presente · 1 pasado · 2 futuro */
  const plural=per===0?Math.floor(i/ING.length/3)%2===1:Math.floor(i/ING.length/3)%2===1;
- const tok=Math.floor(i/(ING.length*6))%6;
+ const tok=Math.floor(i/(ING.length*6))%12;
  const suj=plural?ING_PL[tok]:ING_3SG[tok];
  const correct=per===0?(plural?item.v:item.s3):(per===1?item.pp:'will '+item.v);
  const rest=per===0?item.rs:(per===1?item.ps:item.fs);
@@ -898,9 +896,9 @@ const ingFam=i=>{
  return{en:suj+' ___ '+rest+'.',r:correct,dis:dis,exp:per===0?(plural?'Presente simple con sujeto plural: se usa el verbo base.':'Presente simple: tercera persona singular añade -s.'):(per===1?'Pasado simple: forma del verbo en pasado.':'Futuro con will: will + verbo base.')};
 };
 
-/* ====== Comunicación Escrita: 12 plantillas × 10 temas × 5 adverbiales = 600 ====== */
-const CE_T=['informe','artículo','comunicado','ensayo','reglamento','anexo','boletín','folleto','resumen','borrador'];
-const CE_A=['a tiempo','con anticipación','en la fecha indicada','sin demoras','antes del viernes'];
+/* ====== Comunicación Escrita: 16 plantillas × 12 temas × 8 adverbiales = 1536 >= cuota 1429 ====== */
+const CE_T=['informe','artículo','comunicado','ensayo','reglamento','anexo','boletín','folleto','resumen','borrador','acta','memoria'];
+const CE_A=['a tiempo','con anticipación','en la fecha indicada','sin demoras','antes del viernes','despues de la reunion','al final del mes','con copia al coordinador'];
 const CE=[
  {tpl:'El {t} se envió {a}; ___, no obtuvo respuesta.',c:'sin embargo',m:['por lo tanto','de modo que','porque'],x:'Contraste entre el envío y la falta de respuesta: conector adversativo.'},
  {tpl:'No se aprobó el {t} que llegó {a}, ___ faltaba la firma.',c:'porque',m:['sin embargo','de modo que','mientras que'],x:'La falta de firma es la causa: conector causal.'},
@@ -913,7 +911,11 @@ const CE=[
  {tpl:'El {t} avanzó más rápido ___ lo previsto y llegó {a}.',c:'de lo que',m:['de que','a lo que','por lo que'],x:'Comparación apropiada: «más rápido de lo previsto».'},
  {tpl:'___ se terminó el {t}, entregado {a}, se abrió una nueva fase.',c:'Cuando',m:['Porque','Sin embargo','Aunque'],x:'Temporalidad entre dos eventos.'},
  {tpl:'A pesar de la entrega {a}, el {t} quedó incompleto, ___ decidieron extender el plazo.',c:'de modo que',m:['sin embargo','porque','aunque'],x:'Consecuencia del retraso: conector consecutivo.'},
- {tpl:'Cuide el formato, ___ el contenido del {t}, y preséntelo {a}.',c:'así como',m:['pero','porque','además de que'],x:'Añade un elemento con igual relevancia: «así como».'}
+ {tpl:'Cuide el formato, ___ el contenido del {t}, y preséntelo {a}.',c:'así como',m:['pero','porque','además de que'],x:'Añade un elemento con igual relevancia: «así como».'},
+ {tpl:'El {t} se revisó dos veces {a}; ___, quedó un error menor en la página tres.',c:'no obstante',m:['de modo que','además','porque'],x:'Contraste entre la revisión y el error restante: conector adversativo.'},
+ {tpl:'El formato del {t} se actualizó {a}, y ___ se aclaró cada punto.',c:'también',m:['aunque','por lo tanto','sin embargo'],x:'Suma un elemento de igual peso: conector aditivo.'},
+ {tpl:'El {t} permanecerá archivado en el archivo {a}, ___ alguien solicite formalmente su consulta.',c:'hasta que',m:['porque','aunque','de lo que'],x:'Temporalidad con punto final: conector temporal.'},
+ {tpl:'El {t}, repartido {a}, se redactó ___ el equipo pudiera entenderlo sin explicaciones adicionales.',c:'de modo que',m:['sin embargo','aunque','antes de que'],x:'Introduce el fin buscado: conector final (de modo que).'}
 ];
 const ceFam=i=>{
  const p=CE[i%CE.length];
@@ -1099,7 +1101,6 @@ window.draw=function(a,n,k){
 };
 })();
 })();
-
 </script>
 <DIVV22><div data-v22-wrap aria-hidden="true"></div>
 <script>
@@ -3399,7 +3400,7 @@ function construir(u){
   ar:fil.map(function(f){return f.a}),
   dp:fil.map(function(f,j){return j<2?1:0}),
   nv:fil.map(function(f){return f.prop==null?1:rec(f.prop)}),
-  cu:Math.min(((u.cu&&u.cu.e)|0)||0,3)};
+  cu:Math.min(((u.cuf&&(u.cuf[u.cun|0]|0))||((u.cu&&u.cu.e)|0))|0,3)};
 }
 function generar(u){
  u.pn=construir(u);save();
@@ -3431,7 +3432,7 @@ function tarjeta(u){
    pn.dp[j]?'Profundizar':'Reforzar')});
  box+=fila(total-1,'cuentos','Lectura critica · cuento',
   'Etapa '+(pn.cu+1)+' de 4: menos ayudas, mas atencion.',
-  '<button class="rs44btn" data-a="ro" data-v="'+pn.cu+'">Leer</button>');
+  '<button class="rs44btn" data-a="ro" data-v="'+pn.cu+'|'+((u.cun|0))+'">Leer</button>');
  var rot=rotulo(pn),ttl=rot==='para mañana'?('Plan nocturno para '+DIAS[(dow()+1)%7]):('Plan de hoy · '+DIAS[dow()%7]);
  return '<section class="card rs44" data-rs44="1">'+
   '<div class="rs44pi">'+I('reloj')+'<b>'+ttl+'</b></div>'+
@@ -3870,5 +3871,546 @@ window.RS50={estado:function(){
 })();
 </script>
 
+<script>
+/* ---- v52: tutorial en mini tarjetas para quien recien se registra ----
+   Al crear cuenta (tuto:0), el juego abre una guia de 6 mini tarjetas,
+   una por concepto central, con texto breve. Cada tarjeta tiene dos
+   botones: Siguiente (avanza) y Saltar (cierra y deja jugar de una).
+   Al terminar, u.tuto=1 y no vuelve a molestar; se puede reabrir desde
+   Perfil > Ajustes avec \u00abVer el tutorial de nuevo\u00bb.
+   Iconografia: sprite propio de v35 (svg.rsic); cero emojis. API window.RS52. */
+(function(){
+'use strict';
+if(typeof window==='undefined')return;
+var CARDS=[
+ {ico:'camino',t:'El Camino',d:'Cada dia veras niveles nuevos en el mapa. Toca un punto para practicar preguntas de la materia elegida.'},
+ {ico:'corazon',t:'Vidas y corazones',d:'Tienes 5 corazones. Cada error gasta uno, pero se recuperan solos con el tiempo. Sin corazones puedes practicar en Modo practica, que no gasta vidas.'},
+ {ico:'diana',t:'Monedas y tienda',d:'Cada punto de XP que ganas te da una moneda. Con monedas compras protectores de racha, recuperas vidas o articulos para tu mascota en la Tienda.'},
+ {ico:'fuego',t:'Tu racha',d:'Si estudias al menos un punto al dia, tu racha crece. Un protector de racha la salva si un dia no puedes entrar.'},
+ {ico:'medalla',t:'Ligas y duelos',d:'Cada semana compites en una liga por XP. Puedes retar a otras personas a un duelo de 10 preguntas y defenderte de quien te reto.'},
+ {ico:'cuentos',t:'Cuentos y clases',d:'Ademas de preguntas, hay cuentos por etapas para tu lectura y un plan nocturno: la app te arma el plan de manana segun tus puntos debiles.'}
+];
+function css(){
+  if(document.getElementById('rs52css'))return;
+  var s=document.createElement('style');s.id='rs52css';
+  s.textContent=[
+   '.rs52bk{position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:95;display:flex;align-items:center;justify-content:center;padding:16px}',
+   '.rs52m{background:var(--cd);color:var(--tx);border:1px solid var(--br);border-radius:18px;box-shadow:0 18px 50px rgba(15,23,42,.3);',
+    'width:100%;max-width:360px;padding:20px;display:flex;flex-direction:column;gap:12px;max-height:88vh;overflow:auto;text-align:center;align-items:center}',
+   '.rs52m .rs52ic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;',
+    'background:color-mix(in srgb,var(--ac) 14%,transparent);color:var(--ac)}',
+   '.rs52m .rs52ic svg.rsic{width:28px;height:28px}',
+   '.rs52m h3{margin:0;font-size:18px}',
+   '.rs52m p{margin:0;color:var(--mu);line-height:1.5}',
+   '.rs52pts{display:flex;gap:6px;justify-content:center}',
+   '.rs52pts i{width:8px;height:8px;border-radius:99px;background:var(--br)}',
+   '.rs52pts i.on{background:var(--ac)}',
+   '.rs52btns{display:flex;flex-direction:column;gap:10px;width:100%}',
+   '.rs52btns button{width:100%;justify-content:center;min-height:40px;border-radius:999px;font-weight:800;cursor:pointer}', 
+   '.rs52btns .sig{background:var(--ac);color:#fff;border:none}',
+   '.rs52btns .salt{background:transparent;color:var(--mu);border:1px solid var(--br)}',
+   '@media (prefers-reduced-motion: no-preference){.rs52m{animation:rs52in .18s ease-out}}',
+   '@keyframes rs52in{from{transform:scale(.96);opacity:.6}to{transform:scale(1);opacity:1}}'
+  ].join('');
+  document.head.appendChild(s);
+}
+function ventana(i){
+  var c=CARDS[i];
+  return '<div class="rs52bk" data-rs52="1" data-a="rs52x"><div class="rs52m" role="dialog" aria-label="Tutorial del juego \u00b7 tarjeta '+(i+1)+' de '+CARDS.length+'">'+
+   '<div class="rs52ic">'+(window.RS35?RS35.ico(c.ico):'')+'</div>'+
+   '<h3>'+esc(c.t)+'</h3><p>'+esc(c.d)+'</p>'+
+   '<div class="rs52pts" aria-hidden="true">'+CARDS.map(function(_,j){return '<i class="'+(j<=i?'on':'')+'"></i>'}).join('')+'</div>'+
+   '<div class="rs52btns">'+
+    (i<CARDS.length-1
+      ?'<button class="sig" data-a="rs52next" data-v="'+(i+1)+'">Siguiente</button>'
+      :'<button class="sig" data-a="rs52done">Empezar a jugar</button>')+
+    '<button class="salt" data-a="rs52skip">Saltar</button>'+
+   '</div></div></div>';
+}
+function abrir(i){var v=document.querySelector('[data-rs52]');if(v)try{v.remove()}catch(e){}
+  document.body.insertAdjacentHTML('beforeend',ventana(i|0||0))}
+function cerrar(){var v=document.querySelector('[data-rs52]');if(v)try{v.remove()}catch(e){}}
+function pendiente(){try{var u=U();return !!(u&&typeof u.tuto==='number'&&u.tuto===0)}catch(e){return false}}
+function revisar(){try{if(pendiente()&&!(S.L||S.R)){css();abrir(S.t52|0)}}catch(e){}}
+function terminar(){try{var u=U();if(u&&u.tuto!==1){u.tuto=1;save()}}catch(e){}}
+try{Object.assign(A,{
+ rs52next:function(v){S.t52=+v;abrir(+v)},
+ rs52skip:function(){terminar();S.t52=0;cerrar();render()},
+ rs52done:function(){terminar();S.t52=0;cerrar();render()},
+ rs52again:function(){try{var u=U();u.tuto=0;save()}catch(e){}render()}
+})}catch(e){}
+try{
+  if(typeof render==='function'){
+    var _r52=render;
+    render=function(){var r=_r52.apply(this,arguments);try{(S.L||S.R)&&cerrar();revisar()}catch(e){}return r};
+  }
+  setTimeout(revisar,0);
+}catch(e){}
+/* botón para reabrir en Perfil/Ajustes, idempotente */
+function botonAjustes(){
+  try{
+    var card=document.querySelector('[data-v32]');
+    if(!card||card.querySelector('[data-a="rs52again"]'))return;
+    var b=document.createElement('button');
+    b.className='rs42pr';b.setAttribute('data-a','rs52again');b.style.marginTop='8px';
+    b.textContent='Ver el tutorial de nuevo';
+    card.appendChild(b);
+  }catch(e){}
+}
+try{
+  if(typeof render==='function'){
+    var _r52b=render;
+    render=function(){var r=_r52b.apply(this,arguments);try{botonAjustes()}catch(e){}return r};
+  }
+}catch(e){}
+window.RS52={cards:CARDS,abrir:abrir,revisar:revisar,estado:function(){return {pendiente:pendiente(),abierta:!!document.querySelector('[data-rs52]')}}};
+})();
+</script>
+<script>
+/* ---- v54: coleccion de 15 cuentos con progreso por cuento y voz en ingles ----
+   Datos originales de practica (no oficiales). Cada cuento trae:
+   t: titulo / s: 6 oraciones en espanol / en: 6 oraciones en ingles (una por oracion)
+   Q: 4 preguntas {c competencia, e enunciado, o opciones[[texto,why]x4], r respuesta, ex explicacion, p pista}.
+   Las preguntas se arman con el constructor cq del demo (id cu54<cuento><n>).
+   Ademas marca el arranque del tutorial (v52) y migra el progreso viejo (u.cu.e).
+   API window.RS54={DATOS,total,etapas}. */
+(function(){
+'use strict';
+if(typeof window==='undefined')return;
+/* migracion de usuarios viejos: u.cu.e pasa al cuento 0; u.cun siempre numero */
+try{
+  var um=U();
+  if(um){
+    um.cuf=um.cuf||{};
+    if(um.cu&&um.cu.e&&!Object.keys(um.cuf).length)um.cuf[0]=um.cu.e;
+    if(typeof um.cun!=='number')um.cun=0;
+    save();
+  }
+}catch(e){}
+var RAW=[
+
+{t:'La biblioteca sin reloj',
+ s:['En el pueblo de Altamira, la biblioteca abría cada mañana cuando sonaba la campana de la plaza.',
+    'Un martes la campana no sonó, y Teresa, la bibliotecaria, esperó junto a la puerta cerrada.',
+    'Los vecinos pasaban sin detenerse, convencidos de que ese día no habría lectura.',
+    'Cuando el sol ya estaba alto, Teresa abrió de todos modos y encendió las lámparas.',
+    'Esa tarde, tres niños entraron a preguntar si podían leer en voz alta para los demás.',
+    'Al caer la noche, Teresa guardó la campana en un estante y escribió en su cuaderno: «Las costumbres ayudan, pero no son la razón de abrir».'],
+ en:['In the town of Altamira, the library opened every morning when the bell of the main square rang.',
+     'One Tuesday the bell did not ring, and Teresa, the librarian, waited by the closed door.',
+     'People walked by without stopping, sure that there would be no reading that day.',
+     'When the sun was already high, Teresa opened anyway and turned on the lamps.',
+     'That afternoon, three children came in and asked if they could read aloud for others.',
+     'At nightfall, Teresa put the bell away on a shelf and wrote in her notebook: Habits help, but they are not the reason to open.'],
+ Q:[{c:'Lectura literal',e:'¿Qué ocurrió un martes en Altamira?',
+     o:[['La campana de la plaza no sonó.',''],['La biblioteca se quemó.','El texto no menciona ningún incendio. Estrategia: busca la información explícita antes de responder.'],['Los niños cerraron la puerta.','Los niños entran después; no cierran nada.'],['Teresa viajó a otro pueblo.','Teresa espera junto a la puerta, no viaja.']],
+     r:'A',ex:'La segunda oración dice que la campana no sonó ese martes.',p:'Relee la segunda oración.'},
+    {c:'Inferencia',e:'¿Por qué abrió Teresa, según lo que escribe al final?',
+     o:[['Porque la campana volvió a sonar.','La campana no vuelve a sonar; Teresa abre antes.'],['Porque quería leer y compartir la lectura, costumbre o no.','Su nota separa la costumbre de la razón de abrir.'],['Porque los vecinos la obligaron.','Los vecinos pasan de largo; nadie la obliga.'],['Porque era una fiesta del pueblo.','El texto no habla de fiestas.']],
+     r:'B',ex:'La nota final dice que las costumbres no son la razón de abrir: la razón es la lectura misma.',p:'Fíjate en la frase entre comillas del final.'},
+    {c:'Vocabulario',e:'En el cuento, ¿qué significa que Teresa abriera «de todos modos»?',
+     o:[['Que abría más temprano que de costumbre.','No es cuestión de hora: abre aunque nadie lo anuncie.'],['Que abría aunque faltara la señal de siempre.','«De todos modos» marca que hizo lo mismo sin el aviso acostumbrado.'],['Que la cerraron para siempre.','El cuento termina con la biblioteca abierta y encendida.'],['Que abría solo los martes.','La biblioteca abría cada mañana, no solo los martes.']],
+     r:'B',ex:'Teresa repite el gesto de abrir aunque falte la señal habitual.',p:'Lée la oración y piensa qué falta ese martes.'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que esperar siempre la señal de la campana.','Teresa enseña justamente lo contrario.'],['Haz lo que importa aunque falle la señal de siempre.','La última frase separa la costumbre de la razón real.'],['Las campanas no sirven para nada.','La campana solo era la señal; el punto no es un juicio sobre campanas.'],['Los vecinos debieron ayudar a cerrar.','El texto no habla de cerrar ni de castigos.']],
+     r:'B',ex:'Teresa abre porque la lectura vale por sí misma, no por la costumbre de la campana.',p:'Piensa qué enseña la última frase.'}]},
+
+{t:'El chigüiro del recreo',
+ s:['En la escuela de Puerto Miranda, un chigüiro empezó a cruzar la cancha a la misma hora, cada día.',
+    'Los niños lo llamaron Don Tranquilo, porque nadie lo vio correr jamás.',
+    'La directora pidió calma: era mejor observar que perseguir.',
+    'Un día faltó el pasto, porque iban a podar, y Don Tranquilo se sentó junto a la reja, esperando.',
+    'Cuando el pasto volvió, el chigüiro volvió también, puntual como el timbre.',
+    'Desde entonces, la escuela cuida un pedazo de cancha solo para él.'],
+ en:['At a school in Puerto Miranda, a capybara began crossing the field at the same time, every day.',
+     'The children called him Don Tranquilo, because nobody ever saw him run.',
+     'The principal asked for calm: it was better to watch than to chase.',
+     'One day the grass was gone, because they were mowing, and Don Tranquilo sat by the fence, waiting.',
+     'When the grass came back, the capybara came back too, punctual as the school bell.',
+     'Since then, the school has kept one corner of the field just for him.'],
+ Q:[{c:'Lectura literal',e:'¿Cómo lo llamaron los niños?',
+     o:[['Don Tranquilo',''],['Don Veloz','Nadie lo vio correr jamás, así que no puede ser Veloz.'],['Don Reja','La reja es donde se sentó, no su nombre.'],['Don Timbre','El timbre se usa para comparar su puntualidad, no es su nombre.']],
+     r:'A',ex:'Los niños lo llamaron Don Tranquilo porque nunca lo vieron correr.',p:'Busca el nombre en la segunda oración.'},
+    {c:'Inferencia',e:'¿Qué enseña el comportamiento de la directora?',
+     o:[['Que con calma y respeto se convive mejor con los animales.','Pidió observar, no perseguir, y el colegio acabó adaptando el espacio.'],['Que los animales deben salir de la cancha.','La escuela terminó cuidando una parte de la cancha para él.'],['Que conviene cansar al chigüiro hasta que se vaya.','Nadie lo persiguió: la directora pidió calma.'],['Que el chigüiro venía por la comida.','El texto solo menciona el pasto y la espera, no la comida.']],
+     r:'A',ex:'La directora marca el ejemplo: observar y dar espacio termina en convivencia.',p:'Mira qué pidió la directora y qué pasó al final.'},
+    {c:'Vocabulario',e:'«Puntual como el timbre» significa que el chigüiro...',
+     o:[['llegaba a la misma hora de siempre.','A un timbre se le conoce por su horario fijo; la comparación va por la puntualidad.'],['sonaba fuerte al caminar.','Un animal no suena como un timbre; la comparación va por el horario.'],['tenía miedo del timbre.','El cuento no habla de miedo: se sentó y esperó.'],['vivía dentro del colegio.','Vivía cerca y cruzaba la cancha; nunca se dice que viviera dentro.']],
+     r:'A',ex:'La comparación subraya que volvió siempre a la misma hora.',p:'¿Qué es lo típico de un timbre escolar?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que barrer la cancha todo el día.','La limpieza no aparece en el cuento.'],['Dar espacio y observar es una forma de cuidar.','El colegio termina reservando un pedazo de cancha para el chigüiro.'],['Los niños deben entrenar animales.','En el cuento nadie entrena a nadie.'],['Las escuelas rurales tienen pests.','El texto no compara tipos de escuela.']],
+     r:'B',ex:'La escuela adapta su espacio para convivir con el animal que la visita.',p:'Relee la última oración.'}]},
+
+{t:'La bicicleta naranja',
+ s:['Camila cruzaba Ubaté cada mañana en una bicicleta naranja de timbre incansable.',
+    'Ding ding: la gente salía a las puertas y le respondía con sonrisas.',
+    'Una mañana la cadena se rompió lejos de casa, y caminó casi una hora entre la niebla.',
+    'A la vuelta, tres vecinos le ofrecieron herramientas: cada uno tenía una pieza de repuesto.',
+    'Con la cadena nueva y la ayuda del barrio, la bicicleta volvió a sonar por toda la vía.',
+    'Camila entendió que el camino se hace mejor con compañía, aunque el pedaleo sea de uno.'],
+ en:['Camila crossed Ubate every morning on an orange bicycle with a tireless little bell.',
+     'Ding ding: people came to their doors and answered with smiles.',
+     'One morning the chain broke far from home, and she walked for almost an hour through the fog.',
+     'On the way back, three neighbors offered tools: each of them had a spare part.',
+     'With the new chain and the help of the neighborhood, the bicycle rang along the road again.',
+     'Camila understood that the road is better with company, even if the pedaling is up to you.'],
+ Q:[{c:'Lectura literal',e:'¿Qué se dañó en el camino?',
+     o:[['La cadena de la bicicleta.',''],['La campana de la plaza.','La campana de la bicicleta sonaba bien: ding ding.'],['La rueda de atrás.','El texto menciona la cadena, no la rueda.'],['El asiento de la bicicleta.','El texto no menciona el asiento.']],
+     r:'A',ex:'La tercera oración dice que la cadena se rompió lejos de casa.',p:'Busca la palabra «cadena» en el cuento.'},
+    {c:'Inferencia',e:'¿Qué enseña la última oración del cuento?',
+     o:[['El trabajo propio es valioso, pero la ayuda de otros también.','Camila pedalea sola; la cadena nueva llega gracias al barrio.'],['Camila dejará de usar bicicleta.','Al final la bicicleta vuelve a sonar.'],['Los vecinos de Ubaté nunca ayudan.','Ellos son quienes ofrecen las herramientas.'],['El timbre no sirve de nada.','El timbre le consigue saludos y compañía durante todo el camino.']],
+     r:'A',ex:'Pedaleo de uno, camino compartido: la compañía mejora cualquier tramo.',p:'Contrasta «pedaleo sea de uno» con «ayuda del barrio».'},
+    {c:'Vocabulario',e:'En el cuento, un «vecino» es...',
+     o:[['una persona que vive cerca.','Los vecinos ofrecen herramientas a quien vive a la vuelta.'],['un familiar directo.','No se dice que sean parientes de Camila.'],['un visitante del pueblo.','Los vecinos viven ahí, no están de visita.'],['un profesor del colegio.','El cuento no menciona profesores.']],
+     r:'A',ex:'Vecino es quien habita cerca; por eso puede ayudar rápido.',p:'¿Qué hace un vecino cuando le piden ayuda?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que comprar repuestos con anticipación.','Un repuesto no es la lección del cuento.'],['Pedir y ofrecer ayuda hace que los caminos difíciles se vuelvan cortos.','Los vecinos acortan el mal rato de la cadena rota.'],['Las bicicletas naranjas son las más resistentes.','El color no cambia nada.'],['La niebla hace que el camino se vuelva lento.','La niebla sí frena a Camila, pero no es la lección.']],
+     r:'B',ex:'Cuando falla el pedaleo, la comunidad se convierte en cadena nueva.',p:'Relee la lección final del cuento.'}]},
+
+{t:'El mercado de las flores',
+ s:['En el mercado de las flores, doña Zoraida guardaba los ramos azules para su tienda de la esquina.',
+    'Se decía que las flores que ella vendía duraban más que las demás, aunque nadie sabía por qué.',
+    'Un aprendiz le preguntó cuál era su secreto, esperando un conjuro complicado.',
+    'Doña Zoraida respondió que les cortaba la punta del tallo y les cambiaba el agua cada noche.',
+    'El aprendiz se rio: ¿cómo una rutina tan simple podía hacer magia en un vaso?',
+    'Doña Zoraida sonrió: la constancia es la magia más barata que hay.'],
+ en:['In the flower market, Dona Zoraida saved the blue bouquets for her corner shop.',
+     'People said her flowers lasted longer than the rest, although nobody knew why.',
+     'An apprentice asked her what the secret was, expecting a complicated spell.',
+     'Dona Zoraida answered that she cut the tip of each stem and changed the water every night.',
+     'The apprentice laughed: how could such a simple routine work like magic in a vase?',
+     'Dona Zoraida smiled: constancy is the cheapest magic there is.'],
+ Q:[{c:'Lectura literal',e:'¿Qué cuidados hacía doña Zoraida con las flores?',
+     o:[['Cortaba la punta del tallo y cambiaba el agua cada noche.',''],['Pintaba las flores de azul cada mañana.','Las flores ya llegaban azules; no las pintaba.'],['Les ponía abono importado.','El texto solo describe dos cuidados muy simples.'],['Las guardaba en un cuarto frío.','Nunca se menciona un cuarto frío.']],
+     r:'A',ex:'Cortar la punta del tallo y cambiar el agua cada noche.',p:'Lee la cuarta oración.'},
+    {c:'Inferencia',e:'¿Qué quiere destacar la frase «la constancia es la magia más barata»?',
+     o:[['Los cuidados pequeños repetidos producen grandes efectos.','No hay hechizo: la rutina constante es el secreto.'],['La magia se compra en otros mercados.','Nadie compra magia en el cuento.'],['Las flores nunca se marchitan si son azules.','El color no protege del marchitarse.'],['No se debe preguntar por los secretos.','La pregunta del aprendiz es lo que revela el secreto.']],
+     r:'A',ex:'Lo que parecía magia era la constancia de dos gestos sencillos repetidos.',p:'Conecta la frase con los cuidados del cuarto punto.'},
+    {c:'Vocabulario',e:'«Conjuro» en este cuento significa...',
+     o:[['encantamiento o receta mágica.','El aprendiz espera una fórmula secreta y complicada.'],['una factura del mercado.','Conjuro no tiene que ver con dinero.'],['un diseño de tienda.','No se habla de diseño.'],['una mezcla de abono.','El secreto no era abono, sino dos cuidados.']],
+     r:'A',ex:'El aprendiz espera un conjuro y descubre una rutina simple.',p:'¿Qué esperaba el aprendiz?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que comprar solo flores azules.','El color no es la lección.'],['Los gestos pequeños, hechos con constancia, valen más que un gran secreto.','Dos gestos simples, repetidos cada noche, son el secreto.'],['Los aprendices nunca aprenden.','El aprendiz aprende justamente preguntando.'],['Los secretos comerciales no se comparten.','Doña Zoraida lo cuenta sin problema.']],
+     r:'B',ex:'La rutina constante de dos gestos simples resulta ser la verdadera «magia».',p:'Relee la última frase del cuento.'}]},
+
+{t:'Sal y luz en Manaure',
+ s:['En las pilas de Manaure, la luz del mediodía brilla entre montañas de sal blanca.',
+    'Ismael, doce años, ayudaba a su abuela a recoger la sal de la tarde en baldes de plástico.',
+    'Un turista le preguntó si le pesaba el sol, e Ismael le contestó: pesa cuando falta el agua.',
+    'Su abuela contó que antes la sal se cargaba a mano, y que hoy el trabajo es distinto, pero la sal sabe igual.',
+    'Al anochecer, Ismael escribió en su cuaderno: la sal guarda el sabor del mar y el trabajo de la gente.',
+    'Desde su cuartito, la salina le pareció por un instante un océano pequeño encendido por el sol del atardecer.'],
+ en:['In the salt piles of Manaure, the midday sun glitters among heaps of white salt.',
+     'Ismael, twelve years old, helped his grandmother collect the afternoon salt in plastic buckets.',
+     'A tourist asked him if the sun felt heavy, and Ismael answered: it does, when there is no water nearby.',
+     'His grandmother said that long ago salt was carried by hand, and that today the work is different, but the salt tastes the same.',
+     'At dusk, Ismael wrote in his notebook: salt keeps the flavor of the sea and the work of the people.',
+     'From his little room, the salt field looked for a moment like a small ocean lit by the evening sun.'],
+ Q:[{c:'Lectura literal',e:'¿Qué trabajo hace Ismael en el cuento?',
+     o:[['Ayuda a su abuela a recoger la sal en baldes.',''],['Dirige una sala de envasado.','El texto solo cuenta la cosecha diaria en las pilas.'],['Entrena pájaros del desierto.','No hay pájaros en el cuento.'],['Vende recuerdos turísticos.','El único hablante sobre turistas es Ismael, quien le responde a uno.']],
+     r:'A',ex:'Ismael ayuda a recoger la sal de la tarde en baldes de plástico.',p:'Lee la segunda oración.'},
+    {c:'Inferencia',e:'¿Qué quiere decir Ismael con «pesa cuando falta el agua»?',
+     o:[['El sol se hace insoportable donde no hay agua cerca.','Responde a la pregunta sobre el sol; el agua alivia.'],['La sal es más pesada si no llueve.','La sal pesa siempre; la frase no trata de peso.'],['Los turistas cargan más peso.','Nada indica que los turistas carguen algo.'],['Va a llover pronto.','Nada en el texto habla de lluvia.']],
+     r:'A',ex:'En el calor seco del desierto de sal, el agua hace la diferencia real.',p:'Piensa en el clima de una zona de sal.'},
+    {c:'Vocabulario',e:'En el cuento, «cosechar» la sal significa...',
+     o:[['recogerla de las pilas para usarla o venderla.','La familia la recoge cada tarde en baldes.'],['sembrar semillas de sal.','La sal no se siembra como planta.'],['hervir el mar en una olla.','No se menciona hervir nada.'],['comprar sal en el mercado.','La familia cosecha; no compra.']],
+     r:'A',ex:'Cosechar es recoger lo que se produce: aquí, la sal de las pilas.',p:'Fíjate qué hacen cada tarde Ismael y su abuela.'},
+    {c:'Propósito del texto',e:'¿Qué busca el texto al decir que «la sal guarda el trabajo de la gente»?',
+     o:[['Que el producto lleva también el esfuerzo de quienes lo recogen.','Más que sabor, la sal recoge la mano de la gente.'],['Que la sal es más valiosa en la costa.','No se habla de precios.'],['Que hay que dejar de cosechar sal.','El cuento jamás referencia dejar la cosecha.'],['Que la sal es un lujo moderno.','El texto la trata como un oficio antiguo.']],
+     r:'A',ex:'Todo lo que se recoge lleva el trabajo de la gente: por eso la sal «guarda» esa huella.',p:'Relee la penúltima oración.'}]},
+{t:'El silbo del cañón',
+ s:['Don Eleuterio guía a los visitantes por el borde del cañón, y para avisar usa un silbo que se aprende aquí, de oído.',
+    'Un silbo largo significa cuidado; dos cortos, vamos bien.',
+    'Los nuevos guías practican contra el viento, porque el silbo no sirve si no aprende a doblar el aire.',
+    'Una tarde de neblina, el silbo de Don Eleuterio cortó el aire y detuvo a un grupo que caminaba por un borde resbaloso.',
+    'Todos volvieron al sendero, y nadie pasó más allá de la piedra marcada.',
+    'En el cuaderno de visitas, Don Eleuterio escribió: un silbo enseñado a tiempo vale más que cien reglas impresas.'],
+ en:['Don Eleuterio guides visitors along the canyon rim, and to warn them he uses a whistle that people here learn by ear.',
+     'A long whistle means be careful; two short ones, we are fine.',
+     'New guides practice against the wind, because the whistle is useless if it does not learn to bend the air.',
+     'On a misty afternoon, Don Eleuterios whistle cut the air and stopped a group walking on a slippery edge.',
+     'Everyone returned to the trail, and nobody went past the marked stone.',
+     'In the visitor log, Don Eleuterio wrote: a whistle taught in time is worth more than a hundred printed rules.'],
+ Q:[{c:'Lectura literal',e:'¿Qué significa el silbo largo en el cuento?',
+     o:[['Cuidado.',''],['Vamos bien.','Dos cortos significan vamos bien.'],['Vuelvan mañana.','No hay una señal para mañana.'],['Silencio total.','El cuento solo define dos avisos: cuidado y vamos bien.']],
+     r:'A',ex:'Un silbo largo significa cuidado; dos cortos, vamos bien.',p:'Relee la segunda oración.'},
+    {c:'Inferencia',e:'¿Por qué los nuevos guías practican contra el viento?',
+     o:[['Porque el silbo solo es útil si aprende a doblar el aire.','El texto dice que el silbo no sirve sin esa técnica.'],['Porque el viento apaga la voz.','No se menciona que el viento apague los silbidos.'],['Porque los turistas hablan fuerte.','El punto es técnico, no de volumen de los turistas.'],['Porque el cañón se cierra al atardecer.','No se dice que el cañón se cierre.']],
+     r:'A',ex:'Doblar el aire con la técnica correcta hace que el silbo llegue y sea entendido.',p:'Busca la frase completa «dobla el aire».'},
+    {c:'Vocabulario',e:'En el cuento, un «sendero» es...',
+     o:[['un camino por donde camina la gente.','El grupo volvió al sendero, es decir, al camino marcado.'],['un tipo de pájaro.','No se menciona ningún pájaro con ese nombre.'],['una cuerda de seguridad.','El sendero no es cuerda: es por ahí donde caminan.'],['una boca del cañón.','El cañón tiene bordes; el sendero es por donde se anda.']],
+     r:'A',ex:'Sendero es el camino marcado por donde se transita.',p:'¿Por dónde volvió el grupo?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que prohibir todo el turismo en los cañones.','El cuento no habla de prohibir el turismo.'],['Enseñar a tiempo vale más que imponer reglas después.','La regla impresa no detiene; el silbo enseñado a tiempo detiene.'],['Los silbos no sirven contra la neblina.','De hecho, el silbo salva al grupo en la neblina.'],['Las piedras marcadas no son útiles.','La piedra marcada forma parte de la seguridad.']],
+     r:'B',ex:'La enseñanza oportuna del silbo evita el accidente mejor que la señal escrita.',p:'Relee la última línea del cuaderno de visitas.'}]},
+
+{t:'La alfombra de aserrín',
+ s:['La semana mayor, la calle de los telares se convertía en una alfombra de aserrín de colores.',
+    'Familias enteras teñían el aserrín desde la víspera y lo guardaban cubierto con sábanas.',
+    'Los niños dibujaban con moldes: pájaros, arcos y estrellas que nadie debía pisar antes de tiempo.',
+    'A mitad de la noche, empezó a llover, y las alfombras fueron cubiertas con plástico, una por una.',
+    'Al amanecer, el cielo despejó, y las calles quedaron intactas para la procesión.',
+    'La abuela de Salomé decía: el color se cuida en comunidad, nunca de uno en uno.'],
+ en:['During Holy Week, the weavers street would turn into a carpet of dyed sawdust.',
+     'Whole families dyed the sawdust the day before and kept it covered with sheets.',
+     'Children drew with stencils: birds, arches and stars that nobody was supposed to step on early.',
+     'In the middle of the night it began to rain, and the carpets were covered with plastic, one by one.',
+     'At dawn the sky cleared, and the streets were left intact for the procession.',
+     'Salomes grandmother used to say: color is cared for as a community, never one by one.'],
+ Q:[{c:'Lectura literal',e:'¿De qué estaban hechas las alfombras?',
+     o:[['De aserrín teñido de colores.',''],['De pétalos frescos.','Los pétalos no se mencionan en el texto.'],['De papel reciclado.','No es papel: es aserrín.'],['De arena del río.','La arena no aparece en el cuento.']],
+     r:'A',ex:'Las alfombras eran de aserrín de colores.',p:'Mira la primera oración.'},
+    {c:'Inferencia',e:'¿Qué se entiende por «el color se cuida en comunidad»?',
+     o:[['Cuando todos protegen lo que hace el grupo, el resultado se logra.','Las familias cubrieron las alfombras con plástico juntas.'],['Cada quien debe cuidar solo su alfombra.','La abuela enseña lo contrario: no uno a uno.'],['El color se consigue solo después de la lluvia.','La lluvia era el problema, no la fuente del color.'],['Los niños deben pintar solos.','No hay reglas solitarias en el cuento.']],
+     r:'A',ex:'La lluvia no arruinó las alfombras porque todos las cubrieron, no solo un par de manos.',p:'Relee la escena de la lluvia nocturna.'},
+    {c:'Vocabulario',e:'En el cuento, «la víspera» significa...',
+     o:[['el día anterior.','Las familias teñían el aserrín desde la víspera, el día previo.'],['la madrugada del acontecimiento.','La víspera viene antes, no la misma mañana.'],['un desayuno tradicional.','La víspera no es comida.'],['una canción local.','No aparece ninguna canción.']],
+     r:'A',ex:'Víspera: el día o la noche previa a una fecha importante.',p:'¿Cuándo teñían el aserrín?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['La lluvia siempre arruina el trabajo.','Al final la lluvia no arruinó nada.'],['Proteger lo compartido es tarea de todos.','Las familias cubrieron las alfombras: un trabajo de todos.'],['Los moldes no sirven para dibujar.','Los moldes se usaron para las figuras.'],['Las alfombras deben hacerse en interiores.','La tradición pasa en la calle y se cuida ahí.']],
+     r:'B',ex:'El color de todos se salva cuando todos cuidan.',p:'Relee la frase de la abuela.'}]},
+
+{t:'El buque de los atardeceres',
+ s:['En el muelle de Buenaventura, don Anselmo remataba cada tarde con una caminata al final del muelle.',
+    'Le gustaba ver llegar las luces del puerto y contar las lanchas que regresaban con la marea.',
+    'Un día un niño le preguntó por qué contaba, y él respondió que nunca se sabe cuál número será el último.',
+    'El niño le regaló una libreta y los dos contaron juntos durante un mes entero.',
+    'El último día, el número fue el mismo que el primero: cuarenta y dos lanchas.',
+    'Don Anselmo le dijo: lo que se repite con cariño se convierte en costumbre, y las costumbres sostienen.'],
+ en:['On the pier of Buenaventura, Don Anselmo ended each afternoon with a walk to the end of the dock.',
+     'He liked to watch the harbor lights arrive and count the boats returning with the tide.',
+     'One day a boy asked him why he counted, and he answered that nobody knows which number will be the last.',
+     'The boy gave him a small notebook, and the two counted together for a whole month.',
+     'On the final day, the number was the same as the first: forty-two boats.',
+     'Don Anselmo told him: what we repeat with care becomes a habit, and habits hold us up.'],
+ Q:[{c:'Lectura literal',e:'¿Qué contaba Don Anselmo cada tarde?',
+     o:[['Las lanchas que regresaban con la marea.',''],['Los peces que trasladaba el puerto.','El cuento habla de lanchas, no de peces.'],['Los turistas que llegaban al muelle.','No se mencionan turistas.'],['Las campanas de la ciudad.','No hay campanas en el cuento.']],
+     r:'A',ex:'Cada tarde contaba las lanchas que volvían con la marea.',p:'Lee la segunda oración.'},
+    {c:'Inferencia',e:'¿Qué quiere decir el final «las costumbres sostienen»?',
+     o:[['Repetir con cariño lo que nos importa nos mantiene en pie.','Contar lanchas con el niño le dio sostén y compañía.'],['Las costumbres deben dejarse al envejecer.','Don Anselmo mantuvo la costumbre.'],['Contar lanchas es un trabajo pagado.','Nadie lo paga: es su propio gesto.'],['El puerto es peligroso de noche.','No hay peligro en el cuento.']],
+     r:'A',ex:'Lo que se repite con cariño se vuelve costumbre, y las costumbres sostienen el espíritu.',p:'Relee la última línea del cuento.'},
+    {c:'Vocabulario',e:'Un «muelle» es...',
+     o:[['una estructura sobre el agua para embarcar y desembarcar.','El muelle es donde caminan y descargan las lanchas.'],['una letra de un barco de carga.','El muelle no es una letra.'],['una tienda de pescado.','No se menciona pesca.'],['una persona que captura barcas.','El muelle no es persona.']],
+     r:'A',ex:'Muelle: plataforma que sale sobre el agua para embarcar y desembarcar.',p:'¿Dónde camina Don Anselmo cada tarde?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que dejar de contar lanchas.','La lección es la contraria: repetir con cariño.'],['Las pequeñas rutinas compartidas sostienen nuestros días.','Contar juntos vuelve hábito lo que sostiene.'],['El puerto es para trabajar, no para mirar.','Mirar es justamente lo que sostuvo a Don Anselmo.'],['Los niños no deben dar regalos.','El regalo de la libreta impulsó la costumbre.']],
+     r:'B',ex:'Contar juntos transforma una caminata en costumbre, y la costumbre sostiene.',p:'Relee la escena de la libreta.'}]},
+
+{t:'La fábrica de velas',
+ s:['En el pueblo de San Jacinto, doña Ofelia fabricaba velas en una bodega con ventana grande.',
+    'Su nieto Julián le pedía que las pintara de colores, porque «las velas tristes son blancas».',
+    'Doña Ofelia contestó que la luz no tiene color: todos los colores caben en la llama.',
+    'Una noche se fue la luz en todo el pueblo y Julián encendió una vela blanca en su cuarto.',
+    'Desde su ventana vio, iluminadas, todas las casas: ninguna vela parecía triste esa noche.',
+    'Al día siguiente, Julián le pidió perdón a las velas blancas y le regaló a su abuela un dibujo con llamas de todos los colores.'],
+ en:['In the town of San Jacinto, Dona Ofelia made candles in a workshop with a big window.',
+     'Her grandson Julian asked her to paint them in colors, because sad candles are white.',
+     'Dona Ofelia answered that light has no color: every color fits inside the flame.',
+     'One night the whole town lost power, and Julian lit a white candle in his room.',
+     'From his window he saw every house lit: no candle looked sad that night.',
+     'The next day, Julian apologized to the white candles and gave his grandmother a drawing of flames in every color.'],
+ Q:[{c:'Lectura literal',e:'¿De qué color eran las velas de doña Ofelia?',
+     o:[['Blancas.',''],['Azules.','Nunca se menciona azul.'],['De colores pintados.','Doña Ofelia no las pintaba.'],['Verdes.','No se menciona verde.']],
+     r:'A',ex:'Las velas eran blancas, y Julián las quería de colores.',p:'Mira la segunda oración.'},
+    {c:'Inferencia',e:'¿Por qué Julián cambia de opinión sobre las velas blancas?',
+     o:[['Descubre que la luz de una vela no depende de su color.','La noche sin luz se ilumina con velas blancas.'],['Porque su abuela se enojó.','Doña Ofelia solo responde con calma.'],['Porque las velas de colores son más caras.','El precio no aparece en el cuento.'],['Porque le regalaron velas nuevas.','No se menciona regalo de velas.']],
+     r:'A',ex:'La llama da la luz; el color de la cera no define cuán iluminada queda la noche.',p:'Recuerda qué ve Julián desde su ventana.'},
+    {c:'Vocabulario',e:'Una «bodega» es...',
+     o:[['un lugar amplio donde se guarda o fabrica algo.','Doña Ofelia fabrica sus velas en una bodega.'],['un tipo de vela.','La bodega no es una vela.'],['una ventana grande.','La ventana está en la bodega; no es lo mismo.'],['un dibujo infantil.','El dibujo es lo que regala Julián al final.']],
+     r:'A',ex:'Bodega: espacio de trabajo o almacenaje.',p:'¿Dónde trabaja doña Ofelia?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que pintar siempre todo.','El punto no es el color de la pintura.'],['Lo que ilumina no es la decoración, sino lo que se enciende.','La vela blanca ilumina igual que cualquier otra.'],['Las velas solo sirven si hay corte de luz.','No se dice eso: la gente las usa siempre.'],['Los niños no deberían opinar.','La opinión de Julián inicia el cuento y se corrige al final.']],
+     r:'B',ex:'La luz nace del acto de encender, no del color de la cera.',p:'Relee la escena de la noche sin luz.'}]},
+
+{t:'El buque de papel',
+ s:['En la feria de ciencias del colegio La Esperanza, los quintos construían buques de papel para medir cuánto soportan.',
+    'Sofía forró el suyo con cera de velas viejas y lo llamó Resistiente.',
+    'El buque de Mateo era el más bonito, pero se hundió en pocos segundos porque la tinta empapaba el papel.',
+    'La maestra anotó en el tablero: cada material se comporta distinto con el agua.',
+    'Sofía ganó la feria, y su barquito flotó durante tres días en la pileta del patio.',
+    'Lo guardó en una caja con una etiqueta: sirve para probar ideas, no para cruzar el mar.'],
+ en:['At the science fair at La Esperanza school, the fifth graders built paper boats to measure how much they can hold.',
+     'Sofia coated hers with old candle wax and named it Resistiente.',
+     'Mateos boat was the prettiest, but it sank within seconds because the ink soaked the paper.',
+     'The teacher wrote on the board: every material behaves differently with water.',
+     'Sofia won the fair, and her little boat floated for three days in the schoolyard pool.',
+     'She kept it in a box with a label: it is meant for testing ideas, not for crossing the sea.'],
+ Q:[{c:'Lectura literal',e:'¿Por qué se hundió el buque de Mateo?',
+     o:[['Porque era el más pequeño.','El tamaño no aparece como causa en el cuento.'],['Porque la tinta empapó el papel.','El texto lo dice tal cual en la tercera oración.'],['Porque chocó con otro buque.','No hay choques en la feria.'],['Porque Sofía le quitó la cera.','Sofía forró el suyo, no el de Mateo.']],
+     r:'B',ex:'La tercera oración lo dice: la tinta empapaba el papel.',p:'Relee la tercera oración.'},
+    {c:'Inferencia',e:'¿Qué quiso enseñar la anotación de la maestra?',
+     o:[['Que el papel no sirve para nada.','El barco de Sofía flotó tres días: el papel sí sirvió.'],['Que la feria la gana el buque más bonito.','El más bonito se hundió.'],['Que comparar materiales sirve para descubrir cómo se comportan.','Su nota resume el hallazgo de la prueba.'],['Que el agua es un riesgo en los colegios.','El riesgo no es el tema: el experimento sí lo es.']],
+     r:'C',ex:'La prueba compara materiales y enseña que cada uno responde distinto al agua.',p:'Fíjate en el tablero de la maestra.'},
+    {c:'Vocabulario',e:'En el cuento, «forró» significa...',
+     o:[['cubrió por completo una superficie.','Sofía cubrió su buque con cera de velas viejas.'],['dobla una esquina del papel.','Nadie dobla esquinas en el cuento.'],['quitó un pedazo de material.','La cera se añade, no se quita.'],['dibujó una figura decorativa.','El texto no habla de dibujos decorativos.']],
+     r:'A',ex:'Forrar es cubrir una superficie con otro material.',p:'¿Qué hizo Sofía con la cera?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que ganar todas las ferias.','La feria es el contexto, no la lección.'],['La apariencia no garantiza resistir: conocer el material sí.','El buque bonito se hundió; el probado con cera flotó.'],['Los experimentos son peligrosos.','Ninguno fue peligroso en el cuento.'],['Los roles de cada uno no importan.','Cada persona aportó su buque y su hallazgo.']],
+     r:'B',ex:'El buque bonito no resistía; el que probó el material correcto sí.',p:'Piensa por qué cambió el resultado entre los dos buques.'}]},
+{t:'La cancha de los domingos',
+ s:['En el barrio La Paz, la cancha abría al público cada domingo desde las ocho de la mañana.',
+    'Doña Matilde llegaba siempre primera, con un termo de chocolate y vasos para todos.',
+    'Ella no jugaba, pero anotaba los goles en una libreta azul y repartía cuentas entre los equipos.',
+    'Un domingo la cancha cerró por mantenimiento, y el silencio se sintió más fuerte que el pitido del árbitro.',
+    'Los vecinos se juntaron en el andén y le pidieron al administrador una fecha para reabrir.',
+    'La cancha volvió al domingo siguiente, con doña Matilde en la puerta y la libreta azul lista.'],
+ en:['In the La Paz neighborhood, the field opened to everyone every Sunday from eight in the morning.',
+     'Dona Matilde always arrived first, with a thermos of hot chocolate and cups for everyone.',
+     'She did not play, but she kept score of the goals in a blue notebook and settled the tally between teams.',
+     'One Sunday the field closed for maintenance, and the silence felt louder than the referees whistle.',
+     'The neighbors gathered on the sidewalk and asked the manager for a reopening date.',
+     'The field reopened the following Sunday, with Dona Matilde at the gate and the blue notebook ready.'],
+ Q:[{c:'Lectura literal',e:'¿Qué hacía doña Matilde con la libreta azul?',
+     o:[['Anotaba los goles y las cuentas entre equipos.',''],['Guardaba las llaves de la cancha.','Las llaves las tiene el administrador.'],['Vendía chocolate a los vecinos.','El chocolate era gratis, en vasos para todos.'],['Anotaba la lista de cumpleaños.','No se menciona ningún cumpleaños.']],
+     r:'A',ex:'Doña Matilde anotaba los goles y repartía cuentas entre los equipos.',p:'Lee la tercera oración.'},
+    {c:'Inferencia',e:'¿Qué papel cumple doña Matilde aunque no juegue?',
+     o:[['Ninguno, porque no juega.','Anota los goles y llega siempre primera: su papel es claro.'],['Mantiene viva la tradición del domingo en la cancha.','Su libreta y su puesto en la puerta sostienen la costumbre.'],['Cobra la entrada a la cancha.','No se habla de cobrar entradas.'],['Es la jueza del partido.','El partido tiene árbitro; ella solo anota.']],
+     r:'B',ex:'Aunque no juega, su constancia sostiene el rito del domingo.',p:'Mira qué pasa cuando la cancha cierra.'},
+    {c:'Vocabulario',e:'En el cuento, el «andén» es...',
+     o:[['la acera junto a la calle.','Los vecinos se juntaron en el andén a pedir la fecha de reapertura.'],['la línea de gol.','La línea pertenece a la cancha.'],['el techo de las tribunas.','No se mencionan tribunas con techo.'],['una torre de la cancha.','El andén no es torre.']],
+     r:'A',ex:'Andén: acera o borde peatonal junto a la calle.',p:'¿Dónde se juntaron los vecinos?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que jugar más horas al día.','El horario no es la lección.'],['Los espacios donde nos encontramos valen más cuando alguien los cuida.','Doña Matilde, la libreta y la cita del domingo mantienen unido al barrio.'],['Los administradores nunca escuchan.','El administrador les dio fecha de reapertura.'],['El chocolate cura el silencio.','El chocolate es un detalle, no la lección.']],
+     r:'B',ex:'La costumbre sobrevive porque alguien cuida el lugar y el encuentro.',p:'Relee el cierre del cuento.'}]},
+
+{t:'Las cartas del Pacífico',
+ s:['En Guapi, las cartas de Efraín llegaban cada mes en un sobre sin estampilla, entregado por el cartero de la canoa.',
+    'Era un pescador de otra orilla, y contaba la marea con palabras en lugar de números.',
+    'Su hija Rocío le respondía con dibujos del pueblo: la iglesia, la luna y la casa de su tía.',
+    'Una carta llegó con una mancha de sal y una frase corta: aquí el río le compra horas al mar.',
+    'Rocío le pegó esa carta a la pared de su cuarto hasta que el papel se volvió amarillo.',
+    'Cuando por fin viajaron juntos, los dos reconocieron el río en el momento de leerse la primera línea.'],
+ en:['In Guapi, Efains letters arrived every month in an unstamped envelope, delivered by the canoe mail carrier.',
+     'He was a fisherman from the other bank, and he described the tide with words instead of numbers.',
+     'His daughter Rocio answered with drawings of the town: the church, the moon, and her aunts house.',
+     'One letter arrived with a salt stain and one short line: here the river buys hours from the sea.',
+     'Rocio taped that letter to her bedroom wall until the paper turned yellow.',
+     'When they finally traveled together, they recognized the river right as they read the first line.'],
+ Q:[{c:'Lectura literal',e:'¿Cómo llegaban las cartas de Efraín?',
+     o:[['En sobre sin estampilla, entregado por el cartero de la canoa.',''],['Por correo aéreo con sello oficial.','La carta no llevaba estampilla.'],['Las traía Efraín en persona.','Efraín vive en otra orilla; las envía.'],['Las trae el correo electrónico.','Las cartas son de papel.']],
+     r:'A',ex:'El sobre llegaba sin estampilla, por el cartero de la canoa.',p:'Relee la primera oración.'},
+    {c:'Inferencia',e:'¿Qué quiere decir la frase «aquí el río le compra horas al mar»?',
+     o:[['Que el mar avanza y el agua cambia de dueño cada día.','Es el río encontrándose con la marea: el lugar donde el tiempo cambia de mano.'],['Que el río cobra dinero por cruzar.','Nadie cobra en el cuento.'],['Que hay menos peces cada año.','No se habla de peces.'],['Que las cartas llegan tarde.','La frase habla del río y del mar, no de demoras.']],
+     r:'A',ex:'La mancha de sal y la frase marcan el encuentro diario entre río y mar.',p:'Fíjate en la mancha de sal de la carta.'},
+    {c:'Vocabulario',e:'En el cuento, una «orilla» es...',
+     o:[['el borde del río donde se puede tocar tierra.','Efraín pescaba desde otra orilla.'],['una estampilla antigua.','La estampilla no existe en la carta.'],['el fondo del mar.','La orilla está al borde, no al fondo.'],['un cuaderno de dibujos.','Los dibujos están en las respuestas de Rocío.']],
+     r:'A',ex:'Orilla: borde del río o del mar donde se llega a tierra.',p:'¿Desde dónde pescaba Efraín?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que vivir lejos de la familia.','La distancia les duele; no es la lección.'],['Las palabras y los dibujos pueden cuidar un vínculo hasta el reencuentro.','Las cartas mantienen unidos a padre e hija año tras año.'],['Los carteros viajan solos.','El cartero va en canoa, no solo.'],['El mar borra todo lo escrito.','Las cartas llegan cada mes, a pesar del mar.']],
+     r:'B',ex:'Mes a mes, lo escrito sostiene el vínculo hasta que se encuentran.',p:'Relee la última oración.'}]},
+
+{t:'La niña del acordeón',
+ s:['En Valledupar, la abuela Sabina sacaba el acordeón cada tarde y tocaba tres canciones y media.',
+    'La media era la preferida de la niña Yurley, porque nunca terminaba: la abuela la dejaba suspendida.',
+    'Cuando la abuela se durmió para siempre, el acordeón quedó guardado en un estuche con cintas rojas.',
+    'Yurley pidió que nadie lo tocara ni lo moviera, y durante meses el estuche siguió cerrado.',
+    'Un día lo abrió, tocó las tres canciones y dejó la media para el final, como le gustaba a la abuela.',
+    'La terminó por primera vez: la casa entera aplaudió, y la media por fin tuvo final.'],
+ en:['In Valledupar, grandmother Sabina took out the accordion every afternoon and played three and a half songs.',
+     'The half song was Yurleys favorite, because it never ended: her grandmother left it suspended.',
+     'When her grandmother fell asleep forever, the accordion was kept in a case with red ribbons.',
+     'Yurley asked that nobody touch or move it, and for months the case stayed closed.',
+     'One day she opened it, played the three songs, and left the half one for last, as her grandmother liked.',
+     'She finished it for the first time: the whole house applauded, and the half song finally had an ending.'],
+ Q:[{c:'Lectura literal',e:'¿Cuántas canciones tocaba la abuela Sabina?',
+     o:[['Tres y media.',''],['Solo una completa.','La tercera es completa, pero toca más.'],['Dos y media.','El texto no dice eso.'],['Cinco completas.','Nunca se mencionan cinco.']],
+     r:'A',ex:'La abuela tocaba tres canciones y media cada tarde.',p:'Lee la primera oración.'},
+    {c:'Inferencia',e:'¿Por qué la abuela dejaba la última canción «suspendida»?',
+     o:[['Porque se olvidaba de las notas.','No hay olvido: la deja suspendida todas las tardes.'],['Para que la tarde nunca terminara del todo.','La espera de la niña sostiene la tarde: dejarla abierta es el juego.'],['Porque el acordeón estaba dañado.','El acordeón suena bien: lo aplaude la casa al final.'],['Porque le pedían callar.','Nadie en el cuento pide silencio.']],
+     r:'B',ex:'Dejar la media canción sin final es un juego que mantiene la espera viva.',p:'Piensa qué siente Yurley frente a la media canción.'},
+    {c:'Vocabulario',e:'En el cuento, «suspendida» significa...',
+     o:[['sin terminar, dejada a medio camino.','La media canción queda suspendida cada tarde.'],['colgada del techo.','Nadie cuelga el acordeón en el cuento.'],['prohibida en el pueblo.','No hay prohibición de la canción.'],['que suena ensordecedora.','El problema no es el volumen.']],
+     r:'A',ex:'Suspendida: algo que se queda sin cierre, pendiente.',p:'¿Por qué la niña la prefiere?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que terminar todo de inmediato.','Terminar la canción llega cuando Yurley está lista.'],['Los heredamos sobre todo lo que amamos se puede continuar.','Yurley abre el estuche y da un final a la media canción.'],['Los acordeones deben guardarse siempre.','El estuche se abre al final para tocar de nuevo.'],['La música siempre tiene un final.','La media canción sobrevivía justamente sin él.']],
+     r:'B',ex:'Heredamos también lo que quedó abierto; terminarlo es un homenaje.',p:'Relee la última oración.'}]},
+
+{t:'El bus de las siete',
+ s:['El bus de las siete era el único que pasaba por La Loma antes del amanecer, con un faro que alargaba las sombras.',
+    'Don Tulio, el conductor, sabía en qué piedra pedía parada cada pasajero y saludaba primero con el claxon.',
+    'Un lunes el bus no llegó: un derrumbe había cerrado el camino del lomo del cerro.',
+    'Los pasajeros empezaron a caminar, y cuando el sol salió, eran más de veinte personas en fila.',
+    'Al día siguiente Don Tulio apareció con una desviación nueva que marcó con cintas amarillas.',
+    'Desde entonces, la fila de la madrugada lleva su nombre: la ruta de las cintas.'],
+ en:['The seven oclock bus was the only one passing through La Loma before dawn, with a headlight that stretched the shadows.',
+     'Don Tulio, the driver, knew at which stone each passenger asked for a stop, and he greeted them first with the horn.',
+     'One Monday the bus never came: a landslide had closed the ridge road.',
+     'The passengers started walking, and by sunrise more than twenty people were lined up.',
+     'The next day Don Tulio showed up with a new detour that he marked with yellow tape.',
+     'From then on, the early line carries his name: the route of the tapes.'],
+ Q:[{c:'Lectura literal',e:'¿Qué cerró el camino del lomo del cerro?',
+     o:[['Un derrumbe.',''],['La lluvia helada.','No se habla de lluvia helada en el cuento.'],['El bus de las siete.','El bus es el que no llegó; no cerró nada.'],['Una fiesta de pueblo.','No aparecen fiestas en el cuento.']],
+     r:'A',ex:'El derrumbe cerró el camino, por eso el bus no llegó el lunes.',p:'Relee la tercera oración.'},
+    {c:'Inferencia',e:'¿Para qué marcó Don Tulio la desviación con cintas amarillas?',
+     o:[['Para decorar la ruta del festival.','No hay festival ninguna parte.'],['Para guiar a los pasajeros por el camino nuevo sin perderse.','Las cintas marcan la desviación para que la fila madrugue segura.'],['Para tapar el hueco del derrumbe.','Las cintas no reparan el camino.'],['Para alquilar asientos nuevos.','El bus no cambia de dueño ni de asientos.']],
+     r:'B',ex:'Las cintas señalan el camino nuevo: una guía pensada para la gente que camina.',p:'Piensa quién debe conocer la desviación y cómo.'},
+    {c:'Vocabulario',e:'En el cuento, una «desviación» es...',
+     o:[['un camino alterno que evita el obstáculo.','Don Tulio marca con cintas una desviación nueva.'],['la parada de un puesto de comida.','Nadie vende sánguches ahí.'],['una piedra saliente.','La piedra es donde pide parada la gente.'],['una clase de niebla.','No se habla de niebla.']],
+     r:'A',ex:'Desviación: ruta alterna que rodea lo cerrado.',p:'¿Qué aparece marcado con cintas?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que dejar de madrugar.','La fila madruga siempre: no es la lección.'],['Cuando algo se cierra, buscar un camino para todos importa más que la queja.','Ellos aceptan y buscan; Don Tulio trae la ruta nueva con guía.'],['Los buses deben ser gratis.','Nunca se habla de tarifas.'],['El silencio ayuda a caminar.','Nada al respecto en el cuento.']],
+     r:'B',ex:'Frente al derrumbe, la respuesta fue un camino nuevo marcado para todos.',p:'Relee la última oración.'}]},
+
+{t:'La campeona callada',
+ s:['En Quibdó, la pista del colegio San Francisco media exactamente cuatrocientos metros, y Damari la recorría de punta a punta.',
+    'Ganó tres campeonatos seguidos sin dar entrevistas, y los periodistas le inventaban discursos.',
+    'Su entrenador sabía la verdad: Damari solo hablaba fuerte cuando contaba los metros restantes.',
+    'En el cuarto campeonato se torció el tobillo faltando cien metros, y terminó caminando la pista completa.',
+    'El estadio entero la aplaudió de pie, aunque llegó de última.',
+    'Al año siguiente volvió y ganó de nuevo; esta vez sonrió antes de cruzar la meta.'],
+ en:['In Quibdo, the San Francisco school track was exactly four hundred meters, and Damari ran it from end to end.',
+     'She won three championships in a row without giving interviews, and journalists made up speeches for her.',
+     'Her coach knew the truth: Damari only spoke loudly when she counted the meters left.',
+     'In her fourth championship she twisted her ankle with a hundred meters to go, and she finished walking the whole track.',
+     'The whole stadium applauded her standing, even though she came in last.',
+     'The next year she returned and won again; this time she smiled before crossing the line.'],
+ Q:[{c:'Lectura literal',e:'¿Qué ocurrió en el cuarto campeonato?',
+     o:[['Se torció el tobillo y terminó caminando la pista.',''],['Ganó sin dar una sola entrevista.','Eso pasó en los tres primeros, no en el cuarto.'],['Se retiró del atletismo para siempre.','Volvió y ganó al año siguiente.'],['Rompió el récord de la pista.','No se habla de récords.']],
+     r:'A',ex:'Se torció el tobillo faltando cien metros y caminó la pista completa.',p:'Lee la cuarta oración.'},
+    {c:'Inferencia',e:'¿Por qué la aplaudió el estadio aunque llegó de última?',
+     o:[['Porque así lo pidió el entrenador.','El entrenador no pide aplausos en el cuento.'],['Porque terminó la pista a pesar de la lesión.','El esfuerzo de terminar merece aplauso en el cuento.'],['Porque los periodistas la grabaron.','Los periodistas aparecen al principio, no al final.'],['Porque nadie la conocía.','Era la campeona: todos la conocían.']],
+     r:'B',ex:'Terminar de pies, herida y a la vista de todos, vale aplauso de pie.',p:'Mira qué hizo Damari después de torcerse.'},
+    {c:'Vocabulario',e:'En el cuento, «cruzó la meta» significa...',
+     o:[['llegó al final de la carrera.','La meta es el punto donde termina la pista.'],['se atravesó frente a otros.','Cruzar una meta no es estorbar a nadie.'],['rompió un cable de llegada.','Nadie rompe cables en el cuento.'],['contó los metros restantes.','Eso lo hace durante la carrera, no al final.']],
+     r:'A',ex:'Cruzar la meta es llegar al final de la carrera.',p:'¿Qué hace Damari después de sonreír?'},
+    {c:'Propósito del texto',e:'¿Cuál es la mejor moraleja del cuento?',
+     o:[['Hay que dar entrevistas siempre.','Damari no las da y aun así la gente la respeta.'],['El valor está en terminar lo que empieza, no solo en ganar.','Termina herida la pista completa, y al año gana de nuevo.'],['Los estadios deben ser más grandes.','El tamaño del estadio no aparece.'],['Contar metros es una superstición.','Para Damari es su forma de correr, no superstición.']],
+     r:'B',ex:'Damari gana primero; en la caída muestra que el valor es terminar la pista.',p:'Compara el cuarto campeonato con el quinto.'}]}
+];
+
+/* Las historias se ensamblan: un solo cuento por entrada, con 6 oraciones y 4 preguntas. */
+window.RS54={DATOS:[], total:0, etapas:4, estado:function(){return {cuentos:this.DATOS.length}}};
+try{
+  var css=document.createElement('style');css.id='rs54css';
+  css.textContent=[
+   '.rs54st{border:1px solid var(--br);border-radius:14px;padding:10px;margin:10px 0;display:flex;flex-direction:column;gap:8px}',
+   '.rs54st .rs54inf{display:flex;flex-direction:column;gap:2px}',
+   '.rs54st .row{margin:0}',
+   '.rs54st .opt{min-height:36px}'
+  ].join('');
+  document.head.appendChild(css);
+}catch(e){}
+try{
+  var D=window.RS54.DATOS;
+  RAW.forEach(function(o){
+    if(!o||!o.t||!o.s||!o.en||!Array.isArray(o.Q))return;
+    if(o.s.length!==6||o.en.length!==6||o.Q.length!==4)return;
+    D.push(o);
+  });
+  if(typeof cq==='function'){
+    D.forEach(function(o,i){
+      o.q=o.Q.map(function(x,j){return cq('cu54'+i+j,x.c,x.e,x.o,x.r,x.ex,x.p)});
+    });
+  }
+  window.RS54.total=D.length;
+}catch(e){}
+/* re-pintado: si el Camino ya se dibujo antes de que RS54 existiera, se vuelve a renderizar */
+try{
+  var app54=document.getElementById('app');
+  if(app54&&app54.textContent.indexOf('Cargando los cuentos')>=0&&typeof render==='function')render();
+}catch(e){}
+window.RS54.DATOS.forEach(function(o,i){o.idx=i});
+})();
+</script>
 </body>
 </html>
