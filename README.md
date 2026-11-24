@@ -392,3 +392,27 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 - Sin emojis: todo es SVG dibujado a mano; el gancho vive en el `avatarSVG` de v37, así que si v45 no está el avatar queda exactamente igual.
 
 **Módulos:** gancho en `demo-html/modulos/v37-mascota.js` + `demo-html/modulos/v45-evolucion.js` (nuevo; etapas, capas SVG, tarjeta de progreso y CSS; API `window.RS45`). Caché PWA a `rscp-v34` / `reto-saber-v32`.
+
+### v46 — Rival sugerido y marcador de duelos entre personas reales
+
+- **Rival sugerido en la Liga**: una tarjeta nueva propone hasta 3 rivales de tu semana y liga — reales de la nube o cuentas de tu dispositivo — ordenados por **cuánto se parecen tus XP semanales** (el primero lleva la marca «tu nivel de XP ahora mismo»). Se reta con el botón **Duelo** de siempre: 10 preguntas y el rival responde con su **precisión real**; sin rivales disponibles, la tarjeta lo explica y sugiere cómo crearlos.
+- **Marcador contra cada rival**: al terminar cada duelo se guarda tu registro personal por rival (victorias · derrotas · empates, `u.riv`) y la tarjeta lo muestra («marcador 2V · 1D»). Sobrevive a la nube porque viaja dentro del usuario. La estadística global de duelos de la base (`u.duel`) queda igual: la suma exacta la sigue haciendo la mecánica original.
+- Sin duplicados: la tarjeta se refresca en cada render y vive una sola vez por Liga.
+
+**Módulos:** `demo-html/modulos/v46-rivales.js` (nuevo; candidatos, sugerencia por XP semanal, marcador y CSS; API `window.RS46`). 
+
+### v47 — Dos artículos nuevos para la mascota: Sombrero vueltiao y Bufanda sabia
+
+- **Sombrero vueltiao** (9): copa crema con bandas negras y ala ancha — identidad colombiana en tu mascota. **1500 monedas**.
+- **Bufanda sabia** (10): bufanda turquesa con cola colgando y flecos, para las noches de estudio. **1300 monedas**.
+- Ambos: premium (candado en el editor que compra directo), catálogo de la Tienda con icono SVG propio (vueltiao y bufanda van al sprite v35), y una vez comprados se seleccionan como cualquier accesorio. El catálogo de accesorios del editor pasa de 9 a 11 opciones; Sorpréndeme sigue eligiendo solo entre los 7 gratuitos.
+- La calibración de tests existentes se ajustó al catálogo grande (test-v42: máximo de botones de compra; test-bat3: 11 opciones).
+
+**Módulos:** sprites «vueltiao» y «bufanda» en `v35-area-iconos.js`; `ACCS=11`, nombres, anclas y dibujo en `v37-mascota.js`; precios/catálogo/compra en `v42-tienda.js`.
+
+### v48 — Recordatorio del plan nocturno con la app abierta
+
+- Si la aplicación queda abierta, ahora avisa sin que tengas que refrescar: **desde las 19:00** te invita a armar el plan de mañana si aún no existe, y **desde las 20:00** recuerda los bloques pendientes del plan de mañana (una sola vez por día en cada caso; aviso por voz-tirón `say`, sin impedir nada).
+- Sin estado nuevo en el usuario: el aviso vive en la sesión. En lección o repaso se calla; con la pestaña quieta lo revisa cada minuto. `window.RS48HORA` permite fijar la hora en pruebas; API `window.RS48`.
+
+**Módulos:** `demo-html/modulos/v48-recordatorio.js` (nuevo; `window.RS48`). Cache PWA a `rscp-v35` / `reto-saber-v33`.

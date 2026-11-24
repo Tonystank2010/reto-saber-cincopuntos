@@ -11,7 +11,7 @@
 'use strict';
 
 const FORMAS=['punto','chiguiro','zorro','robot','tucan','perezoso','gato','buho'];
-const OJOS=4,BOCAS=4,ACCS=9;/* 7=bigote, 8=diadema de estrella (articulos de la tienda) */
+const OJOS=4,BOCAS=4,ACCS=11;/* 7=bigote, 8=diadema de estrella, 9=sombrero vueltiao, 10=bufanda sabia (articulos de la tienda) */
 const COLORES=['','#f59e0b','#ef4444','#8b5cf6','#3b82f6','#10b981','#ec4899','#14b8a6','#f97316','#64748b','#0ea5e9','#84cc16','#a855f7'];
 
 /* anclas por forma: altura de ojos (ey), tope de la cabeza (ty),
@@ -30,7 +30,7 @@ const NOMF={punto:'Punto',chiguiro:'Chigüiro',zorro:'Zorro',robot:'Robot',tucan
 const NOMC=['Automático','Miel','Coral rojo','Violeta','Azul cielo','Esmeralda','Rosa fucsia','Turquesa','Naranja','Gris pizarra','Celeste','Lima','Orquídea'];
 const NOMO=['Normales','Brillo de estrellas','Guiño','Felices (∧)'];
 const NOMB=['Sonrisa','Asombro (o)','Lengua fuera','Seria'];
-const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella'];const PREMC=['#f5c542','#22d3ee','#e879f9'];const PREMN=['Oro real','Cian hielo','Lila neon'];
+const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella','Sombrero vueltiao','Bufanda sabia'];const PREMC=['#f5c542','#22d3ee','#e879f9'];const PREMN=['Oro real','Cian hielo','Lila neon'];
 
 
 function cfg(){
@@ -144,6 +144,21 @@ function accesorio(tipo,f,colBase){
     const tp=g.ty-9;
     return`<path d="M${50-g.cw/2-2} ${tp+9}q${g.cw/2+2} -13 ${g.cw+4} 0" style="fill:none;stroke:#0ea5e9;stroke-width:4;stroke-linecap:round"/>`
       +`<path d="M50 ${tp}l3 6.2 6.5 1-4.7 4.7 1.1 6.6-5.9-3.1-5.9 3.1 1.1-6.6-4.7-4.7 6.5-1z" style="fill:#f5c542;stroke:rgba(0,0,0,.18);stroke-width:1"/>`;
+  }
+  if(tipo===9){ /* sombrero vueltiao: copa crema con bandas negras y ala ancha */
+    const ala=`<ellipse cx="50" cy="${ty+3}" rx="${cw*0.44}" ry="4.2" style="fill:#f1e5c3;stroke:rgba(0,0,0,.24);stroke-width:1"/>`;
+    const copa=`<path d="M${50-cw*0.18} ${ty+2}q0-17 ${cw*0.36} 0z" style="fill:#f1e5c3;stroke:rgba(0,0,0,.18);stroke-width:1"/>`;
+    const b1=`<path d="M${50-cw*0.18} ${ty-4}q${cw*0.18} -6 ${cw*0.36} 0" style="fill:none;stroke:#1c1917;stroke-width:2.6;stroke-linecap:round"/>`;
+    const b2=`<path d="M${50-cw*0.15} ${ty-1}q${cw*0.15} -4.5 ${cw*0.3} 0" style="fill:none;stroke:#1c1917;stroke-width:2.6;stroke-linecap:round"/>`;
+    const b3=`<path d="M${50-cw*0.19} ${ty+1.5}q${cw*0.19} -3 ${cw*0.38} 0" style="fill:none;stroke:#1c1917;stroke-width:2.6;stroke-linecap:round"/>`;
+    return copa+b1+b2+b3+ala;
+  }
+  if(tipo===10){ /* bufanda sabia: vueltas al cuello con cola colgando y flecos */
+    const y=Math.max(62,g.ey+15);
+    return`<rect x="26" y="${y}" width="48" height="10" rx="5" style="fill:#0d9488;stroke:rgba(0,0,0,.18);stroke-width:1"/>`
+      +`<rect x="57" y="${y+3}" width="9" height="17" rx="3.5" style="fill:#0f766e"/>`
+      +`<path d="M59 ${y+17}v5M62 ${y+17}v5M65 ${y+17}v5" style="stroke:#f1e5c3;stroke-width:1.6;stroke-linecap:round"/>`
+      +`<path d="M30 ${y+8}q20 4 40 0" style="fill:none;stroke:rgba(255,255,255,.30);stroke-width:2;stroke-linecap:round"/>`;
   }
   return'';
 }
@@ -273,7 +288,7 @@ function tilesDe(k,actual){
   else if(k==='c'){return tilesColor(actual)}
   else if(k==='o'){vals=[0,1,2,3];nombres=NOMO}
   else if(k==='b'){vals=[0,1,2,3];nombres=NOMB}
-  else{vals=[0,1,2,3,4,5,6,7,8];nombres=NOMA}
+  else{vals=[0,1,2,3,4,5,6,7,8,9,10];nombres=NOMA}
   return vals.map(function(v,i){
     var valor=String(v);
     var on=valor===String(actual)?' on':'';
@@ -292,6 +307,8 @@ function tilesDe(k,actual){
 function esPremium(k,v){
   if(k==='a'&&+v===7)return'm';
   if(k==='a'&&+v===8)return'd';
+  if(k==='a'&&+v===9)return's';
+  if(k==='a'&&+v===10)return'f';
   if(k==='c'&&(v==='#f5c542'||v==='#22d3ee'||v==='#e879f9'))return'c'+v;
   return null;
 }

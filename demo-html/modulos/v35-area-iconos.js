@@ -65,7 +65,9 @@ const P={
  forma:'<rect x="5" y="5" width="14" height="14" rx="5"/>',
  paleta:'<path d="M12 3.5a8.5 8.5 0 1 0 .6 17c1.7 0 2.3-1 1.6-2.3-.7-1.5.3-2.7 2-2.7h1.6A3.3 3.3 0 0 0 20.5 12C20 7.2 16.6 3.5 12 3.5z"/><circle cx="8.3" cy="9.3" r="1.2"/><circle cx="13" cy="7.2" r="1.2"/><circle cx="16.6" cy="10.6" r="1.2"/>',
  boca:'<path d="M5.5 10.5q6.5 7.5 13 0"/><circle cx="5.5" cy="10.5" r="1"/><circle cx="18.5" cy="10.5" r="1"/>',
- gorra:'<path d="M6.5 15a5.5 5.5 0 0 1 11 0"/><path d="M3.5 15h17"/><path d="M12 6.8V5.2"/><circle cx="12" cy="4.8" r=".8"/>'
+ gorra:'<path d="M6.5 15a5.5 5.5 0 0 1 11 0"/><path d="M3.5 15h17"/><path d="M12 6.8V5.2"/><circle cx="12" cy="4.8" r=".8"/>',
+ vueltiao:'<path d="M3.5 16.5h17"/><path d="M7 16.5q0-7 5-7t5 7"/><path d="M7.8 13.2q4.2-2.6 8.4 0"/><path d="M7 16.5q5-3.4 10 0"/>',
+ bufanda:'<path d="M6 8.5h12M6 8.5v4.5h12V8.5"/><path d="M9 13v7M11.5 13v7M14 13v7"/><path d="M6 8.5q6-4 12 0"/>'
 };
 const LLENOS=',corazon,fuego,estrella,gema,medalla,corazonroto,estrella0,reproducir,';
 
