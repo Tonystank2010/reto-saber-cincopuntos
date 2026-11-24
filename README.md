@@ -355,3 +355,5 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 - **Cambiar contraseña solo en Ajustes**: la tarjeta aparece únicamente en la pestaña Ajustes del Perfil, no en Progreso ni en Personalizar.
 
 **Módulos:** parche base (topbar, monedas en textos, `touch` con protector, contraseña) + `demo-html/modulos/v42-tienda.js` (nuevo) + icono «moneda» en v35 + artículos premium en v37. Caché PWA a `rscp-v28` / `reto-saber-v26`.
+
+**Corrección (v42.1)**: la ventana emergente ahora es **singleton**: se elimina cualquier capa previa antes de dibujarse (nada de ventanas superpuestas tras un doble toque), se cierra sola al entrar a una lección o cuento, la tarjeta de la tienda se refresca en cada render (la cartera y los precios deshabilitados nunca quedan viejos) y un seguro adicional deja una sola capa al primer click del usuario. Caché PWA a `rscp-v29` / `reto-saber-v27`.

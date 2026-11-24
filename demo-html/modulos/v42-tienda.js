@@ -177,34 +177,43 @@ try{
 function inyectar(){
   try{
     var main=document.querySelector('main');if(!main)return;
-    /* tarjeta de tienda, solo en el camino (va tras el banner de seccion) */
+    /* tarjeta de tienda, solo en el camino; se refresca en cada render para
+       que la cartera y los precios deshabilitados nunca queden viejos */
+    var card=main.querySelector('[data-rs42]');
     var enCamino=!!main.querySelector('.rs39ban[data-k="camino"]');
-    if(enCamino&&!main.querySelector('[data-rs42]')){
+    if(enCamino&&!(S.L||S.R)){
       var ancla=main.querySelector('.rs39ban[data-k="camino"]')||main.querySelector(':scope>.top');
-      if(ancla)ancla.insertAdjacentHTML('afterend',tiendaCard(U()));
-    }else if(main.querySelector('[data-rs42]')&&!enCamino){
-      var vieja=main.querySelector('[data-rs42]');
-      if(vieja&&vieja.remove)vieja.remove();
-    }
-    /* ventana emergente a nivel de pagina */
-    var bk=document.querySelector('.rs42bk');
-    if(S.rs42){
-      var htm=ventana(U());
-      if(bk){bk.outerHTML=htm}
-      else{
-        var d=document.createElement('div');d.innerHTML=htm;
-        var nd=d.firstChild;if(nd)document.body.appendChild(nd);
+      if(ancla){
+        var htmC=tiendaCard(U());
+        if(card){card.outerHTML=htmC}
+        else ancla.insertAdjacentHTML('afterend',htmC);
       }
-    }else if(bk&&bk.remove){bk.remove()}
+    }else if(card&&card.remove){card.remove()}
+    /* ventana emergente: SIEMPRE una sola. Se quitan todas las existentes y
+       se agrega una nueva; asi ningun doble toque o reentrada deja capas
+       superpuestas. Se cierra sola si entra una leccion o un cuento. */
+    var todas=document.querySelectorAll('.rs42bk'),i;
+    for(i=0;i<todas.length;i++){if(todas[i]&&todas[i].remove)todas[i].remove()}
+    if(S.rs42&&S.view==='app'&&!(S.L||S.R)){
+      var dv=document.createElement('div');dv.innerHTML=ventana(U());
+      var nd=dv.firstChild;if(nd)document.body.appendChild(nd);
+    }
   }catch(e){}
 }
 try{
   css();
   if(typeof render==='function'){
     var _r42=render;
-    render=function(){var r=_r42.apply(this,arguments);try{inyectar()}catch(e){}return r};
+    render=function(){var r=_r42.apply(this,arguments);try{(S.L||S.R)&&(S.rs42=null);inyectar()}catch(e){}return r};
   }
   setTimeout(inyectar,0);
+}catch(e){}
+/* seguro extra: si por alguna razon llegaran a existir dos capas,
+   el primer click del usuario deja solo la primera */
+try{
+  document.addEventListener('click',function(){
+    try{var t=document.querySelectorAll('.rs42bk');for(var i=1;i<t.length;i++){if(t[i].remove)t[i].remove()}}catch(e){}
+  },true);
 }catch(e){}
 
 /* API para pruebas */
