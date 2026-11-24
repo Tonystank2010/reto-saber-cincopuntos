@@ -57,7 +57,9 @@ const P={
  impresora:'<path d="M7.5 8V3.5h9V8"/><rect x="4" y="8" width="16" height="8.5" rx="2"/><path d="M7.5 14h9v6.5h-9z"/><path d="M10 17.5h4"/>',
  escudo:'<path d="M12 3.5 5.2 6.3v5.2c0 4.4 2.9 8 6.8 9.5 3.9-1.5 6.8-5.1 6.8-9.5V6.3z"/><path d="M9.3 12.2l2 2 3.4-4"/>',
  brujula:'<circle cx="12" cy="12" r="8.5"/><path d="M15 9l-1.9 4.6L8.5 15.5l1.9-4.6z"/>',
- reproducir:'<path d="M9 6.2v11.6L18.6 12z"/>'
+ reproducir:'<path d="M9 6.2v11.6L18.6 12z"/>',
+ 'flecha-der':'<path d="M4.5 12h14"/><path d="M13 6.5l5.5 5.5-5.5 5.5"/>',
+ 'flecha-izq':'<path d="M19.5 12h-14"/><path d="M11 6.5 5.5 12l5.5 5.5"/>'
 };
 const LLENOS=',corazon,fuego,estrella,gema,medalla,corazonroto,estrella0,reproducir,';
 
@@ -76,6 +78,7 @@ const MAP={
   '📅':'calendario','🗓':'calendario','⚠':'alerta','✅':'check','⚔':'duelo','🏅':'medalla',
   '💎':'gema','📱':'movil','🌸':'cuentos','👁':'ojo','🗨':'duelo',
   '\u23F1':'reloj','\u23F3':'relojarena','\u23F8':'pausa','\u2691':'bandera',
+  '\u2192':'flecha-der','\u2190':'flecha-izq',
   '\u2713':'check','\u2714':'check','\u2715':'cerrar','\u2716':'cerrar','\u25B6':'reproducir','\u2B1C':'casilla',
   '🍀':'trebol','🎲':'dado','👉':'dedo','💾':'disquete','📊':'grafica','📲':'movil','🔐':'candado','🔑':'llave','🖨':'impresora','🛡':'escudo','🧭':'brujula','🕘':'reloj'
 };
@@ -190,6 +193,29 @@ try{
 }catch(e){}
 
 try{setTimeout(paseFull,0)}catch(e){}
+
+/* ---------- 8) observador: cubre re-renders que no pasan por render() ----------
+   Anti-bucle: solo re-pinta si queda texto sin sustituir (nodes de texto,
+   saltando SCRIPT/STYLE/TEMPLATE). */
+function hayPend(raiz){
+  try{
+    var raiz2=(raiz&&raiz.nodeType===9)?document.body:raiz;
+    if(!raiz2)return false;
+    var tw=document.createTreeWalker(raiz2,NodeFilter.SHOW_TEXT,{acceptNode:function(n){
+      return /^(SCRIPT|STYLE|TEMPLATE)$/.test(n.parentNode.nodeName)?NodeFilter.FILTER_REJECT:NodeFilter.FILTER_ACCEPT}});
+    var n;
+    while((n=tw.nextNode())){RX.lastIndex=0;if(RX.test(n.nodeValue)){RX.lastIndex=0;return true}RX.lastIndex=0}
+  }catch(e){}
+  return false;
+}
+try{
+  var _tm35=0;
+  var mo35=new MutationObserver(function(mu){
+    if(_tm35)return;
+    _tm35=setTimeout(function(){_tm35=0;try{if(hayPend(document.documentElement))paseFull()}catch(e){}},50);
+  });
+  mo35.observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+}catch(e){}
 
 /* API para pruebas */
 window.RS35={ico:ico,colorDe:colorDe,pase:paseFull,iconificar:iconificar,pintar:pintar,MAP:MAP,RX:RX,
