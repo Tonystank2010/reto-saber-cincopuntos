@@ -2083,7 +2083,11 @@ const P={
  brujula:'<circle cx="12" cy="12" r="8.5"/><path d="M15 9l-1.9 4.6L8.5 15.5l1.9-4.6z"/>',
  reproducir:'<path d="M9 6.2v11.6L18.6 12z"/>',
  'flecha-der':'<path d="M4.5 12h14"/><path d="M13 6.5l5.5 5.5-5.5 5.5"/>',
- 'flecha-izq':'<path d="M19.5 12h-14"/><path d="M11 6.5 5.5 12l5.5 5.5"/>'
+ 'flecha-izq':'<path d="M19.5 12h-14"/><path d="M11 6.5 5.5 12l5.5 5.5"/>',
+ forma:'<rect x="5" y="5" width="14" height="14" rx="5"/>',
+ paleta:'<path d="M12 3.5a8.5 8.5 0 1 0 .6 17c1.7 0 2.3-1 1.6-2.3-.7-1.5.3-2.7 2-2.7h1.6A3.3 3.3 0 0 0 20.5 12C20 7.2 16.6 3.5 12 3.5z"/><circle cx="8.3" cy="9.3" r="1.2"/><circle cx="13" cy="7.2" r="1.2"/><circle cx="16.6" cy="10.6" r="1.2"/>',
+ boca:'<path d="M5.5 10.5q6.5 7.5 13 0"/><circle cx="5.5" cy="10.5" r="1"/><circle cx="18.5" cy="10.5" r="1"/>',
+ gorra:'<path d="M6.5 15a5.5 5.5 0 0 1 11 0"/><path d="M3.5 15h17"/><path d="M12 6.8V5.2"/><circle cx="12" cy="4.8" r=".8"/>'
 };
 const LLENOS=',corazon,fuego,estrella,gema,medalla,corazonroto,estrella0,reproducir,';
 
@@ -2494,29 +2498,77 @@ function css(){
   document.head.appendChild(est);
 }
 
-/* ---------- editor ---------- */
-function chips(k,vals,nombres,actual,swatch){
-  return'<div class="row">'+vals.map((v,i)=>{
-    const valor=(swatch||(k==='f'))?v:String(i);
-    const on=String(valor)===String(actual)?' on':'';
-    let inner=swatch&&v?`<span aria-hidden="true" style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${v};vertical-align:-2px;margin-right:5px"></span>${nombres[i]}`:nombres[i];
-    return`<button class="chip${on}" data-a="rs37v" data-v="${k}:${valor}">${inner}</button>`;
-  }).join('')+'</div>';
+/* ---------- editor v40: consola de creacion (preview grande a la izquierda, categorias en columna y rejilla de opciones a la derecha) ---------- */
+var RSCAT='f';
+var CATS=[['f','forma','forma'],['c','paleta','color'],['o','ojo','ojos'],['b','boca','boca'],['a','gorra','accesorio']];
+function ic40(n){try{return(window.RS35&&RS35.ico)?RS35.ico(n):''}catch(e){return''}}
+function nombreCat(k){for(var i=0;i<CATS.length;i++)if(CATS[i][0]===k)return CATS[i][2];return'forma'}
+function tilesDe(k,actual){
+  var vals,nombres;
+  if(k==='f'){vals=FORMAS;nombres=FORMAS.map(function(x){return NOMF[x]})}
+  else if(k==='c'){vals=COLORES;nombres=NOMC}
+  else if(k==='o'){vals=[0,1,2,3];nombres=NOMO}
+  else if(k==='b'){vals=[0,1,2,3];nombres=NOMB}
+  else{vals=[0,1,2,3,4,5,6];nombres=NOMA}
+  return vals.map(function(v,i){
+    var valor=String(v);
+    var on=valor===String(actual)?' on':'';
+    var nm=nombres[i]||valor;
+    if(k==='c'){
+      var col=v||'var(--ac)';
+      return`<button class="rs40sw${on}" data-a="rs37v" data-v="c:${valor}" title="${nm}" aria-label="Color ${nm}" aria-pressed="${on?'true':'false'}" style="--sw:${col}"></button>`;
+    }
+    var c2=Object.assign({},cfg());c2[k]=(k==='f')?v:v;
+    return`<button class="rs40t${on}" data-a="rs37v" data-v="${k}:${valor}" title="${nm}" aria-label="${nombreCat(k)}: ${nm}" aria-pressed="${on?'true':'false'}"><span class="rs40mv" aria-hidden="true">${avatarSVG(c2,'neutro')}</span></button>`;
+  }).join('');
+}
+function css40(){
+  if(document.getElementById('rs40css'))return;
+  var est=document.createElement('style');est.id='rs40css';
+  est.textContent=[
+   '.rs40{display:grid;grid-template-columns:minmax(190px,240px) 1fr;gap:16px;align-items:start}',
+   '.rs40prev{display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 14px;border-radius:16px;',
+    'background:radial-gradient(130% 100% at 50% 0%,rgba(127,127,127,.16),rgba(127,127,127,.05));;border:1px solid var(--br)}',
+   '.rs40prev .rs37escena svg{width:150px;height:auto}',
+   '.rs40nom{margin:0;font-size:14px;font-weight:700;color:var(--tx)}',
+   '.rs40sel{display:flex;gap:14px;align-items:flex-start;min-width:0}',
+   '.rs40rail{display:flex;gap:8px;flex-wrap:wrap;flex:0 0 auto}',
+   '.rs40c{min-height:44px;width:44px;display:grid;place-items:center;border-radius:12px;',
+    'background:rgba(127,127,127,.10);color:var(--mu);border:2px solid transparent;cursor:pointer}',
+   '.rs40c svg{width:21px;height:21px}',
+   '.rs40c.on{border-color:var(--ac);color:var(--ac)}',
+   '.rs40c:hover{background:rgba(127,127,127,.07)}',
+   '.rs40g{display:flex;flex-wrap:wrap;gap:10px}',
+   '.rs40t{min-height:60px;width:60px;padding:6px;border-radius:14px;display:grid;place-items:center;',
+    'background:rgba(127,127,127,.08);border:2px solid transparent;cursor:pointer}',
+   '.rs40t svg{width:100%;height:100%}',
+   '.rs40t:hover{transform:scale(1.04)}',
+   '.rs40t.on{border-color:var(--ac)}',
+   '.rs40sw{min-height:34px;width:34px;border-radius:50%;background:var(--sw,#ccc);border:3px solid var(--cd,#fff);',
+    'box-shadow:0 0 0 2px transparent;padding:0;cursor:pointer}',
+   '.rs40sw:hover{box-shadow:0 0 0 2px rgba(127,127,127,.4)}',
+   '.rs40sw.on{box-shadow:0 0 0 2px var(--ac)}',
+   '.rs40ttl{margin:0 0 8px;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tx)}',
+   '.rs40ay{margin:10px 0 0}',
+   '@media(max-width:640px){.rs40{grid-template-columns:1fr}.rs40sel{flex-direction:column}}',
+   '@media(prefers-reduced-motion:no-preference){.rs40t{transition:transform .16s ease}}'
+  ].join('');
+  document.head.appendChild(est);
 }
 function cardAvatar(){
   const c=cfg();
-  return`<div class="card" data-v37="1">`
-   +`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">`
-   +`<div class="rs37hero"><div class="rs37escena" data-v37v="1">${miniAvatar()}</div>`
-   +`<button class="g" data-a="rs37r">🎲 Sorpréndeme</button></div>`
-   +`<div style="flex:1;min-width:220px"><b>Tu mascota</b>`
-   +`<p class="mu">Tu compañero de estudio del ecosistema Cinco Puntos: ${NOMF[c.f]||'Punto'} con ${NOMA[c.a]||'nada'}. Se guarda contigo y viaja con la nube.</p></div></div>`
-   +`<div class="mu" style="margin-top:10px">Forma</div>`+chips('f',FORMAS,FORMAS.map(x=>NOMF[x]),c.f,false)
-   +`<div class="mu" style="margin-top:8px">Color</div>`+chips('c',COLORES,NOMC,c.c,true)
-   +`<div class="mu" style="margin-top:8px">Ojos</div>`+chips('o',[0,1,2,3],NOMO,c.o,false)
-   +`<div class="mu" style="margin-top:8px">Boca</div>`+chips('b',[0,1,2,3],NOMB,c.b,false)
-   +`<div class="mu" style="margin-top:8px">Accesorio</div>`+chips('a',[0,1,2,3,4,5,6],NOMA,c.a,false)
-   +`</div>`;
+  const cat=(RSCAT&&CATS.some(x=>x[0]===RSCAT))?RSCAT:'f';
+  const rail=CATS.map(x=>`<button class="rs40c${x[0]===cat?' on':''}" data-a="rs37cat" data-v="${x[0]}" title="${x[2]}" aria-label="Editar ${x[2]}" aria-pressed="${x[0]===cat?'true':'false'}">${ic40(x[1])}</button>`).join('');
+  return`<div class="card" data-v37="1" data-v40="1">`
+   +`<div class="rs40">`
+   +`<div class="rs40prev"><div class="rs37escena" data-v37v="1">${miniAvatar()}</div>`
+   +`<button class="g" data-a="rs37r">${ic40('dado')} Sorpr\u00e9ndeme</button>`
+   +`<p class="rs40nom">${NOMF[c.f]||'Punto'}${c.a?', '+NOMA[c.a]:''}</p></div>`
+   +`<div class="rs40sel"><div class="rs40rail" role="tablist" aria-label="Categorias de tu mascota">${rail}</div>`
+   +`<div style="flex:1;min-width:0"><p class="rs40ttl">${nombreCat(cat)}</p>`
+   +`<div class="rs40g">${tilesDe(cat,c[cat])}</div>`
+   +`<p class="mu rs40ay">Toca una opcion para aplicarla a tu mascota. Se guarda contigo y viaja con la nube.</p></div></div>`
+   +`</div></div>`;
 }
 
 /* ---------- inyecciones ---------- */
@@ -2555,7 +2607,7 @@ function inyectarLiga(){
   }catch(e){}
 }
 function inyectarTodo(){
-  try{css();inyectarPerfil();inyectarTop();inyectarLiga()}catch(e){}
+  try{css();css40();inyectarPerfil();inyectarTop();inyectarLiga()}catch(e){}
   /* el DOM inyectado tras el pase de v35 puede traer emojis (ej. el dado de Sorprendeme): repaso */
   try{window.RS35&&RS35.pase&&RS35.pase()}catch(e){}
 }
@@ -2582,7 +2634,7 @@ window.addEventListener('message',function(e){
 });
 
 
-try{Object.assign(A,{rs37v:function(v){const p=String(v).split(':');delta(p[0],p.slice(1).join(':'))},rs37r:function(){random()}})}catch(e){}
+try{Object.assign(A,{rs37v:function(v){const p=String(v).split(':');delta(p[0],p.slice(1).join(':'))},rs37r:function(){random()},rs37cat:function(v){RSCAT=(v&&CATS.some(x=>x[0]===v))?v:'f';render()}})}catch(e){}
 
 /* API para pruebas (RS36 se mantiene como alias) */
 window.RS37={cfg:cfg,random:random,svg:avatarSVG,mini:miniAvatar,inyectar:inyectarTodo,inyectarFB:inyectarFBp,FORMAS:FORMAS,COLORES:COLORES};
@@ -2594,6 +2646,128 @@ window.RS36=window.RS37;
 
 
 
+</script>
+<script>
+/* ---- v39: consola de estudio (barra lateral con tiles de icono, marca propia y banner de seccion) ----
+   Inspiracion general del estilo ed-tech de consola, con identidad 100% propia:
+   - glifo geometrico de cinco puntos (marca) y wordmark propio; ni logos ni mascotas de terceros.
+   - iconos del catalogo v35 en tiles redondeados; etiquetas propias de cada seccion.
+   - banner de seccion con el acento de la paleta elegida por el usuario (var(--ac)).
+   - escritorio: barra lateral ancha (icono + etiqueta en fila); movil conserva la barra inferior.
+   Inyeccion idempotente tras cada render + observador ligero (mismo patron v35). */
+(function(){
+'use strict';
+
+/* ---------- 1) textos propios por seccion ---------- */
+var SUBT={
+ camino:'Tu ruta de practica diaria',
+ cuentos:'Lectura critica paso a paso',
+ repaso:'Practica tus errores pasada',
+ carreras:'Evalua tu nivel en cada linea',
+ liga:'Tu division de esta semana',
+ perfil:'Tu progreso y ajustes'
+};
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+/* ---------- 2) glifo de marca: pentagono de cinco puntos ---------- */
+function glifo(){
+ return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true" focusable="false">'
+ +'<path d="M12 4.6 19.5 10.2l-2.8 8.8H7.3L4.5 10.2z" opacity=".55"/>'
+ +'<circle cx="12" cy="4.6" r="2" fill="currentColor" stroke="none"/>'
+ +'<circle cx="19.5" cy="10.2" r="2" fill="currentColor" stroke="none"/>'
+ +'<circle cx="16.7" cy="19" r="2" fill="currentColor" stroke="none"/>'
+ +'<circle cx="7.3" cy="19" r="2" fill="currentColor" stroke="none"/>'
+ +'<circle cx="4.5" cy="10.2" r="2" fill="currentColor" stroke="none"/>'
+ +'</svg>';
+}
+
+/* ---------- 3) CSS ---------- */
+function css(){
+ if(document.getElementById('rs39css'))return;
+ var s=document.createElement('style');s.id='rs39css';
+ s.textContent=[
+  /* banner de seccion */
+  '.rs39ban{display:flex;flex-direction:column;gap:2px;background:var(--ac);color:#fff;',
+   'border-radius:16px;padding:14px 18px;margin:0 0 14px;',
+   'box-shadow:0 6px 16px rgba(15,23,42,.16)}',
+  '.rs39ban b{font-size:15px;letter-spacing:.16em;font-weight:800;text-transform:uppercase}',
+  '.rs39ban span{font-size:13.5px;opacity:.92}',
+  /* marca propia dentro de la barra lateral */
+  '.rs39brand{display:flex;align-items:center;gap:10px;padding:2px 8px 12px;margin-bottom:8px;',
+   'border-bottom:1px solid var(--br)}',
+  '.rs39brand svg{width:34px;height:34px;color:var(--ac);flex:0 0 auto}',
+  '.rs39brand .rs39w{font-size:12.5px;font-weight:800;letter-spacing:.16em;line-height:1.35;color:var(--tx)}',
+  /* escritorio: barra lateral ancha con filas icono+etiqueta */
+  '@media(min-width:768px){',
+  ' nav{width:216px!important;padding:14px 12px 16px!important;justify-content:flex-start!important}',
+  ' .app{padding-left:216px!important}',
+  ' nav button{flex-direction:row!important;justify-content:flex-start!important;gap:12px!important;',
+   'padding:9px 10px!important;border-radius:12px!important;font-size:13.5px!important;color:var(--mu)}',
+  ' nav button:hover{background:rgba(127,127,127,.07)}',
+  ' nav button span{width:38px!important;height:38px!important;border-radius:12px!important;',
+   'display:grid!important;place-items:center!important;background:rgba(127,127,127,.10);margin:0!important;font-size:0}',
+  ' nav button span svg{width:21px!important;height:21px!important}',
+  ' nav button.on{color:var(--tx)}',
+  ' nav button.on span{background:var(--ac)!important;color:#fff!important}',
+  '}',
+  /* movil: la marca no aparece en la barra inferior; tiles compactos iguales a antes */
+  '@media(max-width:767px){.rs39brand{display:none}}',
+  '@media(prefers-reduced-motion:no-preference){',
+  ' .rs39ban{transition:transform .18s ease}',
+  '}'
+ ].join('\n');
+ document.head.appendChild(s);
+}
+
+/* ---------- 4) inyeccion idempotente ---------- */
+function inyectar(){
+ try{
+  css();
+  /* marca solo en escritorio (en movil la barra es inferior y compacta) */
+  var nav=document.querySelector('#app nav')||document.querySelector('nav');
+  if(nav){
+   if(!nav.querySelector('.rs39brand')){
+    var b=document.createElement('div');b.className='rs39brand';b.setAttribute('data-v39','1');
+    b.innerHTML=glifo()+'<span class="rs39w">CINCO<br>PUNTOS</span>';
+    nav.insertBefore(b,nav.firstChild);
+   }
+  }
+  /* banner de seccion solo en vistas de app (con .top directo), no en leccion/evaluacion */
+  var main=document.querySelector('main');
+  if(!main)return;
+  var top=main.querySelector(':scope>.top');
+  if(!top)return;
+  var ya=main.querySelector('.rs39ban');
+  var ab=nav&&nav.querySelector('button.on[data-a="tab"]');
+  var k=ab?ab.dataset.v:null;
+  if(!k||!SUBT[k])return;
+  if(ya&&ya.dataset.k===k)return;
+  if(ya&&ya.remove)ya.remove();
+  var ban=document.createElement('div');ban.className='rs39ban';ban.setAttribute('data-v39','1');ban.dataset.k=k;
+  ban.innerHTML='<b>'+esc(k)+'</b><span>'+esc(SUBT[k])+'</span>';
+  top.insertAdjacentElement('afterend',ban);
+ }catch(e){}
+}
+
+/* ---------- 5) cableado: wrapper de render + observador ---------- */
+try{
+ var _r39=render;
+ render=function(){var r=_r39.apply(this,arguments);try{inyectar()}catch(e){}return r};
+}catch(e){}
+try{setTimeout(inyectar,0)}catch(e){}
+try{
+ var _t39=0;
+ var mo39=new MutationObserver(function(){
+  if(_t39)return;
+  _t39=setTimeout(function(){_t39=0;try{inyectar()}catch(e){}},60);
+ });
+ mo39.observe(document.documentElement,{childList:true,subtree:true});
+}catch(e){}
+
+/* API para pruebas e integracion */
+try{window.RS39={inyectar:inyectar,SUBT:SUBT,glifo:glifo}}catch(e){}
+
+})();
 </script>
 </body>
 </html>

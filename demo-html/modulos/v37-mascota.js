@@ -242,29 +242,77 @@ function css(){
   document.head.appendChild(est);
 }
 
-/* ---------- editor ---------- */
-function chips(k,vals,nombres,actual,swatch){
-  return'<div class="row">'+vals.map((v,i)=>{
-    const valor=(swatch||(k==='f'))?v:String(i);
-    const on=String(valor)===String(actual)?' on':'';
-    let inner=swatch&&v?`<span aria-hidden="true" style="display:inline-block;width:14px;height:14px;border-radius:50%;background:${v};vertical-align:-2px;margin-right:5px"></span>${nombres[i]}`:nombres[i];
-    return`<button class="chip${on}" data-a="rs37v" data-v="${k}:${valor}">${inner}</button>`;
-  }).join('')+'</div>';
+/* ---------- editor v40: consola de creacion (preview grande a la izquierda, categorias en columna y rejilla de opciones a la derecha) ---------- */
+var RSCAT='f';
+var CATS=[['f','forma','forma'],['c','paleta','color'],['o','ojo','ojos'],['b','boca','boca'],['a','gorra','accesorio']];
+function ic40(n){try{return(window.RS35&&RS35.ico)?RS35.ico(n):''}catch(e){return''}}
+function nombreCat(k){for(var i=0;i<CATS.length;i++)if(CATS[i][0]===k)return CATS[i][2];return'forma'}
+function tilesDe(k,actual){
+  var vals,nombres;
+  if(k==='f'){vals=FORMAS;nombres=FORMAS.map(function(x){return NOMF[x]})}
+  else if(k==='c'){vals=COLORES;nombres=NOMC}
+  else if(k==='o'){vals=[0,1,2,3];nombres=NOMO}
+  else if(k==='b'){vals=[0,1,2,3];nombres=NOMB}
+  else{vals=[0,1,2,3,4,5,6];nombres=NOMA}
+  return vals.map(function(v,i){
+    var valor=String(v);
+    var on=valor===String(actual)?' on':'';
+    var nm=nombres[i]||valor;
+    if(k==='c'){
+      var col=v||'var(--ac)';
+      return`<button class="rs40sw${on}" data-a="rs37v" data-v="c:${valor}" title="${nm}" aria-label="Color ${nm}" aria-pressed="${on?'true':'false'}" style="--sw:${col}"></button>`;
+    }
+    var c2=Object.assign({},cfg());c2[k]=(k==='f')?v:v;
+    return`<button class="rs40t${on}" data-a="rs37v" data-v="${k}:${valor}" title="${nm}" aria-label="${nombreCat(k)}: ${nm}" aria-pressed="${on?'true':'false'}"><span class="rs40mv" aria-hidden="true">${avatarSVG(c2,'neutro')}</span></button>`;
+  }).join('');
+}
+function css40(){
+  if(document.getElementById('rs40css'))return;
+  var est=document.createElement('style');est.id='rs40css';
+  est.textContent=[
+   '.rs40{display:grid;grid-template-columns:minmax(190px,240px) 1fr;gap:16px;align-items:start}',
+   '.rs40prev{display:flex;flex-direction:column;align-items:center;gap:10px;padding:18px 14px;border-radius:16px;',
+    'background:radial-gradient(130% 100% at 50% 0%,rgba(127,127,127,.16),rgba(127,127,127,.05));;border:1px solid var(--br)}',
+   '.rs40prev .rs37escena svg{width:150px;height:auto}',
+   '.rs40nom{margin:0;font-size:14px;font-weight:700;color:var(--tx)}',
+   '.rs40sel{display:flex;gap:14px;align-items:flex-start;min-width:0}',
+   '.rs40rail{display:flex;gap:8px;flex-wrap:wrap;flex:0 0 auto}',
+   '.rs40c{min-height:44px;width:44px;display:grid;place-items:center;border-radius:12px;',
+    'background:rgba(127,127,127,.10);color:var(--mu);border:2px solid transparent;cursor:pointer}',
+   '.rs40c svg{width:21px;height:21px}',
+   '.rs40c.on{border-color:var(--ac);color:var(--ac)}',
+   '.rs40c:hover{background:rgba(127,127,127,.07)}',
+   '.rs40g{display:flex;flex-wrap:wrap;gap:10px}',
+   '.rs40t{min-height:60px;width:60px;padding:6px;border-radius:14px;display:grid;place-items:center;',
+    'background:rgba(127,127,127,.08);border:2px solid transparent;cursor:pointer}',
+   '.rs40t svg{width:100%;height:100%}',
+   '.rs40t:hover{transform:scale(1.04)}',
+   '.rs40t.on{border-color:var(--ac)}',
+   '.rs40sw{min-height:34px;width:34px;border-radius:50%;background:var(--sw,#ccc);border:3px solid var(--cd,#fff);',
+    'box-shadow:0 0 0 2px transparent;padding:0;cursor:pointer}',
+   '.rs40sw:hover{box-shadow:0 0 0 2px rgba(127,127,127,.4)}',
+   '.rs40sw.on{box-shadow:0 0 0 2px var(--ac)}',
+   '.rs40ttl{margin:0 0 8px;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--tx)}',
+   '.rs40ay{margin:10px 0 0}',
+   '@media(max-width:640px){.rs40{grid-template-columns:1fr}.rs40sel{flex-direction:column}}',
+   '@media(prefers-reduced-motion:no-preference){.rs40t{transition:transform .16s ease}}'
+  ].join('');
+  document.head.appendChild(est);
 }
 function cardAvatar(){
   const c=cfg();
-  return`<div class="card" data-v37="1">`
-   +`<div style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">`
-   +`<div class="rs37hero"><div class="rs37escena" data-v37v="1">${miniAvatar()}</div>`
-   +`<button class="g" data-a="rs37r">🎲 Sorpréndeme</button></div>`
-   +`<div style="flex:1;min-width:220px"><b>Tu mascota</b>`
-   +`<p class="mu">Tu compañero de estudio del ecosistema Cinco Puntos: ${NOMF[c.f]||'Punto'} con ${NOMA[c.a]||'nada'}. Se guarda contigo y viaja con la nube.</p></div></div>`
-   +`<div class="mu" style="margin-top:10px">Forma</div>`+chips('f',FORMAS,FORMAS.map(x=>NOMF[x]),c.f,false)
-   +`<div class="mu" style="margin-top:8px">Color</div>`+chips('c',COLORES,NOMC,c.c,true)
-   +`<div class="mu" style="margin-top:8px">Ojos</div>`+chips('o',[0,1,2,3],NOMO,c.o,false)
-   +`<div class="mu" style="margin-top:8px">Boca</div>`+chips('b',[0,1,2,3],NOMB,c.b,false)
-   +`<div class="mu" style="margin-top:8px">Accesorio</div>`+chips('a',[0,1,2,3,4,5,6],NOMA,c.a,false)
-   +`</div>`;
+  const cat=(RSCAT&&CATS.some(x=>x[0]===RSCAT))?RSCAT:'f';
+  const rail=CATS.map(x=>`<button class="rs40c${x[0]===cat?' on':''}" data-a="rs37cat" data-v="${x[0]}" title="${x[2]}" aria-label="Editar ${x[2]}" aria-pressed="${x[0]===cat?'true':'false'}">${ic40(x[1])}</button>`).join('');
+  return`<div class="card" data-v37="1" data-v40="1">`
+   +`<div class="rs40">`
+   +`<div class="rs40prev"><div class="rs37escena" data-v37v="1">${miniAvatar()}</div>`
+   +`<button class="g" data-a="rs37r">${ic40('dado')} Sorpr\u00e9ndeme</button>`
+   +`<p class="rs40nom">${NOMF[c.f]||'Punto'}${c.a?', '+NOMA[c.a]:''}</p></div>`
+   +`<div class="rs40sel"><div class="rs40rail" role="tablist" aria-label="Categorias de tu mascota">${rail}</div>`
+   +`<div style="flex:1;min-width:0"><p class="rs40ttl">${nombreCat(cat)}</p>`
+   +`<div class="rs40g">${tilesDe(cat,c[cat])}</div>`
+   +`<p class="mu rs40ay">Toca una opcion para aplicarla a tu mascota. Se guarda contigo y viaja con la nube.</p></div></div>`
+   +`</div></div>`;
 }
 
 /* ---------- inyecciones ---------- */
@@ -303,7 +351,7 @@ function inyectarLiga(){
   }catch(e){}
 }
 function inyectarTodo(){
-  try{css();inyectarPerfil();inyectarTop();inyectarLiga()}catch(e){}
+  try{css();css40();inyectarPerfil();inyectarTop();inyectarLiga()}catch(e){}
   /* el DOM inyectado tras el pase de v35 puede traer emojis (ej. el dado de Sorprendeme): repaso */
   try{window.RS35&&RS35.pase&&RS35.pase()}catch(e){}
 }
@@ -330,7 +378,7 @@ window.addEventListener('message',function(e){
 });
 
 
-try{Object.assign(A,{rs37v:function(v){const p=String(v).split(':');delta(p[0],p.slice(1).join(':'))},rs37r:function(){random()}})}catch(e){}
+try{Object.assign(A,{rs37v:function(v){const p=String(v).split(':');delta(p[0],p.slice(1).join(':'))},rs37r:function(){random()},rs37cat:function(v){RSCAT=(v&&CATS.some(x=>x[0]===v))?v:'f';render()}})}catch(e){}
 
 /* API para pruebas (RS36 se mantiene como alias) */
 window.RS37={cfg:cfg,random:random,svg:avatarSVG,mini:miniAvatar,inyectar:inyectarTodo,inyectarFB:inyectarFBp,FORMAS:FORMAS,COLORES:COLORES};
