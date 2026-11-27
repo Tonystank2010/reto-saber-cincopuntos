@@ -536,14 +536,16 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 - **Panel de Supervisión** para rol profesor/admin: tabla con el progreso de su grupo (nombre, grado, puntos, estado) y botones banear/desbanear, con consultas filtradas por grado y caché de 60 s para minimizar ancho de banda.
 - La configuración de la nube quedó marcada con los marcadores **SUPABASE_URL / SUPABASE_ANON_KEY** dentro del juego, apuntando a `supabase/schema.sql`.
 
+**Pantalla de entrada más limpia:** los botones «Privacidad y términos» y «Cargar copia de cuenta» salieron de la pantalla de entrada; «Privacidad y términos» ahora se abre desde **Ajustes** (Perfil > Ajustes) y la carga de copia sigue en su tarjeta de Ajustes.
+
 **PWA:**
 - Nuevo `public/manifest.json` (nombre, idioma es, modo standalone, iconos) y `public/sw.js` subido a **`rscp-v41`**: network-first en navegaciones, cache-first en recursos, versionado por `CACHE_NAME` — cada despliegue en Vercel reparte la actualización y limpia la caché antigua.
 
-### v60 — El tema y el color ya no se pierden al recargar
+### v60 — El tema y el color ya no se pierden al recargar (y sin recargas en bucle)
 
-- **Rescate del caché viejo**: los dispositivos que todavía tienen instalado el service worker antiguo (cache-first, `rscp-v39`) seguían abriendo la versión anterior del juego, que es la que perdía el tema. Ahora el juego registra el SW con `updateViaCache: none`, fuerza `reg.update()` al abrir y cada hora, y **recarga una sola vez automáticamente** cuando una versión nueva toma el control, para que el usuario no tenga que refrescar dos veces.
-- **Espejo de sesión con prioridad**: al abrir, las preferencias (tema claro/oscuro, tema de color, paleta, tamaño de letra) y la sesión activa se toman del espejo `retosaber.sesion` aunque el bloque grande quede con datos viejos; antes el espejo solo se usaba si el bloque grande no cargaba.
+- **Rescate del caché viejo**: los dispositivos con el service worker antiguo (`rscp-v39`, cache-first) seguían abriendo la versión anterior del juego, que es la que perdía el tema. Ahora el juego registra el SW con `updateViaCache: none`, fuerza `reg.update()` al abrir y cada hora, y **recarga una sola vez automáticamente** cuando una versión nueva toma el control (guardia en `sessionStorage` para no repetirse).
+- **Fusión de nube: las preferencias del dispositivo se quedan**: al fusionar con la nube (v27), las preferencias locales (tema claro/oscuro, paleta, tema de color, tamaño de letra) ya no son pisadas por la copia vieja de la nube; la nube solo manda las claves de estudio (est/tm/dst/rep) y gana el usuario con más XP. Tras la fusión también se sincroniza el espejo de sesión. Esto elimina la causa del «se devuelve al tema oscuro» y del bucle de recargas (fusión que siempre detectaba cambios y recargaba).
 - **Tema de color aplicado al arrancar** desde `ap()` (además del módulo v55), así el fondo elegido vuelve aunque un módulo tarde o falle.
 - Caché PWA subida a **`rscp-v42`** (network-first en navegaciones se mantiene).
 
-**Verificación:** arnés de pruebas con blob principal viejo (tema oscuro) + espejo nuevo: la app restaura tema Claro y tema de color Océano; ciclo completo de registro/recarga en verde; 33 bloques de script sin errores; test v21 de 10.003 preguntas OK.
+**Verificación:** arnés de pruebas: recarga normal restaura tema y color; blob corrupto restaura el tema desde el espejo; el espejo ya no pisa un bloque válido (sin ping-pong); fusión de nube con preferencia local ganante, espejo sincronizado y segunda fusión sin cambios (sin recarga); 33 bloques sin errores; test v21 de 10.003 preguntas OK; batería v59 en verde.
