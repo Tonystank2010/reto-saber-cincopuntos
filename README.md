@@ -510,3 +510,31 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 **Nombre y URL sin «demo»:** el archivo canónico pasa a `public/juego/Reto-Saber.html`, la URL pública es `/` (y `/juego/Reto-Saber.html`); la ruta antigua `/demo/Reto-Saber-Demo.html` redirige a la nueva. Todos los textos de la app ya no dicen «demo» (título, pantallas de cuenta, privacidad, descarga, panel parental). Actualizadas las copias (`demo-html/`, `desktop/`), los scripts (`sincronizar.js`, `actualizar_nube.py`, `actualizar_demo.py`), el iframe de la variante React y los tests.
 
 **Caché PWA** subida a `rscp-v40` / `reto-saber-v37`.
+
+### v59 — Camino plegable, misiones en la barra, cuentos solo en Lectura Crítica (en inglés), temas de color, panel de supervisión y esquema Supabase
+
+**Navegación simplificada:**
+- Las secciones largas del Camino (Plan nocturno, Desafío) quedan **plegables con un botón a la derecha del título**; el estado (abierto/cerrado) se recuerda entre sesiones (`DB.pref.col`). Todo el contenido del camino aparece ahora debajo del nombre de usuario y del encabezado «Camino».
+- El tercer botón de la barra superior (junto a la racha) ya no abre la Tienda: ahora son las **Misiones del día** 🎯 con contador de misiones completadas; la sección de misiones desaparece del Camino. La Tienda sigue disponible en su pestaña propia.
+
+**Cuentos solo en Lectura Crítica y obligatoriamente en inglés:**
+- Los nodos de cuento aparecen únicamente en el camino de **Lectura Crítica** (cada 5 lecciones) y desaparece la sección «Madurez lectora» del final del camino.
+- El lector muestra el texto **siempre en inglés** (práctica de lectura crítica en inglés, narrado con voz en-US); se eliminó la casilla «Escuchar en inglés». Los **títulos y las 60 preguntas** de los 15 cuentos pasaron a inglés; las categorías de competencia se mantienen en español para el mapeo con los temas oficiales del Icfes.
+
+**Apariencia:**
+- Los fondos degradados se sustituyen por **9 temas de color completos** (fondo, tarjetas, texto, bordes), independientes de la paleta de acentos de los botones: el usuario combina acento + tema libremente.
+- La sección **Accesibilidad pasa a «Personalización»** con pestaña propia dentro del Perfil (fuera de Ajustes), con las mismas opciones de tamaño de letra, alto contraste, reducir movimiento, paleta y tema de color.
+
+**Economía ajustada a lo que el usuario gana:**
+- Todos los precios de la Tienda se recalibraron a la ganancia real por día (lección 40–60 monedas, misión 15, duelo 30, contrarreloj, desafío 50, plan nocturno 60 ≈ 100–250/día): protector de racha 120, recuperar vidas 100, doble de monedas 250, accesorios de avatar 280–700, colores premium 150–160.
+
+**Supabase (`supabase/schema.sql`, nuevo):**
+- Tabla `public.perfiles` (id, email, nombre, rol, grado, baneado, puntos) vinculada a `auth.users` con trigger de alta automática.
+- Trigger **`rs_cupo_usuarios`** que cuenta los registros y bloquea el alta con un error claro («CUPO LLENO») al llegar a **50 usuarios** (protege el plan free).
+- **RLS estricta**: baneados sin acceso a nada; estudiantes leen/actualizan solo su fila (y un trigger guardián les prohíbe tocar rol/grado/baneado); profesores gestionan únicamente estudiantes de **su mismo grado** (incluido banear/desbanear); admin control total. Funciones auxiliares `SECURITY DEFINER STABLE` para que las políticas no se recursen.
+- **Chequeo de baneo en el cliente**: al iniciar sesión y en cada recarga (y cada 60 s) se consulta `baneado`; si está activo, alerta + `signOut()` inmediato. Subida de puntos con `upsert` sobre `perfiles`.
+- **Panel de Supervisión** para rol profesor/admin: tabla con el progreso de su grupo (nombre, grado, puntos, estado) y botones banear/desbanear, con consultas filtradas por grado y caché de 60 s para minimizar ancho de banda.
+- La configuración de la nube quedó marcada con los marcadores **SUPABASE_URL / SUPABASE_ANON_KEY** dentro del juego, apuntando a `supabase/schema.sql`.
+
+**PWA:**
+- Nuevo `public/manifest.json` (nombre, idioma es, modo standalone, iconos) y `public/sw.js` subido a **`rscp-v41`**: network-first en navegaciones, cache-first en recursos, versionado por `CACHE_NAME` — cada despliegue en Vercel reparte la actualización y limpia la caché antigua.
