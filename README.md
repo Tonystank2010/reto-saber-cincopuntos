@@ -538,3 +538,12 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 
 **PWA:**
 - Nuevo `public/manifest.json` (nombre, idioma es, modo standalone, iconos) y `public/sw.js` subido a **`rscp-v41`**: network-first en navegaciones, cache-first en recursos, versionado por `CACHE_NAME` — cada despliegue en Vercel reparte la actualización y limpia la caché antigua.
+
+### v60 — El tema y el color ya no se pierden al recargar
+
+- **Rescate del caché viejo**: los dispositivos que todavía tienen instalado el service worker antiguo (cache-first, `rscp-v39`) seguían abriendo la versión anterior del juego, que es la que perdía el tema. Ahora el juego registra el SW con `updateViaCache: none`, fuerza `reg.update()` al abrir y cada hora, y **recarga una sola vez automáticamente** cuando una versión nueva toma el control, para que el usuario no tenga que refrescar dos veces.
+- **Espejo de sesión con prioridad**: al abrir, las preferencias (tema claro/oscuro, tema de color, paleta, tamaño de letra) y la sesión activa se toman del espejo `retosaber.sesion` aunque el bloque grande quede con datos viejos; antes el espejo solo se usaba si el bloque grande no cargaba.
+- **Tema de color aplicado al arrancar** desde `ap()` (además del módulo v55), así el fondo elegido vuelve aunque un módulo tarde o falle.
+- Caché PWA subida a **`rscp-v42`** (network-first en navegaciones se mantiene).
+
+**Verificación:** arnés de pruebas con blob principal viejo (tema oscuro) + espejo nuevo: la app restaura tema Claro y tema de color Océano; ciclo completo de registro/recarga en verde; 33 bloques de script sin errores; test v21 de 10.003 preguntas OK.
