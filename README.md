@@ -15,7 +15,7 @@ demo de un solo archivo a una arquitectura moderna lista para desplegar:
 ├── index.html                  # raíz de la app React
 ├── src/                        # App, Login, Game (iframe) y supabase
 ├── public/
-│   ├── demo/Reto-Saber-Demo.html   # el juego completo (archivo único, con puente v19)
+│   ├── juego/Reto-Saber.html       # el juego completo (archivo único, con puente v19)
 │   ├── icon.svg · manifest.webmanifest · sw.js
 ├── demo-html/                  # historial del demo (versión anterior incluida) + LEEME
 │   └── historial/              # 7 prototipos congelados (repos históricos)
@@ -45,11 +45,11 @@ La app publicada es **el demo de archivo único, sin React** (v27). Para verla e
 
 ```bash
 # opción 1: abrir directo
-doble clic en public/demo/Reto-Saber-Demo.html
+doble clic en public/juego/Reto-Saber.html
 
 # opción 2: servidor local
 python3 -m http.server 8000 --directory public
-# → http://localhost:8000/demo/Reto-Saber-Demo.html
+# → http://localhost:8000/juego/Reto-Saber.html
 ```
 
 Los `src/` y `package.json` conservan la **variante React** (opcional, ver más abajo); el despliegue por defecto NO la usa.
@@ -105,8 +105,8 @@ La conexión usa la clave anon (pública por diseño); la protección real son l
 
 1. Fusiona el PR a `main` y entra a [vercel.com/new](https://vercel.com/new).
 2. `Sign in with GitHub` → **Import** el repo `Tonystank2010/reto-saber-cincopuntos`.
-3. La configuración sales de `vercel.json`: sin build real, sirve la carpeta **`public/`** y la ruta `/` abre el demo. Variables de entorno: **ninguna necesaria** (las credenciales del modo nube van dentro del HTML con `actualizar_nube.py`, paso 4 del modo nube).
-4. `Deploy`. La app queda en `https://<proyecto>.vercel.app` y el demo directo en `/demo/Reto-Saber-Demo.html`.
+3. La configuración sales de `vercel.json`: sin build real, sirve la carpeta **`public/`** y la ruta `/` abre el juego. Variables de entorno: **ninguna necesaria** (las credenciales del modo nube van dentro del HTML con `actualizar_nube.py`, paso 4 del modo nube).
+4. `Deploy`. La app queda en `https://<proyecto>.vercel.app` y el juego directo en `/juego/Reto-Saber.html` (la ruta antigua `/demo/Reto-Saber-Demo.html` redirige a la nueva).
 5. Cada `git push` a `main` redespliega solo. Las URLs de vista previa aparecen en cada PR.
 
 ### Variante React (opcional)
@@ -121,7 +121,7 @@ y define `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` en *Environment Variable
 
 ## El juego (demo de archivo único)
 
-`public/demo/Reto-Saber-Demo.html` funciona también **solo y sin servidor** (ábrelo directo
+`public/juego/Reto-Saber.html` funciona también **solo y sin servidor** (ábrelo directo
 en el navegador). El «puente v19» al final del archivo solo se activa dentro de un iframe
 de la app: sincroniza el progreso con Supabase y nunca altera el juego como tal.
 El módulo «v20» corrige un defecto de la v18: la tarjeta **★ Preguntas marcadas**
@@ -189,8 +189,8 @@ progreso es demasiado grande para un código, la app sugiere usar el archivo.
 
 **Opción 1 · archivo único (recomendado):**
 - En el juego: **Perfil → «💾 Descargar el juego» → «Descargar el juego (un solo archivo)»**.
-- Descarga `Reto-Saber-Demo.html` (~0,9 MB). Se abre con **doble clic**, sin internet; el progreso se guarda en el navegador del archivo (en Chromium/Edge, cada archivo local comparte almacenamiento; en Firefox, por ruta).
-- Alternativa sin abrir el juego: descargar el archivo directamente desde el [demo en línea](https://reto-saber-cincopuntos.vercel.app/demo/Reto-Saber-Demo.html) (Ctrl/Cmd+S o botón derecho → Guardar como).
+- Descarga `Reto-Saber.html` (~1,1 MB). Se abre con **doble clic**, sin internet; el progreso se guarda en el navegador del archivo (en Chromium/Edge, cada archivo local comparte almacenamiento; en Firefox, por ruta).
+- Alternativa sin abrir el juego: descargar el archivo directamente desde la [app en línea](https://reto-saber-cincopuntos.vercel.app/juego/Reto-Saber.html) (Ctrl/Cmd+S o botón derecho → Guardar como).
 
 **Opción 2 · app de escritorio (Electron):**
 ```bash
@@ -469,4 +469,44 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 
 **Módulos:** `demo-html/modulos/v54-cuentos.js` (nuevo; API `window.RS54`). Pruebas 26/26 + batería regresiva completa en verde; las 3 copias del demo idénticas.
 
+### v55 — Camino por etapas, mapa interactivo, Tienda con pestaña propia, 12 paletas y 9 fondos
+
+- **Fin de los módulos de dificultad**: el camino de cada área pasa de 3 niveles (Básico/Intermedio/Avanzado) a **etapas continuas** (Despegue, Fundamentos, Práctica, Constancia, Avance, Reto, Nivel fuerte, Maestría, Élite, Cima, Dominio; 26 lecciones por etapa). Cada área es **un solo camino que se alarga lo necesario** para usar **todas las preguntas del banco** (286 lecciones por área con la cuota v21); las lecciones ya no filtran por nivel, así que el 100 % del banco rota por el camino.
+- **Mapa más interactivo**: tarjetas de área con etapa actual y barra de progreso, chips de las 11 etapas, línea de ruta punteada entre nodos, la siguiente lección marcada con un **anillo pulsante** (respeta `prefers-reduced-motion`), botón «Ir a mi etapa» y scroll automático al nodo pendiente.
+- **Tienda con pestaña propia** (igual que Camino/Repaso/Carreras, ya no es una capa sobre otras pestañas) y **catálogo ampliado**: protector de racha, recuperar vidas, doble de monedas, 6 colores premium de avatar y 6 artículos nuevos (bigote, diadema de estrella, sombrero vueltiao, bufanda sabia, mochila escolar, corbata de honor).
+- **Variedad visual**: las paletas pasan de 5 a **12 combinaciones de color** (todas con contraste AA verificado) y se suman **9 fondos de pantalla** (Clásico, Aurora, Atardecer, Océano, Bosque, Noche estrellada, Dunas, Malla, Puntos) elegibles en Perfil > Accesibilidad y guardados en `DB.pref.fondo`.
+
+**Módulos:** `demo-html/modulos/v55-apariencia.js` (nuevo; API `window.RS55`), `v21-banco-rotativo.js` (reutilizado sin filtro de nivel), `v40-avatars.js` y `v42-tienda.js` (ampliados). 
+
+### v56 — Material oficial del Icfes dentro del juego
+
+- Nueva tarjeta **«Material oficial · Icfes»** en la pestaña Repaso: práctica con **82 preguntas oficiales** extraídas de los cuadernillos y guías Saber 11 que el equipo sube al repositorio `material` (Matemáticas, Lectura Crítica, Ciencias Naturales y Sociales y Ciudadanas, con la clave oficial de respuestas). Se practican de a 10 al azar, sin vidas ni límite de tiempo, y cada acierto da 5 monedas.
+- Cada pregunta conserva su **afirmación/evidencia evaluada** como retroalimentación («Clave oficial: B. Esta pregunta evalúa: …») y las de las guías traen la **explicación oficial completa**.
+- Catálogo de los **20 temas explicados de muestra** (PDFs del repositorio `material`) agrupados por área.
+- El dataset completo (137 preguntas normalizadas al esquema de la Tarea 2, con fuentes, URL y licencia) queda en `docs/material-oficial/preguntas-oficiales.json`, validado con `validar_preguntas.py`. Las preguntas que dependen de figuras/tablas no reconstruibles en texto quedan marcadas con `requiere_imagen` y se excluyen del juego hasta disponer de sus imágenes.
+- Pendiente para próximas cargas del repo `material`: respuestas del Mini Test 2027, más cuadernillos (Inglés) y los cuentos.
+
+**Módulos:** `demo-html/modulos/v56-material-oficial.js` (nuevo; API `window.RS56`).
+
+### v57 — Cuentos alineados al material oficial de Lectura Crítica
+
+- Las 4 etapas de los 15 cuentos ya no son solo niveles de asistencia: cada una entrena una **competencia oficial de Lectura Crítica del Icfes**, tomando los temas del repositorio `material`: **Contenidos locales · Información explícita** (tema 03), **Palabras en contexto** (vocabulario), **Inferencias** (tema 07) y **Reflexión y propósito · Sentido global** (tema 09).
+- Cada etapa evalúa **primero la pregunta de su competencia** (las otras tres completan la ronda de 4, con umbral de 2 aciertos para superar la etapa).
+- El lector muestra en cada etapa «Esta etapa entrena: Tema NN · <competencia>» y las preguntas se etiquetan con los nombres oficiales (Información explícita, Palabras en contexto, Inferencias, Reflexión y propósito).
+
+**Cambios en el núcleo del demo** (constante `ET`, acción `rq` y ensamblaje de `window.RS54`).
+
 **Caché PWA** subida a `rscp-v38` / `reto-saber-v36`.
+
+### v58 — Sesión blindada, cuentos intercalados y nuevo nombre sin «demo»
+
+**Bugs corregidos (la app ya no se reinicia al recargar):**
+- Persistencia blindada: `save()` reintenta con una copia recortada (diario/repaso/historial con tope) si el almacenamiento se llena, y además guarda una **copia espejo mínima** (`retosaber.sesion`) con la sesión y las preferencias. Si el bloque grande se corrompe o no cabe, al abrir de nuevo la app recupera el tema elegido y la sesión activa desde el espejo.
+- Se pide `navigator.storage.persist()` para que el navegador no evacue los datos del juego.
+- El service worker se registra ahora desde el propio juego (antes nadie lo registraba en producción) y pasa a `rscp-v40` con estrategia **network-first para navegaciones**: cada actualización llega de verdad al usuario y sin conexión sigue abriendo la app.
+
+**Cuentos intercalados en el camino:** el nodo suelto del final desaparece; ahora después de **cada 5 lecciones** aparece el siguiente cuento (rotan los 15) con su etapa de comprensión lectora; los completados se marcan con ✓ verde. La pestaña Cuentos sigue disponible en el Perfil.
+
+**Nombre y URL sin «demo»:** el archivo canónico pasa a `public/juego/Reto-Saber.html`, la URL pública es `/` (y `/juego/Reto-Saber.html`); la ruta antigua `/demo/Reto-Saber-Demo.html` redirige a la nueva. Todos los textos de la app ya no dicen «demo» (título, pantallas de cuenta, privacidad, descarga, panel parental). Actualizadas las copias (`demo-html/`, `desktop/`), los scripts (`sincronizar.js`, `actualizar_nube.py`, `actualizar_demo.py`), el iframe de la variante React y los tests.
+
+**Caché PWA** subida a `rscp-v40` / `reto-saber-v37`.

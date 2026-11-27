@@ -9,7 +9,7 @@ global.U = () => usu;
 global.save = () => {};
 global.window = global;
 
-const ruta = path.join(__dirname, '..', 'public', 'demo', 'Reto-Saber-Demo.html');
+const ruta = path.join(__dirname, '..', 'public', 'juego', 'Reto-Saber.html');
 const html = fs.readFileSync(ruta, 'utf8');
 const cortes = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
 const mod = cortes.map(m => m[1]).find(s => s.includes('v21: banco rotativo'));

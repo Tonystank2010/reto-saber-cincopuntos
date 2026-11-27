@@ -16,9 +16,9 @@ import argparse, io, os, sys
 DEMOS = []
 RAIZ = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 for rel in (
-    os.path.join('public', 'demo', 'Reto-Saber-Demo.html'),
-    os.path.join('demo-html', 'Reto-Saber-Demo.html'),
-    os.path.join('desktop', 'app', 'Reto-Saber-Demo.html'),
+    os.path.join('public', 'juego', 'Reto-Saber.html'),
+    os.path.join('demo-html', 'Reto-Saber.html'),
+    os.path.join('desktop', 'app', 'Reto-Saber.html'),
 ):
     p = os.path.join(RAIZ, rel)
     if os.path.exists(p):

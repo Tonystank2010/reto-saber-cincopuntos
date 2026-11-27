@@ -8,7 +8,7 @@ aplicación de escritorio con **Electron** para Windows, macOS y Linux.
 ```bash
 cd desktop
 npm install          # descarga Electron (~100 MB, solo la primera vez)
-npm run sincronizar  # copia el demo canónico de public/demo a app/
+npm run sincronizar  # copia el juego canónico de public/juego a app/
 npm start            # abre la ventana del juego
 ```
 
@@ -32,8 +32,8 @@ dispositivos. La contraseña guardada en el dispositivo (v23) funciona igual aqu
 
 ## Importante
 
-- `app/Reto-Saber-Demo.html` es una **copia**: al actualizar el demo
-  (`public/demo/Reto-Saber-Demo.html`), vuelve a ejecutar `npm run sincronizar`.
+- `app/Reto-Saber.html` es una **copia**: al actualizar el demo
+  (`public/juego/Reto-Saber.html`), vuelve a ejecutar `npm run sincronizar`.
 - Esta carpeta tiene su propio `package.json`: el desarrollo web (raíz del
   repositorio) no descarga Electron.
 - Seguridad: `contextIsolation` activado y `nodeIntegration` desactivado; la

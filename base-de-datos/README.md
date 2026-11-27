@@ -1,6 +1,6 @@
 # Demo HTML de Reto Saber
 
-Un solo archivo, `Reto-Saber-Demo.html`. Se abre con doble clic en un navegador reciente, sin internet, sin terminal y sin instalar nada. Es independiente del demo con React de `src/`.
+Un solo archivo, `Reto-Saber.html`. Se abre con doble clic en un navegador reciente, sin internet, sin terminal y sin instalar nada. Es independiente del demo con React de `src/`.
 
 ## Qué incluye
 - **Cuentas locales** con usuario, correo y contraseña (guardada como hash), confirmación de 18 años o autorización del acudiente, onboarding de tres pantallas y una versión corta de la política de privacidad en el pie de página.

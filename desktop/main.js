@@ -19,10 +19,10 @@ function crear(){
    {label:'Salir',accelerator:'Ctrl+Q',role:'quit'}]},
   {label:'Ver',submenu:[{role:'zoomIn'},{role:'zoomOut'},{role:'resetZoom'}]},
   {label:'Ayuda',submenu:[
-   {label:'Juego en línea',click:()=>shell.openExternal('https://tonystank2010.github.io/reto-saber-cincopuntos/public/demo/Reto-Saber-Demo.html')},
+   {label:'Juego en línea',click:()=>shell.openExternal('https://reto-saber-cincopuntos.vercel.app/')},
    {label:'Sobre el proyecto',click:()=>shell.openExternal('https://github.com/Tonystank2010/reto-saber-cincopuntos')}]}
  ]));
- win.loadFile(path.join(__dirname,'app','Reto-Saber-Demo.html'));
+ win.loadFile(path.join(__dirname,'app','Reto-Saber.html'));
  win.on('closed',()=>{win=null});
 }
 app.whenReady().then(crear);

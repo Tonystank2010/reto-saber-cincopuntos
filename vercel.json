@@ -2,7 +2,8 @@
   "buildCommand": "true",
   "outputDirectory": "public",
   "rewrites": [
-    { "source": "/", "destination": "/demo/Reto-Saber-Demo.html" }
+    { "source": "/", "destination": "/juego/Reto-Saber.html" },
+    { "source": "/demo/Reto-Saber-Demo.html", "destination": "/juego/Reto-Saber.html" }
   ],
   "headers": [
     {
@@ -12,7 +13,7 @@
       ]
     },
     {
-      "source": "/demo/(.*)",
+      "source": "/juego/(.*)",
       "headers": [
         { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
       ]

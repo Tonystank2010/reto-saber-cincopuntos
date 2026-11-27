@@ -93,7 +93,7 @@ export default function Game({ user, supa }) {
   return (
     <>
       {aviso && <div className="banner" role="status">{aviso}</div>}
-      <iframe ref={iframe} title="Reto Saber" className="juego" src="/demo/Reto-Saber-Demo.html" />
+      <iframe ref={iframe} title="Reto Saber" className="juego" src="/juego/Reto-Saber.html" />
     </>
   )
 }
