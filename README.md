@@ -478,4 +478,14 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 
 **Módulos:** `demo-html/modulos/v55-apariencia.js` (nuevo; API `window.RS55`), `v21-banco-rotativo.js` (reutilizado sin filtro de nivel), `v40-avatars.js` y `v42-tienda.js` (ampliados). 
 
+### v56 — Material oficial del Icfes dentro del juego
+
+- Nueva tarjeta **«Material oficial · Icfes»** en la pestaña Repaso: práctica con **82 preguntas oficiales** extraídas de los cuadernillos y guías Saber 11 que el equipo sube al repositorio `material` (Matemáticas, Lectura Crítica, Ciencias Naturales y Sociales y Ciudadanas, con la clave oficial de respuestas). Se practican de a 10 al azar, sin vidas ni límite de tiempo, y cada acierto da 5 monedas.
+- Cada pregunta conserva su **afirmación/evidencia evaluada** como retroalimentación («Clave oficial: B. Esta pregunta evalúa: …») y las de las guías traen la **explicación oficial completa**.
+- Catálogo de los **20 temas explicados de muestra** (PDFs del repositorio `material`) agrupados por área.
+- El dataset completo (137 preguntas normalizadas al esquema de la Tarea 2, con fuentes, URL y licencia) queda en `docs/material-oficial/preguntas-oficiales.json`, validado con `validar_preguntas.py`. Las preguntas que dependen de figuras/tablas no reconstruibles en texto quedan marcadas con `requiere_imagen` y se excluyen del juego hasta disponer de sus imágenes.
+- Pendiente para próximas cargas del repo `material`: respuestas del Mini Test 2027, más cuadernillos (Inglés) y los cuentos.
+
+**Módulos:** `demo-html/modulos/v56-material-oficial.js` (nuevo; API `window.RS56`).
+
 **Caché PWA** subida a `rscp-v38` / `reto-saber-v36`.
