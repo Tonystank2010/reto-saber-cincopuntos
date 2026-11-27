@@ -2,7 +2,7 @@
 // Requiere HTTPS (Vercel lo provee) y se actualiza al cambiar el cache name.
 // skipWaiting + clients.claim: la versión nueva toma el control al recargar una sola vez.
 // Las navegaciones son network-first: el usuario siempre recibe la versión nueva si hay internet.
-const V = 'rscp-v41'
+const V = 'rscp-v42'
 const ARCH = ['/', '/juego/Reto-Saber.html', '/manifest.json', '/manifest.webmanifest', '/icon.svg', '/icon-192.png', '/icon-512.png']
 self.addEventListener('install', e => e.waitUntil(
   caches.open(V).then(c => c.addAll(ARCH)).then(() => self.skipWaiting())

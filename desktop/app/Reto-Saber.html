@@ -142,7 +142,7 @@ const W={'Matemáticas':3,'Lectura Crítica':3,'Ciencias Naturales':3,'Sociales 
 const BOTS=['Luna_88','Capi','NovaSaber','Tito','Mapache','Zorro','Pixel','Aurora','Cometa'];
 let DB={users:{},cur:null},mem=false;
 try{const x=JSON.parse(localStorage.getItem(K));if(x&&x.users)DB=x}catch(e){}
-try{const s=JSON.parse(localStorage.getItem(KS));if(s&&typeof s==='object'){if(s.pref&&!DB.pref)DB.pref=s.pref;if(s.cur&&DB.users&&DB.users[s.cur]&&!DB.cur)DB.cur=s.cur}}catch(e){}
+try{const s=JSON.parse(localStorage.getItem(KS));if(s&&typeof s==='object'){if(s.pref)DB.pref=Object.assign({},DB.pref||{},s.pref);if(s.cur&&DB.users&&DB.users[s.cur])DB.cur=s.cur}}catch(e){}
 const save=()=>{let ok=false;try{localStorage.setItem(K,JSON.stringify(DB));ok=true}catch(e){}
  if(!ok){try{const c=JSON.parse(JSON.stringify(DB));for(const k in c.users){const x=c.users[k];if(x&&x.diario&&x.diario.length>60)x.diario=x.diario.slice(-60);if(x&&x.rev&&x.rev.length>150)x.rev=x.rev.slice(-150);if(x&&x.hist&&x.hist.length>40)x.hist=x.hist.slice(-40)}localStorage.setItem(K,JSON.stringify(c))}catch(e){mem=true}}
  try{localStorage.setItem(KS,JSON.stringify({cur:DB.cur,pref:DB.pref}))}catch(e){}};
@@ -543,7 +543,7 @@ function impCuenta(d){if(!d||d.reto_saber!=='cuenta'||!d.cuenta)return'El archiv
  DB.users[em]=n;DB.cur=em;S.view='app';S.tab='perfil';save();return'Cuenta cargada: '+n.name+'.'}
 function polView(){document.getElementById('app').innerHTML=`<main><button class="g" data-a="polx">← Volver</button><h1>Privacidad y términos</h1><div class="card"><p class="mu">Borrador en lenguaje claro. Debe ser revisado por una persona con conocimiento legal antes de abrir el juego a usuarios reales. Responsable del tratamiento y contacto: por definir por el equipo.</p><h3>Qué datos guarda la app</h3><p>Tu nombre de usuario, correo, grado, contraseña (guardada cifrada con un hash), puntajes, respuestas falladas, vidas y metas. Todo se guarda solo en este navegador y este dispositivo; no se envía a ningún servidor.</p><h3>Para qué se usan</h3><p>Para mostrarte tu progreso, repasar tus errores y recomendarte qué estudiar. No se usan para publicidad ni se venden.</p><h3>Datos anónimos del piloto</h3><p>Si participas en un piloto, el equipo puede exportar estadísticas por pregunta y reportes sin nombre ni correo, para mejorar las preguntas.</p><h3>Menores de 18 años</h3><p>Necesitas la autorización de tu acudiente. Pedimos solo los datos necesarios: no pedimos documento de identidad, dirección ni fotos.</p><h3>Tus derechos</h3><p>Puedes conocer, corregir y borrar tus datos. Desde Perfil puedes descargar tu copia o eliminar tu cuenta, y se borra todo lo guardado de ella en este dispositivo.</p><h3>Límites de la app</h3><p>No hay verificación de correo ni recuperación de contraseña. Si borras los datos del navegador, pierdes tu progreso, salvo que hayas descargado tu copia. Las preguntas son de práctica, originales y sin revisión completa; no son oficiales ni están afiliadas al ICFES.</p></div></main>`}
 function render(){const u=U();if(S.pol){polView();return}if(S.view==='app'&&u){if(!u.onb&&u.tot>0){u.onb=1;save()}if(!u.onb){onbView();return}}render0()}
-function ap(){const p=DB.pref||{};document.documentElement.setAttribute('data-th',p.th||'');document.body.style.fontSize=[16,18,21][p.fs||0]+'px';document.body.classList.toggle('lf',!!p.lf)}
+function ap(){const p=DB.pref||{};document.documentElement.setAttribute('data-th',p.th||'');if(p.fondo)document.documentElement.setAttribute('data-fondo',String(p.fondo).slice(0,16));document.body.style.fontSize=[16,18,21][p.fs||0]+'px';document.body.classList.toggle('lf',!!p.lf)}
 function acc(){const p=DB.pref||{};return`<div class="card"><b>Personalización</b><div class="row" style="margin:8px 0"><button class="g" data-a="fs" data-v="-1" aria-label="Disminuir tamaño de letra">A−</button><button class="g" data-a="fs" data-v="1" aria-label="Aumentar tamaño de letra">A+</button></div><div class="row">${[['','Automático'],['light','Claro'],['dark','Oscuro']].map(t=>`<button class="chip ${(p.th||'')===t[0]?'on':''}" data-a="th" data-v="${t[0]}">${t[1]}</button>`).join('')}</div><div class="row" style="margin-top:8px"><button class="chip ${p.lf?'on':''}" data-a="lf">${p.lf?'✓ ':''}Lectura fácil (más espacio)</button></div><p class="mu">Se guarda en este dispositivo. Puedes navegar con la tecla Tab. Los aciertos y los errores se marcan también con ✔ y ✖, no solo con color.</p></div>`}
 function est(q,ok){const u=U(),hoy=new Date().toISOString().slice(0,10);u.dd=u.dd||[];if(!u.dd.includes(hoy))u.dd.push(hoy);if(String(q.id)[0]==='g')return;
  const L=S.L,ms=L&&L.q0?Math.min(Date.now()-L.q0,12e4):0,e=(DB.est=DB.est||{})[q.id]||(DB.est[q.id]=[0,0,0,0,{}]);e[0]++;if(ok)e[1]++;e[2]=(e[2]||0)+ms;e[3]=(e[3]||0)+1;e[4]=e[4]||{};
@@ -655,7 +655,11 @@ const _sx=A.sx;A.sx=()=>{const L=S.L;if(L&&L.kind==='sim'&&!L.end)L.qs.forEach((
 if(DB.cur&&DB.users[DB.cur]){S.view='app';roll(U())}else DB.cur=null;
 render();
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
-try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1'))navigator.serviceWorker.register('/sw.js').catch(()=>{})}catch(e){}
+try{if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')){
+ navigator.serviceWorker.register('/sw.js',{updateViaCache:'none'}).then(reg=>{try{reg.update()}catch(e){}setInterval(()=>{try{reg.update()}catch(e){}},36e5)}).catch(()=>{});
+ let habia=!!navigator.serviceWorker.controller;
+ navigator.serviceWorker.addEventListener('controllerchange',()=>{try{if(habia&&!sessionStorage.getItem('rs.swrec')){sessionStorage.setItem('rs.swrec','1');location.reload()}}catch(e){}})
+}}catch(e){}
 </script>
 <script>
 /* ---- v19: puente React/Supabase (Retro Saber Cinco Puntos) ---- */
