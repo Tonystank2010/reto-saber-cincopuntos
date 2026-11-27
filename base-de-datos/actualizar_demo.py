@@ -12,7 +12,7 @@ Uso:   python3 actualizar_demo.py [Reto-Saber-Demo.html] [banco-preguntas.db] [-
 import sys,re,json,sqlite3,shutil,os,collections
 args=[a for a in sys.argv[1:] if not a.startswith('--')];solo='--solo-aprobadas' in sys.argv
 aqui=os.path.dirname(os.path.abspath(__file__))
-cands=[os.path.join(aqui,'..','demo-html','Reto-Saber-Demo.html'),os.path.join(aqui,'..','Reto-Saber-Demo.html')]
+cands=[os.path.join(aqui,'..','demo-html','Reto-Saber.html'),os.path.join(aqui,'..','Reto-Saber.html')]
 html=args[0] if args else next((c for c in cands if os.path.exists(c)),cands[0])
 db=args[1] if len(args)>1 else os.path.join(aqui,'banco-preguntas.db')
 AREAS={'Saber 11':['Matemáticas','Lectura Crítica','Ciencias Naturales','Sociales y Ciudadanas','Inglés'],'Saber Pro / TyT':['Razonamiento Cuantitativo','Lectura Crítica','Comunicación Escrita','Competencias Ciudadanas','Inglés']}
