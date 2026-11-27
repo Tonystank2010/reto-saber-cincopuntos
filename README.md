@@ -488,4 +488,12 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 
 **Módulos:** `demo-html/modulos/v56-material-oficial.js` (nuevo; API `window.RS56`).
 
+### v57 — Cuentos alineados al material oficial de Lectura Crítica
+
+- Las 4 etapas de los 15 cuentos ya no son solo niveles de asistencia: cada una entrena una **competencia oficial de Lectura Crítica del Icfes**, tomando los temas del repositorio `material`: **Contenidos locales · Información explícita** (tema 03), **Palabras en contexto** (vocabulario), **Inferencias** (tema 07) y **Reflexión y propósito · Sentido global** (tema 09).
+- Cada etapa evalúa **primero la pregunta de su competencia** (las otras tres completan la ronda de 4, con umbral de 2 aciertos para superar la etapa).
+- El lector muestra en cada etapa «Esta etapa entrena: Tema NN · <competencia>» y las preguntas se etiquetan con los nombres oficiales (Información explícita, Palabras en contexto, Inferencias, Reflexión y propósito).
+
+**Cambios en el núcleo del demo** (constante `ET`, acción `rq` y ensamblaje de `window.RS54`).
+
 **Caché PWA** subida a `rscp-v38` / `reto-saber-v36`.
