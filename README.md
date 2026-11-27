@@ -469,4 +469,13 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 
 **Módulos:** `demo-html/modulos/v54-cuentos.js` (nuevo; API `window.RS54`). Pruebas 26/26 + batería regresiva completa en verde; las 3 copias del demo idénticas.
 
+### v55 — Camino por etapas, mapa interactivo, Tienda con pestaña propia, 12 paletas y 9 fondos
+
+- **Fin de los módulos de dificultad**: el camino de cada área pasa de 3 niveles (Básico/Intermedio/Avanzado) a **etapas continuas** (Despegue, Fundamentos, Práctica, Constancia, Avance, Reto, Nivel fuerte, Maestría, Élite, Cima, Dominio; 26 lecciones por etapa). Cada área es **un solo camino que se alarga lo necesario** para usar **todas las preguntas del banco** (286 lecciones por área con la cuota v21); las lecciones ya no filtran por nivel, así que el 100 % del banco rota por el camino.
+- **Mapa más interactivo**: tarjetas de área con etapa actual y barra de progreso, chips de las 11 etapas, línea de ruta punteada entre nodos, la siguiente lección marcada con un **anillo pulsante** (respeta `prefers-reduced-motion`), botón «Ir a mi etapa» y scroll automático al nodo pendiente.
+- **Tienda con pestaña propia** (igual que Camino/Repaso/Carreras, ya no es una capa sobre otras pestañas) y **catálogo ampliado**: protector de racha, recuperar vidas, doble de monedas, 6 colores premium de avatar y 6 artículos nuevos (bigote, diadema de estrella, sombrero vueltiao, bufanda sabia, mochila escolar, corbata de honor).
+- **Variedad visual**: las paletas pasan de 5 a **12 combinaciones de color** (todas con contraste AA verificado) y se suman **9 fondos de pantalla** (Clásico, Aurora, Atardecer, Océano, Bosque, Noche estrellada, Dunas, Malla, Puntos) elegibles en Perfil > Accesibilidad y guardados en `DB.pref.fondo`.
+
+**Módulos:** `demo-html/modulos/v55-apariencia.js` (nuevo; API `window.RS55`), `v21-banco-rotativo.js` (reutilizado sin filtro de nivel), `v40-avatars.js` y `v42-tienda.js` (ampliados). 
+
 **Caché PWA** subida a `rscp-v38` / `reto-saber-v36`.

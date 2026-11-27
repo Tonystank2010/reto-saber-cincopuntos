@@ -185,15 +185,15 @@ function fin(){const u=U(),L=S.L;touch(u);let xp=0,st=0;
  if(L.kind==='diag'){const d={};L.hist.forEach(h=>{d[h.a]=d[h.a]||{ok:0,tot:0};d[h.a].tot++;d[h.a].ok+=h.ok});ST(u).diag=d}
  else{if(L.kind==='les'){st=L.dead?0:L.ok===5?3:L.ok===4?2:L.ok>=3?1:0;xp=L.ok*10+(L.ok===5?10:0);if(st)u.done[L.k]=Math.max(u.done[L.k]||0,st);
   L.bad.forEach(b=>{if(!u.rev.some(x=>x.q.id===b.q.id))u.rev.push({q:b.q,pk:b.pick,cf:b.cf,box:0,due:Date.now()})})}else xp=L.ok*5;u.xp+=xp;u.wxp+=xp}
- L.end={xp,st};cuenta(L);save()}
+ if(L.kind==='les'&&(u.x2|0)>0){xp*=2;u.x2=(u.x2|0)-1}L.end={xp,st};cuenta(L);save()}
 function answer(sel,to){const L=S.L,q=L.qs[L.i],u=U(),ok=sel===q.respuesta;L.chk=1;L.sel=sel;L.to=to;u.tot++;est(q,ok);say(ok?'Respuesta correcta.':sel==='?'?'Marcaste no lo sé.':sel===null?'Se acabó el tiempo.':'Respuesta incorrecta.');
  if(ok){L.ok++;u.ok++;fcn(q,1)}else{L.bad.push({q,pick:sel,cf:L.cf});fcn(q,0);if(L.kind==='les'){u.v=Math.max(0,u.v-1);if(!u.v){u.vt=Date.now();L.dead=1}}}
  if(L.kind==='diag')L.hist.push({a:q.area,ok:ok?1:0});if(L.kind==='rev')revUp(u,q.id,ok);save()}
 setInterval(()=>{const L=S.L;if(!L||L.end||L.chk||!L.t0||L.intro||L.kind==='rev')return;const s=TL()-(Date.now()-L.t0)/1000,b=document.getElementById('tm');
  if(b){b.style.width=Math.max(0,s/TL()*100)+'%';document.getElementById('ts').textContent=Math.ceil(Math.max(0,s))+' s'}if(s<=0){answer(null,1);render()}},250);
 const A={
- at:v=>{S.at=v;S.err='';S.f=null;render()},tab:v=>{S.tab=v;S.L=null;S.R=null;stopTTS();render()},exam:v=>{S.exam=v;render()},area:v=>{S.area=v;S.niv=null;render()},niv:v=>{S.niv=+v;render()},back:()=>{S.niv=null;render()},home:()=>{S.L=null;S.R=null;stopTTS();render()},
- les:v=>{const[a,n]=v.split('|');if(canPlay(U())){S.L=mk('les',draw(a,+n,5),{k:(S.exam==='Saber 11'?'':S.exam+'|')+v});render()}},
+ at:v=>{S.at=v;S.err='';S.f=null;render()},tab:v=>{S.tab=v;S.L=null;S.R=null;stopTTS();render()},exam:v=>{S.exam=v;render()},area:v=>{S.area=v;S.niv=null;S.etapa=null;render()},niv:v=>{S.niv=+v;render()},etapa:v=>{S.etapa=+v;render()},back:()=>{S.area=null;S.etapa=null;render()},home:()=>{S.L=null;S.R=null;stopTTS();render()},
+ les:v=>{const[a,e,i]=v.split('|');if(canPlay(U())){S.L=mk('les',draw(a,null,5),{k:(S.exam==='Saber 11'?'':S.exam+'|')+v,et:+e,gi:+i});render()}},
  diag:()=>{if(canPlay(U())){S.L=mk('diag',AR.flatMap(a=>draw(a,null,10)));render()}},
  rev:()=>{const u=U(),d=u.rev.filter(x=>x.due<=Date.now());S.L=mk('rev',(d.length?d:u.rev).slice(0,5).map(x=>x.q),{t0:0});render()},
  pick:v=>{if(!S.L.chk){S.L.sel=v;render()}},
@@ -217,14 +217,39 @@ function auth(){const t=`<div class="row"><button class="chip ${S.at==='in'?'on'
  const b=S.at==='in'?em+pw+'<button data-a="in">Entrar</button><p class="mu">No hay recuperación de contraseña en este demo.</p>'
  :`<label>Nombre de usuario (el que quieras)<input id="nm" maxlength="24" autocomplete="nickname" value="${esc(F.nm||'')}"></label><br><br>${em}${pw}<label>Grado o nivel (opcional)<select id="gr"><option value="">Prefiero no decirlo</option><option>9.º</option><option>10.º</option><option>11.º</option><option>Universitario</option><option>Técnico o tecnólogo</option></select></label><br><br><label style="display:flex;gap:8px;align-items:flex-start;font-weight:500"><input id="cn" type="checkbox" style="width:auto;min-height:0;margin-top:4px"> Tengo 18 años o más, o cuento con la autorización de mi acudiente. Entiendo que mis datos (usuario, correo, grado y progreso) se guardan solo en este dispositivo y que puedo borrarlos desde Perfil.</label><br><button data-a="new">Crear cuenta y jugar</button>`;
  return`<main><h1>Reto Saber</h1>${t}<div class="card">${b}${S.err?`<p class="err">${esc(S.err)}</p>`:''}</div><div class="card mu">⚠️ Demo: usa un correo y una contraseña de prueba. Todo se guarda solo en este navegador y dispositivo; la contraseña se guarda cifrada con un hash; además queda guardada en este dispositivo para no volver a escribirla (nunca sale del dispositivo); no hay verificación de correo ni copia en la nube.</div>${note}</main>`}
+const POR_ETAPA=26,ETAPAS=['Despegue','Fundamentos','Práctica','Constancia','Avance','Reto','Nivel fuerte','Maestría','Élite','Cima','Dominio'],NETAPAS=ETAPAS.length;
+const leccDe=a=>Math.ceil(((window.RS10K&&RS10K.cuota&&RS10K.cuota[a])||1429)/5);
+const preExam=()=>S.exam==='Saber 11'?'':S.exam+'|';
+const leccHechas=(u,a)=>{const p=preExam();let n=0;for(let gi=0,m=leccDe(a);gi<m;gi++)if(u.done[p+a+'|L|'+gi])n++;return n};
+const primeraPend=(u,a)=>{const p=preExam(),m=leccDe(a);for(let gi=0;gi<m;gi++)if(!u.done[p+a+'|L|'+gi])return gi;return m};
+const etapaDe=(u,a)=>Math.min(NETAPAS-1,Math.floor(Math.min(primeraPend(u,a),leccDe(a)-1)/POR_ETAPA));
 function camino0(u){const ex=CAT.examenes.map(e=>`<button class="chip ${e.id===S.exam?'on':''}" ${e.disponible?`data-a="exam" data-v="${esc(e.id)}"`:'disabled'}>${e.id}${e.disponible?'':' · pronto'}</button>`).join('');
- const as=CAT.areas.filter(a=>a.examen===S.exam).map(a=>`<button class="chip ${a.id===S.area?'on':''}" data-a="area" data-v="${esc(a.id)}">${a.id}</button>`).join('');
- const dg=ST(u).diag?'':`<div class="card">📋 <b>Evaluación de admisión · ${S.exam}</b><p>5 bloques, uno por área (45 s por pregunta); puedes pausar entre bloques. Estima tu nivel por área y recomienda la dificultad. Si no sabes una respuesta, marca «No lo sé». No gasta vidas.</p><button data-a="diag">Empezar evaluación</button></div>`;
- let b;if(S.niv==null){const x=ST(u).diag&&ST(u).diag[S.area],rc=x?rec(x.ok/x.tot):-1;
-  b=`<b>${esc(S.area)}</b><p>Elige la dificultad:</p><div class="dif">${NIV.map((n,j)=>`<button class="${j===rc?'':'g'}" data-a="niv" data-v="${j}">${n}<small>${j===rc?'★ Recomendado':'50 niveles'}</small></button>`).join('')}</div>`}
- else{b=`<div class="top"><button class="g" data-a="back">← Dificultad</button><b>${esc(S.area)} · ${NIV[S.niv]}</b></div><div class="path">`+Array.from({length:50},(_,i)=>{const k=(S.exam==='Saber 11'?'':S.exam+'|')+S.area+'|'+S.niv+'|',lk=i>0&&!u.done[k+(i-1)],st=u.done[k+i]||0;
-   return`<div class="node" style="--x:${Math.round(Math.sin(i*.9)*52)}px"><button class="dot ${lk?'lk':''}" ${lk?'disabled':''} data-a="les" data-v="${esc(S.area+'|'+S.niv+'|'+i)}">${lk?'🔒':st?'✓':i+1}</button><span>${'★'.repeat(st)}${'☆'.repeat(3-st)}</span></div>`}).join('')+`<div class="node"><button class="dot cun" data-a="ro" data-v="${Math.min((u.cuf&&(u.cuf[u.cun|0]|0))||(u.cu.e|0),3)}|${u.cun|0}" aria-label="Cuento: lectura critica, etapa ${Math.min((u.cuf&&(u.cuf[u.cun|0]|0))||(u.cu.e|0),3)+1} de 4">📖</button><span>Cuento</span></div>`+'</div>'}
+ const areas=CAT.areas.filter(a=>a.examen===S.exam);
+ const as=areas.map(a=>{const tt=leccDe(a.id),h=leccHechas(u,a.id);return`<button class="chip ${a.id===S.area?'on':''}" data-a="area" data-v="${esc(a.id)}">${a.id}${h?` · ${Math.round(h/tt*100)}%`:''}</button>`}).join('');
+ const dg=ST(u).diag?'':`<div class="card">📋 <b>Evaluación de admisión · ${S.exam}</b><p>5 bloques, uno por área (45 s por pregunta); puedes pausar entre bloques. Estima tu nivel por área y sugiere por dónde empezar. Si no sabes una respuesta, marca «No lo sé». No gasta vidas.</p><button data-a="diag">Empezar evaluación</button></div>`;
+ let b;
+ if(!S.area){
+  b=`<b>Tu camino · ${esc(S.exam)}</b><p class="mu">Cada área es un solo camino por etapas: todas las preguntas del área aparecen a lo largo de las lecciones, sin módulos de dificultad. El camino se alarga lo necesario para usarlas todas.</p>`+
+   areas.map(a=>{const tt=leccDe(a.id),h=leccHechas(u,a.id),e=etapaDe(u,a.id);
+    return`<button class="opt rs55area" data-a="area" data-v="${esc(a.id)}"><b>${esc(a.id)}</b><span class="mu">Etapa ${e+1} de ${NETAPAS} · ${ETAPAS[e]} · ${h} de ${tt} lecciones</span><div class="bar"><i style="width:${Math.min(100,Math.round(h/tt*100))}%"></i></div></button>`}).join('');
+ }
+ else{
+  const tt=leccDe(S.area),h=leccHechas(u,S.area),ea=etapaDe(u,S.area);
+  if(S.etapa==null)S.etapa=ea;
+  const e=Math.max(0,Math.min(NETAPAS-1,+S.etapa));
+  const pre=(S.exam==='Saber 11'?'':S.exam+'|'),K=gi=>pre+S.area+'|L|'+gi;
+  const pend=Math.min(primeraPend(u,S.area),tt-1);
+  const des=Math.min(e*POR_ETAPA,tt-1),has=Math.min(des+POR_ETAPA,tt);
+  const chips=Array.from({length:NETAPAS},(_,j)=>`<button class="chip ${j===e?'on':''}" data-a="etapa" data-v="${j}" aria-label="Etapa ${j+1}: ${ETAPAS[j]}">${j+1}</button>`).join('');
+  b=`<div class="top"><button class="g" data-a="back" aria-label="Volver a las áreas">←</button><b>${esc(S.area)} · Etapa ${e+1}: ${ETAPAS[e]}</b></div>`+
+   `<p class="mu" style="margin:2px 0 6px">${h} de ${tt} lecciones superadas · aquí van las lecciones ${des+1}–${has} de ${tt}${e!==ea?` <button class="chip" data-a="etapa" data-v="${ea}">Ir a mi etapa (${ea+1})</button>`:''}</p>`+
+   `<div class="row sc rs55ets">${chips}</div><div class="path">`+
+   Array.from({length:has-des},(_,j)=>{const gi=des+j,k=K(gi),lk=gi>0&&!u.done[K(gi-1)],st=u.done[k]||0,hoy=gi===pend;
+    return`<div class="node" style="--x:${Math.round(Math.sin(j*.9)*52)}px"><button class="dot ${lk?'lk':''}${hoy?' hoy':''}" ${lk?'disabled':''} data-a="les" data-v="${esc(S.area+'|'+e+'|'+gi)}" aria-label="Lección ${gi+1}${lk?' (bloqueada: supera la anterior)':hoy?' (tu siguiente lección)':''}">${lk?'🔒':st?'✓':gi+1}</button><span>${'★'.repeat(st)}${'☆'.repeat(3-st)}</span></div>`}).join('')+
+   `<div class="node"><button class="dot cun" data-a="ro" data-v="${Math.min((u.cuf&&(u.cuf[u.cun|0]|0))||(u.cu.e|0),3)}|${u.cun|0}" aria-label="Cuento: lectura critica, etapa ${Math.min((u.cuf&&(u.cuf[u.cun|0]|0))||(u.cu.e|0),3)+1} de 4">📖</button><span>Cuento</span></div>`+'</div>';
+ }
  return`${dg}<div class="row sc">${ex}</div><div class="row sc" style="margin-top:8px">${as}</div><div class="card">${b}</div>`}
+
 function repaso0(u){const d=u.rev.filter(x=>x.due<=Date.now()).length;
  return`<div class="card"><b>Repaso</b><p>${u.rev.length?`Tienes <b>${u.rev.length}</b> pregunta(s) para repasar, <b>${d}</b> lista(s) hoy. Aquí no hay tiempo límite ni se gastan vidas, y te explico cada error.`:'No tienes errores por repasar. Las preguntas que falles aparecerán aquí.'}</p><button data-a="rev" ${u.rev.length?'':'disabled'}>${d||!u.rev.length?'Repasar ahora':'Adelantar repaso'}</button></div>`}
 function liga(u){const rows=Object.values(DB.users).filter(x=>x!==u&&x.liga===u.liga&&x.wk===wk()).map(x=>({n:x.name,xp:x.wxp})).concat([{n:u.name,xp:u.wxp,me:1}]),b=board(wk(),u.liga,(dow()+1)/7,rows);
@@ -241,11 +266,37 @@ function lesson(){const L=S.L,q=L.qs[L.i],u=U();
  const o=q.opciones.map(p=>{let c=L.sel===p.id?'sel':'';if(L.chk)c=p.id===q.respuesta?'ok':L.sel===p.id?'no':'';return`<button class="opt ${c}" data-a="pick" data-v="${p.id}"><b>${p.id}.</b> ${esc(p.texto)}</button>`}).join('');
  const tm=L.t0&&!L.chk?`<div class="bar tm"><i id="tm" style="width:100%"></i></div><span id="ts" class="mu">${TL()} s</span>`:'';
  return`<div class="top"><button class="g" data-a="home" aria-label="Salir">✕</button><div class="bar" style="flex:1"><i style="width:${(L.i+(L.chk?1:0))/L.qs.length*100}%"></i></div>${L.kind==='les'?`<b>❤️ ${u.v}</b>`:''}</div><div class="card"><p class="mu">${L.kind==='diag'?'Evaluación de admisión · ':''}${esc(q.area)} · ${esc(q.competencia)} · ${L.i+1}/${L.qs.length}</p>${tm}<p>${esc(q.enunciado)}</p>${q.graf?barras(q.graf):''}${q.audio?audioUi(q):''}${q.audio?'':leer()}${o}${L.chk?fb(q,L.sel,L.to)+extra(q,L)+rep(q):cfUi(L)+idk(L,q)}<button data-a="go" ${L.sel||L.chk?'':'disabled'}>${L.chk?(L.dead||L.i>=L.qs.length-1?'Terminar':'Continuar'):'Comprobar'}</button><p class="mu">${esc(q.marcaContenido)}</p></div>`}
+function tiendaTab(u){const mon=Math.max(0,(u.xp|0)-(u.gasto|0)),it=(DB.pref&&DB.pref.avit)||{},I=n=>{try{return(window.RS35&&RS35.ico(n))||''}catch(e){return''}};
+ const fila=(k,n,d,p,extra)=>{const ll=k.indexOf('c:')===0?'c'+k.slice(2):(k.indexOf('a:')===0?({7:'m',8:'d',9:'s',10:'f',11:'b',12:'t'})[+k.slice(2)]:null);
+  const own=ll?!it[ll]:false,due=own?'<span class="rs42ok">Comprado</span>':`<button class="rs42pr" data-a="rs42buy" data-v="${k}" ${mon<p?'disabled':''} aria-label="Comprar ${esc(n)}: ${p} monedas">${p} monedas</button>`;
+  const ic=extra?`<span class="rs42sw" style="--sw:${extra}"></span>`:`<span class="rs42ic">${I({pr:'fuego',vi:'corazon',x2:'estrella','a:7':'ojo','a:8':'estrella','a:9':'vueltiao','a:10':'bufanda','a:11':'mochila','a:12':'corbata'}[k]||'estrella')}</span>`;
+  return`<div class="rs42it">${ic}<span class="rs42tx"><b>${esc(n)}</b><span>${esc(d)}</span></span>${due}</div>`};
+ const secs=[
+  ['Ayudas para jugar',[
+   ['pr','Protector de racha','Conserva tu racha si fallas un día. Tienes '+(u.pr|0)+' de 3.',250],
+   ['vi','Recuperar todas las vidas','Vuelve a 5 corazones al instante.',350],
+   ['x2','Doble de monedas','Tu próxima lección superada da el doble de monedas. Tienes '+(u.x2|0)+'.',400]]],
+  ['Colores de avatar',[
+   ['c:#f5c542','Oro real','Color premium para tu avatar.',600,'#f5c542'],
+   ['c:#22d3ee','Cian hielo','Color premium para tu avatar.',600,'#22d3ee'],
+   ['c:#e879f9','Lila neón','Color premium para tu avatar.',600,'#e879f9'],
+   ['c:#fbbf24','Ámbar sol','Color premium para tu avatar.',650,'#fbbf24'],
+   ['c:#34d399','Menta fresca','Color premium para tu avatar.',650,'#34d399'],
+   ['c:#f472b6','Rosa chicle','Color premium para tu avatar.',650,'#f472b6']]],
+  ['Artículos de avatar',[
+   ['a:7','Bigote','Artículo premium para tu avatar.',900],
+   ['a:8','Diadema de estrella','Artículo premium para tu avatar.',800],
+   ['a:9','Sombrero vueltiao','Identidad colombiana para tu avatar.',2500],
+   ['a:10','Bufanda sabia','Para las noches de estudio.',2000],
+   ['a:11','Mochila escolar','Tu maleta de estudio.',1250],
+   ['a:12','Corbata de honor','Para los días grandes.',1600]]]];
+ return`<div class="card rs55shop"><b>🛍️ Tienda de monedas</b><p class="mu">Cambia tus monedas por ayudas, colores y artículos para el avatar. Tienes <b>${mon}</b> monedas: cada punto de XP que ganas te da una moneda.</p></div>`+
+  secs.map(s=>`<div class="card"><b>${s[0]}</b>${s[1].map(x=>fila(x[0],x[1],x[2],x[3],x[4])).join('')}</div>`).join('')}
 function render0(){const app=document.getElementById('app'),u=U();
  if(S.view==='auth'||!u){S.view='auth';app.innerHTML=auth();return}
  vidas(u);
- const m=S.L?lesson():S.R?reader(u):S.tab==='camino'?camino(u):S.tab==='cuentos'?cuentos(u):S.tab==='carreras'?carreras(u):S.tab==='repaso'?repaso(u):S.tab==='liga'?liga(u):perfil(u);
- const tb=[['camino','🗺️','Camino'],['tienda','🛒','Tienda'],['repaso','🔁','Repaso'],['carreras','🎓','Carreras']].concat([['liga','🏆','Liga']],[['perfil','👤','Perfil']]).map(t=>`<button class="${t[0]==='tienda'?(S.rs42==='tienda'?'on':''):(S.tab===t[0]?'on':'')}" data-a="${t[0]==='tienda'?'rs42t':'tab'}" data-v="${t[0]==='tienda'?'':t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('');
+ const m=S.L?lesson():S.R?reader(u):S.tab==='camino'?camino(u):S.tab==='cuentos'?cuentos(u):S.tab==='carreras'?carreras(u):S.tab==='repaso'?repaso(u):S.tab==='liga'?liga(u):S.tab==='tienda'?tiendaTab(u):perfil(u);
+ const tb=[['camino','🗺️','Camino'],['tienda','🛒','Tienda'],['repaso','🔁','Repaso'],['carreras','🎓','Carreras']].concat([['liga','🏆','Liga']],[['perfil','👤','Perfil']]).map(t=>`<button class="${S.tab===t[0]?'on':''}" data-a="tab" data-v="${t[0]}" aria-label="${t[2]}"><span>${t[1]}</span>${t[2]}</button>`).join('');
  app.innerHTML=`<main><div class="top"><b>👤 ${esc(u.name)}</b><span class="rs42st"><button class="stb" data-a="rs42v" aria-label="Vidas: toca para ver tus vidas">❤️ ${u.v}</button><button class="stb" data-a="rs42r" aria-label="Racha de dias">🔥 ${u.streak}</button><button class="stb" data-a="rs42t" aria-label="Monedas y tienda">🪙 ${Math.max(0,(u.xp|0)-(u.gasto|0))}</button></span></div>${m}${S.L?'':note}</main>${S.L?'':`<nav>${tb}</nav>`}`;const pa=document.querySelector('.path'),dd=pa&&[...pa.querySelectorAll('.dot')].find(d=>!d.disabled&&d.textContent!=='✓');if(dd)pa.scrollLeft=dd.offsetLeft-pa.clientWidth/2}
 
 /* ---- v4: pentágono, modo estudio/reto, no lo sé, bloques, Cuentos ---- */
@@ -285,7 +336,7 @@ function idk(L,q){const p=L.kind==='cu'?ET[L.e].pis:0;return`<div class="row" st
 function blk(){const L=S.L;return`<div class="card"><h2>Bloque ${(L.i+1)/10} de ${L.qs.length/10} completado</h2><p>Puedes pausar y continuar cuando quieras: tu avance se guarda.</p><div class="row"><button data-a="nb">Siguiente bloque</button><button class="g" data-a="pz">Pausar y guardar</button></div></div>`}
 function cuEnd(L){const ok=L.ok>=2;return`<div class="card"><h2>${ok?'¡Etapa superada!':'Sigue practicando'}</h2><p>Aciertos: ${L.ok} de ${L.qs.length}${ok?'':'. Necesitas 2 de '+L.qs.length+' para avanzar.'}</p>${L.e>=2?'<label>Tu diario de lectura (privado: nadie lo evalúa ni lo ve)<textarea id="dr" rows="3"></textarea></label>':''}${L.e===3?'<p><b>Resumen con rúbrica</b></p><textarea id="rs" rows="3" placeholder="Resume el cuento en 2 o 3 frases"></textarea>'+['Dice la idea central','Incluye ideas de apoyo','Usa evidencia del texto','Se entiende con claridad'].map(x=>`<label><input type="checkbox" class="rb"> ${x}</label>`).join(''):''}<br><button data-a="svd">Continuar</button></div>`}
 function banner(u){let h='';vidas(u);if(u.v<=0)h+=`<div class="card">💔 <b>Te quedaste sin vidas</b><p>${u.vr<3?`Haz una evaluación de 5 preguntas (3 aciertos para aprobar) y recupera 1 vida. Recuperadas: ${u.vr} de 3.`:'Ya recuperaste 3 vidas con evaluaciones.'} Si no la haces, todas tus vidas vuelven en ${tleft(u)}.</p>${u.vr<3?'<button data-a="vid">Evaluación para recuperar una vida</button>':''}</div>`;else if(u.vt&&u.v<5)h+=`<p class="mu">❤️ Tus vidas se completan en ${tleft(u)}.</p>`;if(ST(u).dg)h+=`<div class="card">⏸️ <b>Evaluación en pausa</b><p>Vas por la pregunta ${ST(u).dg.i+1} de ${ST(u).dg.qs.length}.</p><button data-a="dgr">Continuar</button></div>`;
- if(ST(u).diag&&!ST(u).dg){const c=sc(ST(u).diag),w=AR.slice().sort((a,b)=>c[a]-c[b])[0],x=ST(u).diag[w];h+=`<div class="card">🧭 <b>Tu siguiente paso (sugerido)</b><p>Tu área con más oportunidad es ${esc(w)} (${c[w]}/100). Empieza en nivel ${NIV[rec(x.ok/x.tot)]}. Puedes elegir otra ruta.</p><button class="g" data-a="sug" data-v="${esc(w+'|'+rec(x.ok/x.tot))}">Ir allí</button></div>`}return h}
+ if(ST(u).diag&&!ST(u).dg){const c=sc(ST(u).diag),w=AR.slice().sort((a,b)=>c[a]-c[b])[0],x=ST(u).diag[w];h+=`<div class="card">🧭 <b>Tu siguiente paso (sugerido)</b><p>Tu área con más oportunidad es ${esc(w)} (${c[w]}/100). Te llevo a la etapa sugerida de ese área en el camino. Puedes elegir otra ruta.</p><button class="g" data-a="sug" data-v="${esc(w+'|'+rec(x.ok/x.tot))}">Ir allí</button></div>`}return h}
 const camino=u=>misionesCard(u)+banner(u)+plan(u)+ds(u)+camino0(u)+cuentos(u);
 const pctabs=()=>{const t=(S.ptab||'prog');return `<div class="row rs41pc" style="margin-bottom:6px">${[['perso','Personalizar'],['prog','Progreso'],['ajus','Ajustes']].map(x=>`<button class="chip${t===x[0]?' on':''}" data-a="ptab" data-v="${x[0]}" aria-pressed="${t===x[0]}">${x[1]}</button>`).join('')}</div>`};
 const perfil=u=>{if(!S.ptab)S.ptab='prog';const seg={perso:'',prog:perfil0(u)+dominioCard(u)+metaCard(u)+evo(u)+ins(u)+histCard(u)+marcCard(u),ajus:fichaCard()+vozCard()+pilotoCard(u)+panelCard(u)+copiaCard()+bancoCard()+acc()+`<div class="card"><b>Tiempo por pregunta</b><p class="mu">Cada pregunta de las lecciones y evaluaciones tiene 45 s; si se agota, cuenta como fallada y pierdes una vida. En el Repaso y en Cuentos no hay límite. Si necesitas más tiempo por accesibilidad, puedes duplicarlo.</p><button class="${u.reto?'':'g'}" data-a="reto">${u.reto?'Volver a 45 s':'Ampliar a 90 s'}</button><p class="mu">📓 Diario de lectura: ${u.diario.length} entrada(s), solo visibles para ti.</p></div>`}[S.ptab]||'';return pctabs()+seg};
@@ -300,7 +351,7 @@ Object.assign(A,{
  dgr:()=>{const d=ST(U()).dg;S.L=mk('diag',d.qs,{i:d.i,hist:d.hist,ok:d.ok});render()},
  diag:()=>{const u=U();if(canPlay(u)){ST(u).dg=null;S.L=mk('diag',AR.flatMap(a=>draw(a,null,10)));render()}},
  vid:()=>{const u=U();vidas(u);if(u.v>0||u.vr>=3)return;S.L=mk('vid',AR.map(a=>draw(a,null,1)[0]),{});render()},
- sug:v=>{const p=v.split('|');S.area=p[0];S.niv=+p[1];render()},
+ sug:v=>{const p=v.split('|');S.area=p[0];S.niv=null;S.etapa=[0,Math.floor(NETAPAS*.45),Math.floor(NETAPAS*.8)][Math.max(0,Math.min(2,+p[1]||0))];S.tab='camino';render()},
  reto:()=>{const u=U();u.reto=u.reto?0:1;save();render()},
  ro:v=>{const p=String(v).split('|'),e=Math.max(0,Math.min(+p[0],3));const a=ET[e];const uu=U();const cc=(p[1]!=null&&p[1]!=='')?Math.max(0,+p[1]):Math.max(0,(typeof uu.cun==='number'?uu.cun:0));S.R={e,t:{nar:a.nar,res:a.res,enu:0},c:cc,i:-1};uu.cun=cc;save();render()},
  tg:v=>{S.R.t[v]=S.R.t[v]?0:1;if(!S.R.t.nar)stopTTS();render()},
@@ -371,7 +422,7 @@ function dsEnd(L){return`<div class="card"><h2>Desafío de la semana completado<
 function banner(u){vidas(u);let h='';
  if(u.v<=0)h+=`<div class="card">💔 <b>Te quedaste sin vidas</b><p>${u.vr<3?`Haz una evaluación de 5 preguntas (3 aciertos para aprobar) y recupera 1 vida. Recuperadas: ${u.vr} de 3.`:'Ya recuperaste 3 vidas con evaluaciones.'} Si no la haces, todas tus vidas vuelven en ${tleft(u)}.</p>${u.vr<3?'<button data-a="vid">Evaluación para recuperar una vida</button>':''}</div>`;else if(u.vt&&u.v<5)h+=`<p class="mu">❤️ Tus vidas se completan en ${tleft(u)}.</p>`;
  const s=ST(u);if(s.dg)h+=`<div class="card">⏸️ <b>Evaluación en pausa</b><p>Vas por la pregunta ${s.dg.i+1} de ${s.dg.qs.length}.</p><button data-a="dgr">Continuar</button></div>`;
- if(s.diag&&!s.dg){const c=sc(s.diag),o=AR.slice().sort((a,b)=>c[a]-c[b]);h+=`<div class="card">🧭 <b>Ruta recomendada</b> <span class="mu">(opcional)</span><p class="mu">De mayor a menor oportunidad de mejora. Tú decides si la sigues.</p>${o.map((a,i)=>{const x=s.diag[a]||{ok:0,tot:1};return`<button class="opt" data-a="sug" data-v="${esc(a+'|'+rec(x.ok/x.tot))}">${i+1}. ${esc(a)} · ${c[a]}/100 · empezar en ${NIV[rec(x.ok/x.tot)]}</button>`}).join('')}</div>`;
+ if(s.diag&&!s.dg){const c=sc(s.diag),o=AR.slice().sort((a,b)=>c[a]-c[b]);h+=`<div class="card">🧭 <b>Ruta recomendada</b> <span class="mu">(opcional)</span><p class="mu">De mayor a menor oportunidad de mejora. Tú decides si la sigues.</p>${o.map((a,i)=>{const x=s.diag[a]||{ok:0,tot:1};return`<button class="opt" data-a="sug" data-v="${esc(a+'|'+rec(x.ok/x.tot))}">${i+1}. ${esc(a)} · ${c[a]}/100 · ir a mi etapa sugerida</button>`}).join('')}</div>`;
   const l=(s.hist||[]).slice(-1)[0];if(l&&Date.now()-l.t>12096e5)h+='<p class="mu">📅 Hace más de 2 semanas que no te evalúas. Repite la evaluación desde Perfil para ver tu evolución.</p>'}
  return h}
 function evo(u){const h=ST(u).hist||[],per=S.per===undefined?30:S.per,now=Date.now(),w=per?h.filter(x=>now-x.t<=per*864e5):h;
@@ -466,8 +517,8 @@ function extra(q,L){let h='';const u=U();if(L.sel!==q.respuesta){
  if(L.cf==='s')h+='<div class="fb no"><b>Estabas seguro y fallaste.</b> Estos errores son los más valiosos: suelen ser ideas equivocadas, no descuidos. Revisa la explicación con calma.</div>';
  const n=(u.fc||{})[q.competencia]||0;if(n>=3){const g=glosFor(q);h+=`<div class="fb"><b>Probemos otra forma de verlo</b> <span class="mu">(${n} fallos seguidos en «${esc(q.competencia)}»)</span><br>${g?esc(g[0]+': '+g[1]):'Resuelve primero una versión más sencilla y verifica cada paso.'}<br><span class="mu">Te sugerimos practicar el nivel Básico de ${esc(q.area)} antes de seguir.</span></div>`}}return h}
 function cfUi(L){return`<div class="row" style="margin:6px 0;align-items:center"><span class="mu">¿Qué tan seguro estás?</span>${[['s','Seguro'],['d','Dudo'],['a','Adivino']].map(c=>`<button class="chip ${L.cf===c[0]?'on':''}" data-a="cf" data-v="${c[0]}">${c[1]}</button>`).join('')}</div>`}
-function introView(L){const a=L.intro[0],n=+L.intro[1],l=GLD[a]||[],t=l.filter(g=>g[2]===n).slice(0,3),s=t.length?t:l.slice(0,2);
- return`<div class="top"><button class="g" data-a="home" aria-label="Salir">✕</button><b>${esc(a)} · ${NIV[n]}</b></div><div class="card"><b>Antes de empezar</b><p class="mu">Repasa estos conceptos. Cuando empieces, comienza el tiempo.</p>${s.map(g=>`<div class="fb"><b>${esc(g[0])}</b><br>${esc(g[1])}</div>`).join('')}<div class="row"><button data-a="ini">Empezar</button><button class="g" data-a="ini">Saltar</button></div></div>`}
+function introView(L){const a=L.intro[0],n=Math.max(0,Math.min(NETAPAS-1,+L.intro[1]||0)),etq=Math.max(0,Math.min(2,Math.floor(n*3/NETAPAS))),l=GLD[a]||[],t=l.filter(g=>g[2]===etq).slice(0,3),s=t.length?t:l.slice(0,2);
+ return`<div class="top"><button class="g" data-a="home" aria-label="Salir">✕</button><b>${esc(a)} · Etapa ${n+1}: ${ETAPAS[n]}</b></div><div class="card"><b>Antes de empezar</b><p class="mu">Repasa estos conceptos. Cuando empieces, comienza el tiempo.</p>${s.map(g=>`<div class="fb"><b>${esc(g[0])}</b><br>${esc(g[1])}</div>`).join('')}<div class="row"><button data-a="ini">Empezar</button><button class="g" data-a="ini">Saltar</button></div></div>`}
 function leer(){return'<button class="g" data-a="lee" style="min-height:36px;margin:4px 0">🔊 Leer en voz alta</button>'}
 function repaso(u){const s=S.rsec||0,ch=['Repaso','Fichas','Glosario','Estrategias'].map((x,i)=>`<button class="chip ${s===i?'on':''}" data-a="rsec" data-v="${i}">${x}</button>`).join('');return`<div class="row sc" style="margin-bottom:8px">${ch}</div>`+(s===0?repaso0(u)+errs(u):s===1?fichas(u):s===2?glos():estr())}
 function fichas(u){if(!u.rev.length)return'<div class="card"><b>Fichas de estudio</b><p class="mu">Aún no hay fichas. Se crean solas con las preguntas que falles.</p></div>';const i=Math.min(S.fi||0,u.rev.length-1),q=u.rev[i].q,c=q.opciones.find(o=>o.id===q.respuesta),g=glosFor(q);
@@ -1939,7 +1990,14 @@ var PALETAS=[
  {id:'azul',    nombre:'Azul oceano', ac:'#2563eb', ac2:'#0e7490', acD:'#60a5fa', ac2D:'#22d3ee'},
  {id:'esmeralda',nombre:'Esmeralda', ac:'#047857', ac2:'#065f46', acD:'#34d399', ac2D:'#6ee7b7'},
  {id:'coral',   nombre:'Coral',    ac:'#c2410c', ac2:'#b45309', acD:'#fb923c', ac2D:'#fbbf24'},
- {id:'magenta', nombre:'Magenta',  ac:'#db2777', ac2:'#e11d48', acD:'#f472b6', ac2D:'#fda4af'}
+ {id:'magenta', nombre:'Magenta',  ac:'#db2777', ac2:'#e11d48', acD:'#f472b6', ac2D:'#fda4af'},
+ {id:'lavanda', nombre:'Lavanda',   ac:'#6d28d9', ac2:'#a21caf', acD:'#a78bfa', ac2D:'#e879f9'},
+ {id:'turquesa', nombre:'Turquesa', ac:'#0f766e', ac2:'#115e59', acD:'#2dd4bf', ac2D:'#5eead4'},
+ {id:'profundo', nombre:'Azul profundo', ac:'#1d4ed8', ac2:'#0e7490', acD:'#60a5fa', ac2D:'#22d3ee'},
+ {id:'cafe',    nombre:'Café',      ac:'#7c2d12', ac2:'#92400e', acD:'#fbbf24', ac2D:'#fcd34d'},
+ {id:'fresa',   nombre:'Fresa',     ac:'#be123c', ac2:'#9f1239', acD:'#fb7185', ac2D:'#fda4af'},
+ {id:'oliva',   nombre:'Oliva',     ac:'#4d7c0f', ac2:'#3f6212', acD:'#a3e635', ac2D:'#bef264'},
+ {id:'grafito', nombre:'Grafito',   ac:'#475569', ac2:'#334155', acD:'#94a3b8', ac2D:'#cbd5e1'}
 ];
 
 function paletaAct(){
@@ -2310,7 +2368,7 @@ const NOMF={punto:'Punto',chiguiro:'Chigüiro',zorro:'Zorro',robot:'Robot',tucan
 const NOMC=['Automático','Miel','Coral rojo','Violeta','Azul cielo','Esmeralda','Rosa fucsia','Turquesa','Naranja','Gris pizarra','Celeste','Lima','Orquídea'];
 const NOMO=['Normales','Brillo de estrellas','Guiño','Felices (∧)'];
 const NOMB=['Sonrisa','Asombro (o)','Lengua fuera','Seria'];
-const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella','Sombrero vueltiao','Bufanda sabia','Mochila escolar','Corbata de honor'];const PREMC=['#f5c542','#22d3ee','#e879f9'];const PREMN=['Oro real','Cian hielo','Lila neon'];
+const NOMA=['Ninguno','Gorra','Gafas','Moño lateral','Corona','Lentes de sol','Auriculares' ,'Bigote','Diadema de estrella','Sombrero vueltiao','Bufanda sabia','Mochila escolar','Corbata de honor'];const PREMC=['#f5c542','#22d3ee','#e879f9','#fbbf24','#34d399','#f472b6'];const PREMN=['Oro real','Cian hielo','Lila neon','Ambar sol','Menta fresca','Rosa chicle'];
 
 
 function cfg(){
@@ -2779,6 +2837,7 @@ var SUBT={
  cuentos:'Lectura critica paso a paso',
  repaso:'Practica tus errores pasada',
  carreras:'Evalua tu nivel en cada linea',
+ tienda:'Cambia tus monedas por ayudas y articulos',
  liga:'Tu division de esta semana',
  perfil:'Tu progreso y ajustes'
 };
@@ -3149,15 +3208,16 @@ function I(n){try{return(window.RS35&&RS35.ico(n))||''}catch(e){return''}}
 function pool(){if(!DB.pref)DB.pref={};if(!DB.pref.avit)DB.pref.avit={};return DB.pref.avit}
 function tengo(llave){return !!(DB.pref&&DB.pref.avit&&DB.pref.avit[llave])}
 
-var PRECIO={'pr':250,'vi':350,'a:7':900,'a:8':800,'a:9':2500,'a:10':2000,'a:11':1250,'a:12':1600,'c:#f5c542':600,'c:#22d3ee':600,'c:#e879f9':600};
+var PRECIO={'pr':250,'vi':350,'x2':400,'a:7':900,'a:8':800,'a:9':2500,'a:10':2000,'a:11':1250,'a:12':1600,'c:#f5c542':600,'c:#22d3ee':600,'c:#e879f9':600,'c:#fbbf24':650,'c:#34d399':650,'c:#f472b6':650};
 var DOW=['L','Ma','Mi','J','V','S','D'];/* dow() 0 = lunes */
-var NCOLOR={'#f5c542':'Oro real','#22d3ee':'Cian hielo','#e879f9':'Lila neon'};
+var NCOLOR={'#f5c542':'Oro real','#22d3ee':'Cian hielo','#e879f9':'Lila neon','#fbbf24':'Ambar sol','#34d399':'Menta fresca','#f472b6':'Rosa chicle'};
 
 /* catalogo de la tienda, segun el usuario actual */
 function items(u){
   var lista=[
     {k:'pr',ico:'fuego',n:'Protector de racha',d:'Conerva tu racha si fallas un dia. Tienes '+(u.pr|0)+' de 3.',p:PRECIO.pr,on:true},
-    {k:'vi',ico:'corazon',n:'Recuperar todas las vidas',d:'Vuelve a 5 corazones al instante.',p:PRECIO.vi,on:!(u.v>=5&&!u.vt)}
+    {k:'vi',ico:'corazon',n:'Recuperar todas las vidas',d:'Vuelve a 5 corazones al instante.',p:PRECIO.vi,on:!(u.v>=5&&!u.vt)},
+    {k:'x2',ico:'estrella',n:'Doble de monedas',d:'Tu proxima leccion superada da el doble de monedas. Tienes '+(u.x2|0)+'.',p:PRECIO.x2,on:true}
   ];
   Object.keys(NCOLOR).forEach(function(v){
     lista.push({k:'c:'+v,sw:v,n:'Color '+NCOLOR[v],d:'Color de avatar premium de la tienda.',p:PRECIO['c:'+v],on:!tengo('c'+v)});
@@ -3230,13 +3290,14 @@ function ventana(u){
 /* ---------- 5) acciones ---------- */
 function comprar(k){
   var u=U();k=String(k||'');
-  if(!k){S.rs42='tienda';render();return}
+  if(!k){S.rs42=null;S.tab='tienda';render();return}
   var p=PRECIO[k];
   if(p==null)return;
-  if(monedas(u)<p){S.rs42='tienda';say('Te faltan monedas para ese articulo.');render();return}
+  if(monedas(u)<p){S.rs42=null;S.tab='tienda';say('Te faltan monedas para ese articulo.');render();return}
   u.gasto=(u.gasto|0)+p;
   if(k==='pr'){u.pr=Math.min(3,(u.pr|0)+1);say('Protector de racha listo. Se usa solo cuando lo necesitas.')}
   else if(k==='vi'){u.v=5;u.vt=0;u.vr=0;say('Corazones recuperados.')}
+  else if(k==='x2'){u.x2=(u.x2|0)+1;say('Listo: tu proxima leccion superada da el doble de monedas.')}
   else if(k==='a:7'){pool().m=1;say('Bigote comprado. Ponlo en Perfil, Personalizar.')}
   else if(k==='a:8'){pool().d=1;say('Diadema de estrella comprada. Ponla en Perfil, Personalizar.')}
   else if(k==='a:9'){pool().s=1;say('Sombrero vueltiao comprado. Ponlo en Perfil, Personalizar.')}
@@ -3244,13 +3305,13 @@ function comprar(k){
   else if(k==='a:11'){pool().b=1;say('Mochila escolar comprada. Ponla en Perfil, Personalizar.')}
   else if(k==='a:12'){pool().t=1;say('Corbata de honor comprada. Ponla en Perfil, Personalizar.')}
   else if(k.indexOf('c:')===0){pool()['c'+k.slice(2)]=1;say('Color premium comprado. Usalo en Perfil, Personalizar.')}
-  save();S.rs42='tienda';render();
+  save();S.rs42=null;S.tab='tienda';render();
 }
 try{
   Object.assign(A,{
     rs42v:function(){S.rs42='vidas';render()},
     rs42r:function(){S.rs42='racha';render()},
-    rs42t:function(){S.rs42='tienda';render()},
+    rs42t:function(){S.rs42=null;S.tab='tienda';S.L=null;S.R=null;render()},
     rs42x:function(){S.rs42=null;render()},
     rs42buy:comprar,
     rs40buy:comprar
@@ -3292,7 +3353,7 @@ try{
 }catch(e){}
 
 /* API para pruebas */
-try{window.RS42={monedas:monedas,PRECIO:PRECIO,tengo:function(k){return tengo(k)},inyectar:inyectar,ventana:ventana}}catch(e){}
+try{window.RS42={monedas:monedas,PRECIO:PRECIO,tengo:function(k){return tengo(k)},inyectar:inyectar,ventana:ventana,items:items}}catch(e){}
 
 })();
 </script>
@@ -3431,7 +3492,7 @@ function tarjeta(u){
   rv?'<button class="rs44btn" data-a="rev">Repasar</button>':'');
  pn.ar.forEach(function(a,j){var i=j+1;
   box+=fila(i,'cuaderno',(pn.dp[j]?'Profundizar · ':'Reforzar · ')+a,
-   'Leccion '+NIV[pn.nv[j]]+' del area, con explicacion de cada error.',
+   'Etapa sugerida del area, con explicacion de cada error.',
    '<button class="rs44btn" data-a="sug" data-v="'+esc(a+'|'+pn.nv[j])+'">Ir ahi</button>',
    pn.dp[j]?'Profundizar':'Reforzar')});
  box+=fila(total-1,'cuentos','Lectura critica · cuento',
@@ -4414,6 +4475,91 @@ try{
   if(app54&&app54.textContent.indexOf('Cargando los cuentos')>=0&&typeof render==='function')render();
 }catch(e){}
 window.RS54.DATOS.forEach(function(o,i){o.idx=i});
+})();
+</script>
+<script>
+/* ---- v55: camino interactivo (linea de ruta, pulso en la leccion de hoy), fondos de pantalla y selector de fondo ----
+   - CSS del nuevo mapa por etapas: conectores punteados entre nodos, hover/activo con escala,
+     anillo pulsante en la siguiente leccion (respeta prefers-reduced-motion).
+   - Sistema de fondos: 9 fondos translucidos sobre var(--bg) via html[data-fondo]; el clasico
+     (vacio) conserva el aspecto original. Se guarda en DB.pref.fondo y viaja con la nube.
+   - Fila de chips de fondo en Perfil > Accesibilidad, igual que las paletas (v34.1).
+   - API window.RS55={FONDOS,aplicar,fondo}. */
+(function(){
+'use strict';
+var FONDOS=[
+ ['','Cl\u00e1sico'],
+ ['aurora','Aurora'],
+ ['atardecer','Atardecer'],
+ ['oceano','Oc\u00e9ano'],
+ ['bosque','Bosque'],
+ ['noche','Noche estrellada'],
+ ['dunas','Dunas'],
+ ['malla','Malla'],
+ ['puntos','Puntos']
+];
+var CSS=[
+ '.rs55area{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;width:100%}',
+ '.rs55area .bar{width:100%}',
+ '.rs55ets{gap:6px}',
+ '.node{position:relative;z-index:1}',
+ '.node::after{content:"";position:absolute;top:38px;left:calc(100% + 3px);width:12px;border-top:3px dashed var(--br);pointer-events:none}',
+ '.node:last-child::after{display:none}',
+ '.dot{transition:transform .15s ease,box-shadow .15s ease}',
+ '.dot:not(.lk):hover{transform:scale(1.07)}',
+ '.dot:not(:disabled):active{transform:scale(.93)}',
+ '.dot.hoy{box-shadow:0 0 0 4px var(--ac)}',
+ '@media(prefers-reduced-motion:no-preference){.dot.hoy{animation:rs55p 1.6s ease-in-out infinite}@keyframes rs55p{0%,100%{box-shadow:0 0 0 4px var(--ac)}50%{box-shadow:0 0 0 9px rgba(127,127,127,.18)}}}',
+ 'html[data-fondo="aurora"] body{background:radial-gradient(900px 500px at 15% -10%,rgba(16,185,129,.16),transparent 60%),radial-gradient(800px 500px at 90% 10%,rgba(59,130,246,.14),transparent 60%),radial-gradient(700px 400px at 50% 110%,rgba(139,92,246,.12),transparent 60%),var(--bg)}',
+ 'html[data-fondo="atardecer"] body{background:radial-gradient(900px 500px at 80% -10%,rgba(249,115,22,.16),transparent 60%),radial-gradient(700px 400px at 10% 0%,rgba(244,63,94,.12),transparent 55%),radial-gradient(800px 500px at 50% 110%,rgba(250,204,21,.10),transparent 60%),var(--bg)}',
+ 'html[data-fondo="oceano"] body{background:radial-gradient(900px 500px at 10% 0%,rgba(14,165,233,.15),transparent 60%),radial-gradient(700px 400px at 90% 100%,rgba(6,182,212,.12),transparent 55%),radial-gradient(800px 400px at 50% 50%,rgba(59,130,246,.08),transparent 65%),var(--bg)}',
+ 'html[data-fondo="bosque"] body{background:radial-gradient(800px 500px at 10% 10%,rgba(22,163,74,.13),transparent 60%),radial-gradient(700px 450px at 85% 90%,rgba(5,150,105,.12),transparent 55%),radial-gradient(600px 350px at 60% 20%,rgba(132,204,22,.08),transparent 60%),var(--bg)}',
+ 'html[data-fondo="noche"] body{background:radial-gradient(rgba(148,163,184,.4) 1px,transparent 1.6px),radial-gradient(900px 500px at 20% -10%,rgba(79,70,229,.18),transparent 60%),radial-gradient(800px 500px at 80% 110%,rgba(30,58,138,.16),transparent 60%),var(--bg);background-size:30px 30px,auto,auto,auto}',
+ 'html[data-fondo="dunas"] body{background:radial-gradient(1000px 500px at 20% 120%,rgba(217,119,6,.14),transparent 60%),radial-gradient(900px 450px at 90% 110%,rgba(180,83,9,.12),transparent 55%),radial-gradient(700px 400px at 50% -20%,rgba(250,204,21,.10),transparent 60%),var(--bg)}',
+ 'html[data-fondo="malla"] body{background:repeating-linear-gradient(0deg,rgba(100,116,139,.09) 0 1px,transparent 1px 28px),repeating-linear-gradient(90deg,rgba(100,116,139,.09) 0 1px,transparent 1px 28px),var(--bg)}',
+ 'html[data-fondo="puntos"] body{background:radial-gradient(rgba(100,116,139,.18) 1.5px,transparent 2px),var(--bg);background-size:26px 26px,auto}'
+];
+try{
+  var st=document.createElement('style');st.id='rs55css';
+  st.textContent=CSS.join('');
+  document.head.appendChild(st);
+}catch(e){}
+if(window.self===window.parent){
+  function fondoAct(){try{return (DB.pref&&DB.pref.fondo)||''}catch(e){return ''}}
+  function aplicar(){try{document.documentElement.setAttribute('data-fondo',fondoAct())}catch(e){}}
+  function inyectar(){
+    try{
+      if(!(S&&S.view==='app'&&S.tab==='perfil'))return;
+      if(document.getElementById('rs55fondos'))return;
+      var ancla=document.querySelector('.card button[data-a="th"]');
+      if(!ancla)return;
+      var card=ancla.closest('.card');if(!card)return;
+      var act=fondoAct();
+      var fila=FONDOS.map(function(f){
+        var on=f[0]===act?' on':'';
+        return '<button class="chip'+on+'" data-a="rs55f" data-v="'+f[0]+'" title="Fondo '+f[1]+'">'+f[1]+'</button>';
+      }).join('');
+      card.insertAdjacentHTML('beforeend','<div class="row" id="rs55fondos" style="margin-top:8px;flex-wrap:wrap"><b style="width:100%">Fondo</b>'+fila+'</div>');
+    }catch(e){}
+  }
+  try{
+    A.rs55f=function(v){try{
+      var val=String(v==null?'':v).slice(0,16),ok=false;
+      for(var i=0;i<FONDOS.length;i++)if(FONDOS[i][0]===val)ok=true;
+      if(!ok)val='';
+      DB.pref=DB.pref||{};DB.pref.fondo=val;save();aplicar();render();
+    }catch(e){}};
+  }catch(e){}
+  try{
+    var _r55=render;
+    render=function(){var r=_r55.apply(this,arguments);
+      try{aplicar()}catch(e){}
+      try{(S&&S.view==='app'&&S.tab==='perfil')&&setTimeout(inyectar,0)}catch(e){}
+      return r};
+  }catch(e){}
+  aplicar();
+  window.RS55={FONDOS:FONDOS,aplicar:aplicar,fondo:fondoAct};
+}
 })();
 </script>
 </body>
