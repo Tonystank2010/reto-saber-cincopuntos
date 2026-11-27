@@ -150,7 +150,9 @@ const r=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),f=x=>'$'+x.toLocaleString('es
 const S={view:'auth',at:'in',tab:'camino',exam:'Saber 11',area:AR[0],niv:null,L:null,err:''};
 async function H(p,s){if(window.crypto&&crypto.subtle){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s+p));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
  let h=5381;for(const c of s+p)h=((h*33)^c.charCodeAt(0))>>>0;return'w'+h}
-const mkU=(name,email,grado)=>({name,email,grado:grado||'',salt:'',ph:'',xp:0,streak:0,last:0,done:{},rev:[],liga:0,wk:wk(),wxp:0,ok:0,tot:0,v:5,vt:0,diag:null,reto:0,vr:0,hist:[],dg:null,cu:{e:0},cuf:{},cun:0,tuto:0,diario:[]});
+async function H2(p,s){const t=await crypto.subtle.importKey('raw',new TextEncoder().encode(p),'PBKDF2',false,['deriveBits']);const b=await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:new TextEncoder().encode(s),iterations:100000},t,256);return'p2.'+[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+const phNueva=async(p,s)=>window.crypto&&crypto.subtle?await H2(p,s):await H(p,s);
+const mkU=(name,email,grado)=>({name,email,grado:grado||'',salt:'',ph:'',phv:0,xp:0,streak:0,last:0,done:{},rev:[],liga:0,wk:wk(),wxp:0,ok:0,tot:0,v:5,vt:0,diag:null,reto:0,vr:0,hist:[],dg:null,cu:{e:0},cuf:{},cun:0,tuto:0,diario:[]});
 /* Matemáticas: preguntas generadas con números nuevos cada vez */
 const Q=(n,en,ok,bad,ex)=>{const o=shuf([[ok,'',1]].concat(bad)).map((p,i)=>({id:'ABCD'[i],texto:String(p[0]),why:p[1],c:p[2]}));
  return{id:'g'+Math.random().toString(36).slice(2,8),area:'Matemáticas',nivel:NIV[n],competencia:'Razonamiento cuantitativo',enunciado:en,opciones:o.map(({id,texto,why})=>({id,texto,why})),respuesta:o.find(x=>x.c).id,explicacion:ex,marcaContenido:'Pregunta de práctica, no oficial'}};
@@ -201,9 +203,11 @@ const A={
   else if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))S.err='Escribe un correo válido.';
   else if(pw.length<6)S.err='La contraseña debe tener al menos 6 caracteres.';
   else if(DB.users[em])S.err='Ese correo ya tiene una cuenta. Entra con él.';
-  else{const u=mkU(nm,em,g('gr'));u.salt=Math.random().toString(36).slice(2);u.ph=await H(pw,u.salt);DB.users[em]=u;DB.cur=em;S.view='app';S.tab='camino';S.err='';save()}render()},
- in:async()=>{const em=document.getElementById('em').value.trim().toLowerCase(),u=DB.users[em];S.f={em};
-  if(u&&u.ph===await H(document.getElementById('pw').value,u.salt)){DB.cur=em;roll(u);S.view='app';S.tab='camino';S.niv=null;S.L=null;S.err='';S.f=null;save()}else S.err='Correo o contraseña incorrectos.';render()},
+  else{const u=mkU(nm,em,g('gr'));u.salt=Math.random().toString(36).slice(2);u.ph=await phNueva(pw,u.salt);u.phv=u.ph.slice(0,3)==='p2.'?2:0;DB.users[em]=u;DB.cur=em;S.view='app';S.tab='camino';S.err='';save()}render()},
+ in:async()=>{const em=document.getElementById('em').value.trim().toLowerCase(),u=DB.users[em];S.f={em};const pw=document.getElementById('pw').value;
+  if(u&&u.ph===await(u.phv===2?H2(pw,u.salt):H(pw,u.salt))){
+   if(u.phv!==2&&window.crypto&&crypto.subtle){try{u.salt=Math.random().toString(36).slice(2);u.ph=await H2(pw,u.salt);u.phv=2;save()}catch(e){}}
+   DB.cur=em;roll(u);S.view='app';S.tab='camino';S.niv=null;S.L=null;S.err='';S.f=null;save()}else S.err='Correo o contraseña incorrectos.';render()},
  out:()=>{DB.cur=null;S.view='auth';S.at='in';S.L=null;save();render()},
  del:()=>{if(confirm('¿Eliminar esta cuenta y todo su progreso en este dispositivo?')){delete DB.users[DB.cur];A.out()}}};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&!b.disabled)A[b.dataset.a](b.dataset.v)});
@@ -598,7 +602,7 @@ render();
 /* ---- v19: puente React/Supabase (Retro Saber Cinco Puntos) ---- */
 (function(){
 if(window.self===window.parent)return;
-const pedir=()=>{try{const t=JSON.parse(JSON.stringify(DB));window.parent.postMessage({origen:'rs-iframe',tipo:'rs-export',clave:K,datos:t},'*')}catch(e){}};
+const pedir=()=>{try{const t=JSON.parse(JSON.stringify(DB));window.parent.postMessage({origen:'rs-iframe',tipo:'rs-export',clave:K,datos:t},'/')}catch(e){}};
 const fusionar=(datos)=>{try{
  const rem=datos&&datos.users&&typeof datos.users==='object'?datos:null;if(!rem)return;
  const loc=(()=>{try{return JSON.parse(localStorage.getItem(K||'null'))}catch(e){return null}})()||null;
@@ -609,12 +613,12 @@ const fusionar=(datos)=>{try{
  out.cur=loc&&loc.cur&&out.users[loc.cur]?loc.cur:(rem.cur&&out.users[rem.cur]?rem.cur:Object.keys(out.users)[0]);
  for(const k of ['pref','est','tm','dst','rep'])if(rem[k]!==undefined)out[k]=rem[k];
  localStorage.setItem(K,JSON.stringify(out));
- window.parent.postMessage({origen:'rs-iframe',tipo:'rs-importado'},'*');
+ window.parent.postMessage({origen:'rs-iframe',tipo:'rs-importado'},'/');
  location.reload()}catch(e){}};
-window.addEventListener('message',e=>{const m=e&&e.data;if(!m||m.origen!=='rs-app')return;
+window.addEventListener('message',e=>{if(e.origin&&e.origin!=='null'&&e.origin!==window.location.origin)return;const m=e&&e.data;if(!m||m.origen!=='rs-app')return;
  if(m.tipo==='rs-export-request')pedir();
  else if(m.tipo==='rs-import')fusionar(m.datos)});
-try{window.parent.postMessage({origen:'rs-iframe',tipo:'rs-lista'},'*')}catch(e){}
+try{window.parent.postMessage({origen:'rs-iframe',tipo:'rs-lista'},'/')}catch(e){}
 })();
 </script>
 <div data-v21-wrap aria-hidden="true"></div>
@@ -1840,10 +1844,10 @@ try{
         if(b.length<6){alert('La nueva contraseña debe tener al menos 6 caracteres.');return}
         if(b!==c){alert('La nueva contraseña y su repetición no coinciden.');return}
         if(b===a){alert('La nueva debe ser distinta de la actual.');return}
-        var act=null;if(typeof H==='function'&&u.salt!=null)act=await H(a,u.salt);
+        var act=null;if(u.salt!=null)act=(u.phv===2&&typeof H2==='function')?await H2(a,u.salt):((typeof H==='function')?await H(a,u.salt):null);
         if(act===null||u.ph!==act){alert('La contraseña actual no es correcta.');return}
         u.salt=Math.random().toString(36).slice(2);
-        u.ph=await H(b,u.salt);
+        u.ph=await phNueva(b,u.salt);u.phv=u.ph.slice(0,3)==='p2.'?2:0;
         if(DB.rec&&DB.rec.em===DB.cur)DB.rec.pw=b;
         save();
         var nube=(window.RS27&&window.RS27.estado)?window.RS27.estado():null;
@@ -1932,10 +1936,10 @@ if(window.self!==window.parent)return;
 
 var PALETAS=[
  {id:'violeta', nombre:'Indigo',   ac:'#4f46e5', ac2:'#7c3aed', acD:'#818cf8', ac2D:'#a78bfa'},
- {id:'azul',    nombre:'Azul oceano', ac:'#2563eb', ac2:'#06b6d4', acD:'#60a5fa', ac2D:'#22d3ee'},
- {id:'esmeralda',nombre:'Esmeralda', ac:'#059669', ac2:'#10b981', acD:'#34d399', ac2D:'#6ee7b7'},
- {id:'coral',   nombre:'Coral',    ac:'#ea580c', ac2:'#f59e0b', acD:'#fb923c', ac2D:'#fbbf24'},
- {id:'magenta', nombre:'Magenta',  ac:'#db2777', ac2:'#fb7185', acD:'#f472b6', ac2D:'#fda4af'}
+ {id:'azul',    nombre:'Azul oceano', ac:'#2563eb', ac2:'#0e7490', acD:'#60a5fa', ac2D:'#22d3ee'},
+ {id:'esmeralda',nombre:'Esmeralda', ac:'#047857', ac2:'#065f46', acD:'#34d399', ac2D:'#6ee7b7'},
+ {id:'coral',   nombre:'Coral',    ac:'#c2410c', ac2:'#b45309', acD:'#fb923c', ac2D:'#fbbf24'},
+ {id:'magenta', nombre:'Magenta',  ac:'#db2777', ac2:'#e11d48', acD:'#f472b6', ac2D:'#fda4af'}
 ];
 
 function paletaAct(){

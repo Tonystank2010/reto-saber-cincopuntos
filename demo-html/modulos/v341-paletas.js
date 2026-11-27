@@ -11,10 +11,10 @@ if(window.self!==window.parent)return;
 
 var PALETAS=[
  {id:'violeta', nombre:'Indigo',   ac:'#4f46e5', ac2:'#7c3aed', acD:'#818cf8', ac2D:'#a78bfa'},
- {id:'azul',    nombre:'Azul oceano', ac:'#2563eb', ac2:'#06b6d4', acD:'#60a5fa', ac2D:'#22d3ee'},
- {id:'esmeralda',nombre:'Esmeralda', ac:'#059669', ac2:'#10b981', acD:'#34d399', ac2D:'#6ee7b7'},
- {id:'coral',   nombre:'Coral',    ac:'#ea580c', ac2:'#f59e0b', acD:'#fb923c', ac2D:'#fbbf24'},
- {id:'magenta', nombre:'Magenta',  ac:'#db2777', ac2:'#fb7185', acD:'#f472b6', ac2D:'#fda4af'}
+ {id:'azul',    nombre:'Azul oceano', ac:'#2563eb', ac2:'#0e7490', acD:'#60a5fa', ac2D:'#22d3ee'},
+ {id:'esmeralda',nombre:'Esmeralda', ac:'#047857', ac2:'#065f46', acD:'#34d399', ac2D:'#6ee7b7'},
+ {id:'coral',   nombre:'Coral',    ac:'#c2410c', ac2:'#b45309', acD:'#fb923c', ac2D:'#fbbf24'},
+ {id:'magenta', nombre:'Magenta',  ac:'#db2777', ac2:'#e11d48', acD:'#f472b6', ac2D:'#fda4af'}
 ];
 
 function paletaAct(){

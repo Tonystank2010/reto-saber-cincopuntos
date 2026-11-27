@@ -29,6 +29,10 @@ jobs:
           if mal: print('inválidas:',len(mal),mal[:5]); sys.exit(1)
           print('OK')
           PY
+      - name: Validar contenido contra el esquema de pregunta
+        run: |
+          python3 docs/investigacion/02-estructura-preguntas/validar_preguntas.py docs/investigacion/02-estructura-preguntas/ejemplos-formato.json
+
       - name: Probar el generador (SQLite)
         run: |
           mkdir -p /tmp/bd && cp base-de-datos/generar_banco.py /tmp/bd/
