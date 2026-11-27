@@ -536,5 +536,7 @@ La regla visual del juego es estricta: **ni un solo emoji en pantalla**, tampoco
 - **Panel de Supervisión** para rol profesor/admin: tabla con el progreso de su grupo (nombre, grado, puntos, estado) y botones banear/desbanear, con consultas filtradas por grado y caché de 60 s para minimizar ancho de banda.
 - La configuración de la nube quedó marcada con los marcadores **SUPABASE_URL / SUPABASE_ANON_KEY** dentro del juego, apuntando a `supabase/schema.sql`.
 
+**Pantalla de entrada más limpia:** los botones «Privacidad y términos» y «Cargar copia de cuenta» salieron de la pantalla de entrada; «Privacidad y términos» ahora se abre desde **Ajustes** (Perfil > Ajustes) y la carga de copia sigue en su tarjeta de Ajustes.
+
 **PWA:**
 - Nuevo `public/manifest.json` (nombre, idioma es, modo standalone, iconos) y `public/sw.js` subido a **`rscp-v41`**: network-first en navegaciones, cache-first en recursos, versionado por `CACHE_NAME` — cada despliegue en Vercel reparte la actualización y limpia la caché antigua.
